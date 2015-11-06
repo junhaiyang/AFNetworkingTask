@@ -20,7 +20,7 @@ Pod::Spec.new do |s|
  
   s.requires_arc = true
 
-  s.source_files = 'Classes/*.{h,m,mm}'  
+  s.source_files = 'AFNetworkingTask/Classes/*.{h,m,mm}'  
 
   s.dependency 'AFNetworking', '<=2.6.1'
   s.dependency 'AFNetworkActivityLogger', '<=2.0.4'
