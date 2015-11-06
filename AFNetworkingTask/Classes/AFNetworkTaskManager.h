@@ -1,0 +1,108 @@
+//
+ 
+
+#import <Foundation/Foundation.h>
+#import "AFNetworkTask.h"
+#import "AFHTTPRequestOperationManager.h"
+
+
+static NSString *const kAFNetworking_GET = @"GET";
+static NSString *const kAFNetworking_POST = @"POST";
+static NSString *const kAFNetworking_DELETE = @"DELETE";
+
+static NSString *const kAFNetworking_PATCH = @"PATCH";
+static NSString *const kAFNetworking_HEAD = @"HEAD";
+static NSString *const kAFNetworking_PUT = @"PUT";
+
+
+typedef NS_ENUM(NSInteger, AFNetworkStatusCode) {
+    AFNetworkStatusCodeUnknown = 0,      //状态未知
+    AFNetworkStatusCodeNoWork  = -50,   //取消
+    AFNetworkStatusCodeCancel  = -100,   //取消
+    AFNetworkStatusCodeSuccess = 200,    //成功
+    AFNetworkStatusCodeHttpError   = -200,    //http未知错误
+    AFNetworkStatusCodeDataError   = -300,    //数据解析错误
+    AFNetworkStatusCodeProcessError   = -400,    //处理错误
+    AFNetworkStatusCodeUnknownError   = -500    //未知错误
+};
+
+
+typedef NS_ENUM(NSInteger, AFNetworkResponseProtocolType) {
+    AFNetworkResponseProtocolTypeNormal = 0,       //响应协议类型，发无任何格式的字符串流方式
+    AFNetworkResponseProtocolTypeJSON,              //响应协议类型，发JSON格式符串流方式
+    AFNetworkResponseProtocolTypeFile,              //响应协议类型，发文件流方式
+};
+typedef NS_ENUM(NSInteger, AFNetworkRequestProtocolType) {
+    AFNetworkRequestProtocolTypeNormal = 0,       //请求协议类型，标准提交
+    AFNetworkRequestProtocolTypeJSON,              //请求协议类型，发JSON格式提交
+};
+
+
+typedef void(^AFNetworkTaskFinishedBlock)(id responseObject, AFNetworkStatusCode errorCode, NSInteger httpStatusCode);  //请求协议类型
+typedef void(^AFNetworkTaskProcessResultBlock)(id responseObject);  //请求协议类型
+
+typedef void(^AFNetworkTaskDownloadBlock)(long long totalBytesRead, long long totalBytesExpectedToRead);
+typedef void(^AFNetworkTaskUploadBlock)(long long  totalBytesWritten, long long totalBytesExpectedToWrite);
+
+
+@protocol AFNetworkData <NSObject>
+
+
+
+@end
+
+ 
+
+@interface AFNetworkTaskManager : AFHTTPRequestOperationManager
+
+
+@property (nonatomic,assign) AFNetworkResponseProtocolType responseType;  //响应协议类型
+@property (nonatomic,assign) AFNetworkRequestProtocolType  requestType;  //请求协议类型
+
+
+
+
+
++ (AFNetworkTask *)GET:(NSString *)URLString
+                target:(id)target
+              selector:(SEL)aSelector
+                finish:(AFNetworkTaskFinishedBlock)finish;
+
++ (AFNetworkTask *)GET:(NSString *)URLString
+            parameters:(id)parameters
+                target:(id)target
+              selector:(SEL)aSelector
+                finish:(AFNetworkTaskFinishedBlock)finish;
+
+
++ (AFNetworkTask *)POST:(NSString *)URLString
+                target:(id)target
+              selector:(SEL)aSelector
+                finish:(AFNetworkTaskFinishedBlock)finish;
+
+
+
++ (AFNetworkTask *)POST:(NSString *)URLString
+             parameters:(id)parameters
+                  files:(id)files
+                 target:(id)target
+               selector:(SEL)aSelector
+                 finish:(AFNetworkTaskFinishedBlock)finish;
+
+
+
++ (AFNetworkTask *)GET:(NSString *)URLString
+            parameters:(id)parameters
+                processResult:(AFNetworkTaskProcessResultBlock)processResult
+                finish:(AFNetworkTaskFinishedBlock)finish;
+
++ (AFNetworkTask *)POST:(NSString *)URLString
+             parameters:(id)parameters
+          processResult:(AFNetworkTaskProcessResultBlock)processResult
+                    finish:(AFNetworkTaskFinishedBlock)finish;
+
+ 
+
+
+
+@end
