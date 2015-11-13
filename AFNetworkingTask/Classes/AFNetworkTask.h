@@ -1,9 +1,8 @@
  
 
-#import <Foundation/Foundation.h>
-#import "AFHTTPRequestOperation.h"
+#import <Foundation/Foundation.h> 
 
-@interface AFNetworkTask : AFHTTPRequestOperation
+@interface AFNetworkTask : NSURLSessionTask
 
 -(void)cancel;
  

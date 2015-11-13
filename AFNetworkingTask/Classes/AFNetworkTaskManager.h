@@ -3,7 +3,7 @@
 
 #import <Foundation/Foundation.h>
 #import "AFNetworkTask.h"
-#import "AFHTTPRequestOperationManager.h"
+#import "AFHTTPSessionManager.h"
 
 
 static NSString *const kAFNetworking_GET = @"GET";
@@ -41,8 +41,7 @@ typedef NS_ENUM(NSInteger, AFNetworkRequestProtocolType) {
 typedef void(^AFNetworkTaskFinishedBlock)(id responseObject, AFNetworkStatusCode errorCode, NSInteger httpStatusCode);  //请求协议类型
 typedef void(^AFNetworkTaskProcessResultBlock)(id responseObject);  //请求协议类型
 
-typedef void(^AFNetworkTaskDownloadBlock)(long long totalBytesRead, long long totalBytesExpectedToRead);
-typedef void(^AFNetworkTaskUploadBlock)(long long  totalBytesWritten, long long totalBytesExpectedToWrite);
+typedef void(^AFNetworkTaskProgressBlock)(CGFloat progress);
 
 
 @protocol AFNetworkData <NSObject>
@@ -50,10 +49,9 @@ typedef void(^AFNetworkTaskUploadBlock)(long long  totalBytesWritten, long long 
 
 
 @end
-
  
 
-@interface AFNetworkTaskManager : AFHTTPRequestOperationManager
+@interface AFNetworkTaskManager : AFHTTPSessionManager
 
 
 @property (nonatomic,assign) AFNetworkResponseProtocolType responseType;  //响应协议类型
@@ -61,8 +59,11 @@ typedef void(^AFNetworkTaskUploadBlock)(long long  totalBytesWritten, long long 
 
 
 
+-(void)buildCommonHeader:(AFHTTPRequestSerializer *)requestSerializer;
 
 
++(NSURL *)pathWithURL:(NSString *)URLString;
+ 
 + (AFNetworkTask *)GET:(NSString *)URLString
                 target:(id)target
               selector:(SEL)aSelector
@@ -102,6 +103,23 @@ typedef void(^AFNetworkTaskUploadBlock)(long long  totalBytesWritten, long long 
                     finish:(AFNetworkTaskFinishedBlock)finish;
 
  
+
++ (AFNetworkTask *)DELETE:(NSString *)URLString
+               parameters:(id)parameters
+            processResult:(AFNetworkTaskProcessResultBlock)processResult
+                   finish:(AFNetworkTaskFinishedBlock)finish;
+
+
++ (AFNetworkTask *)UPLOAD:(NSString *)URLString
+               parameters:(id)parameters
+                    files:(id)files
+                 progress:(AFNetworkTaskProgressBlock)progress
+                   finish:(AFNetworkTaskFinishedBlock)finish;
+
++ (AFNetworkTask *)DOWNLOAD:(NSString *)URLString
+               parameters:(id)parameters
+            progress:(AFNetworkTaskProgressBlock)progress
+                   finish:(AFNetworkTaskFinishedBlock)finish;
 
 
 
