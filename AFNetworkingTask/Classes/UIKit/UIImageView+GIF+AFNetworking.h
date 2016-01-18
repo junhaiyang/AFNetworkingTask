@@ -1,6 +1,7 @@
 
 
 #import "UIImageView+AFNetworking.h"
+#import "AFAutoPurgingImageCache.h"
 
 #import "TMCache.h"
 
@@ -9,9 +10,13 @@
 
 @interface UIImageView (AFNetworkGIFTask)
 
-+ (id <AFGIFCache>)sharedImageCache;
++ (_Nonnull id <AFGIFCache>)sharedImageCache;
 
-+ (void)setSharedImageCache:(id <AFGIFCache>)imageCache;
+
+- (void)setImageWithURL:(NSURL * _Nonnull )url
+       placeholderImage:(nullable UIImage *)placeholderImage
+                success:(nullable void (^)(NSURLRequest * __nullable request, NSHTTPURLResponse * __nullable response, UIImage * __nullable image))success
+                failure:(nullable void (^)(NSURLRequest * __nullable  request, NSHTTPURLResponse * __nullable response, NSError *__nullable error))failure;
 
 @end
 
@@ -21,11 +26,10 @@ typedef NS_ENUM(NSInteger, AFGIFCacheType) {
     AFGIFCacheTypeDisk = 2
 };
 
-@protocol AFGIFCache<AFImageCache>
+@protocol AFGIFCache<AFImageRequestCache>
+ @optional
+-(void)cleanCache:(AFGIFCacheType)cacheType finish:(_Nonnull TMCacheBlock)block;
 
-
--(void)cleanCache:(AFGIFCacheType)cacheType finish:(TMCacheBlock)block;
-
--(NSString*)descriptionOfByteCount;
--(NSString*)descriptionOfByteCountWithEmptyString:(NSString*)emptyString;
+-(NSString* _Nonnull )descriptionOfByteCount;
+-(NSString* _Nonnull )descriptionOfByteCountWithEmptyString:(NSString* _Nonnull )emptyString;
 @end

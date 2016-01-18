@@ -7,8 +7,7 @@
 //
 
 #import "ViewController.h"
-#import "UserRequest.h"
-#import "UIImageView+AFNetworkTask.h"
+#import "UserRequest.h" 
 
 @interface ViewController ()
 
@@ -40,10 +39,10 @@
     
     
     UserRequest  *request =[UserRequest new];
-    [request requestBaidu:savedImagePath finish:^(id responseObject, AFNetworkStatusCode errorCode, NSInteger httpStatusCode) {
-         
-        NSLog(@"finish .........");
-    }];
+//    [request requestBaidu:savedImagePath finish:^(id responseObject, AFNetworkStatusCode errorCode, NSInteger httpStatusCode) {
+//         
+//        NSLog(@"finish .........");
+//    }];
     
     [picker dismissViewControllerAnimated:YES completion:NULL];
     
@@ -61,7 +60,7 @@
     UIImageView *imageView =[[UIImageView alloc] initWithFrame:CGRectMake(100, 100, 200, 200)];
     [self.view addSubview:imageView];
     
-    [imageView setImageWithURL:[NSURL URLWithString:@"http://i.quanminxingtan.com/56444a5dac9bdf37f4065c14"]];
+//    [imageView setImageWithURL:[NSURL URLWithString:@"http://i.quanminxingtan.com/56444a5dac9bdf37f4065c14"]];
     
     
 //    http://img2.imgtn.bdimg.com/it/u=2114170278,1962373724&fm=21&gp=0.jpg

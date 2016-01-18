@@ -34,21 +34,38 @@ Pod::Spec.new do |s|
     ds.source_files = 'AFNetworkingTask/Classes/AFGIFResponseSerializer/*.{h,m,mm}' 
           
   end
+
+  s.subspec 'AFNetworkActivityLogger' do |ds|
     
-  s.subspec 'UIKit' do |ks|
-     
-     ks.subspec 'UIImageView+AFNetworkTask' do |ds|
+    ds.source_files = 'AFNetworkingTask/Classes/AFNetworkActivityLogger/*.{h,m,mm}' 
+          
+  end
+  s.subspec 'AFgzipRequestSerializer' do |ds|
+    
+    ds.source_files = 'AFNetworkingTask/Classes/AFgzipRequestSerializer/*.{h,m,mm}' 
+          
+  end
+  s.subspec 'NSObjectKeyValueOption' do |ds|
+    
+    ds.source_files = 'AFNetworkingTask/Classes/NSObjectKeyValueOption/*.{h,m,mm}' 
+          
+  end
+  s.subspec 'NSObjectCategory' do |ds|
+    
+    ds.source_files = 'AFNetworkingTask/Classes/NSObjectCategory/*.{h,m,mm}' 
+          
+  end
+  
+    
+  s.subspec 'UIKit' do |ks| 
        
-      ds.source_files = 'AFNetworkingTask/Classes/UIKit/UIImageView+AFNetworkTask.{h,m,mm}' 
+      ks.source_files = 'AFNetworkingTask/Classes/UIKit/*.{h,m,mm}' 
          
-    end
          
   end 
 
-  s.dependency 'AFNetworking', '<=2.6.1'
-  s.dependency 'AFNetworkActivityLogger', '<=2.0.4'
-  s.dependency 'AFgzipRequestSerializer', '<=0.0.2'
-  s.dependency 'Godzippa', '<=1.1.0'
+  s.dependency 'AFNetworking' , '~> 3.0.4'
+  s.dependency 'Godzippa'
   s.dependency 'YLGIFImage' 
   s.dependency 'TMCache'
    

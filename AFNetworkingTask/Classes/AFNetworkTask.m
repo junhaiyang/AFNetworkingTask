@@ -6,8 +6,4 @@
 
 @implementation AFNetworkTask
 
--(void)cancel{
-    [super cancel];
-}  
-
 @end

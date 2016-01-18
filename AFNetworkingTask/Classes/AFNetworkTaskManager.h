@@ -38,7 +38,7 @@ typedef NS_ENUM(NSInteger, AFNetworkRequestProtocolType) {
 };
 
 
-typedef void(^AFNetworkTaskFinishedBlock)(id responseObject, AFNetworkStatusCode errorCode, NSInteger httpStatusCode);  //请求协议类型
+typedef void(^AFNetworkTaskFinishedBlock)(NSURLSessionTask *task,id responseObject,id target, AFNetworkStatusCode errorCode, NSInteger httpStatusCode);  //请求协议类型
 typedef void(^AFNetworkTaskProcessResultBlock)(id responseObject);  //请求协议类型
 
 typedef void(^AFNetworkTaskProgressBlock)(CGFloat progress);

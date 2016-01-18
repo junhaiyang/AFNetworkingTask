@@ -7,6 +7,7 @@ xcodeproj 'AFNetworkingTask.xcodeproj'
 
 ### network
  
+pod 'AFNetworking', '3.0.4'
 
 pod 'AFNetworkingTask', :path => './'
   

@@ -31,12 +31,12 @@
 //        NSLog(@"-----");
 //    } finish:finish];
     
-    
-    return [AFNetworkRequest UPLOAD:@"http://120.26.81.3/pub/up" parameters:nil files:@{@"bin":file}  progress:^(CGFloat progress) {
+   return [AFNetworkRequest UPLOAD:@"http://120.26.81.3/pub/up" parameters:nil files:@{@"bin":file} progress:^(CGFloat progress) {
         
-    } finish:^(id responseObject, AFNetworkStatusCode errorCode, NSInteger httpStatusCode) {
+    } finish:^(NSURLSessionTask *task, id responseObject, id target, AFNetworkStatusCode errorCode, NSInteger httpStatusCode) {
         NSLog(@"%@",responseObject);
     }];
+    
     
     
 //    return [AFNetworkRequest GET:@"http://www.baidu.com" target:data selector:@selector(processResult:) finish:finish];

@@ -7,7 +7,6 @@
 //
 
 #import "AppDelegate.h"
-#import "AFNetworkActivityLogger.h"
 
 @interface AppDelegate ()
 
@@ -18,8 +17,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
-    [[AFNetworkActivityLogger sharedLogger] startLogging];
-    [AFNetworkActivityLogger sharedLogger].level = AFLoggerLevelDebug;
+//    [[AFNetworkActivityLogger sharedLogger] startLogging];
+//    [AFNetworkActivityLogger sharedLogger].level = AFLoggerLevelDebug;
     return YES;
 }
 
