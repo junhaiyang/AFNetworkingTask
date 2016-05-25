@@ -22,6 +22,9 @@
 
 #import <Foundation/Foundation.h>
 
+FOUNDATION_EXPORT NSString * const AFNetworkingTaskDidRequestNotification;
+FOUNDATION_EXPORT NSString * const AFNetworkingTaskDidResponseNotification;
+
 typedef NS_ENUM(NSUInteger, AFHTTPRequestLoggerLevel) {
   AFLoggerLevelOff,
   AFLoggerLevelDebug,

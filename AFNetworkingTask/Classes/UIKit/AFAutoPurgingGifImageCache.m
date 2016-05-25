@@ -32,14 +32,21 @@ static inline NSString * AFGIFCacheKeyFromURLRequest(NSURLRequest *request) {
     }
     
     NSObject *cachedData =  [self objectForKey:AFGIFCacheKeyFromURLRequest(request)];
+    
+    return [self imageforObj:cachedData];
+}
+
+- (nullable UIImage *)imageforObj:(NSObject *)cachedData {
     UIImage *cachedImage = nil;
     if([cachedData isKindOfClass:[UIImage class]]){
         cachedImage = (UIImage *)cachedData;
     }else if([cachedData isKindOfClass:[NSData class]]){
         cachedImage = AFImageWithDataAtScale((NSData *)cachedData,[[UIScreen mainScreen] scale]);
     }
-    
-    return cachedImage;
+    if([cachedImage isKindOfClass:[UIImage class]]||[cachedImage isKindOfClass:[YLGIFImage class]])
+        return cachedImage;
+    else
+        return nil;
 }
 
 - (void)addImage:(UIImage *)image forRequest:(NSURLRequest *)request withAdditionalIdentifier:(NSString *)identifier {
@@ -78,6 +85,11 @@ static inline NSString * AFGIFCacheKeyFromURLRequest(NSURLRequest *request) {
 }
 -(NSString*)descriptionOfByteCount {
     return [self descriptionOfByteCountWithEmptyString:nil];
+}
+
+-(NSUInteger)cacheCount{
+    NSUInteger byteCount = self.diskCache.byteCount+self.memoryCache.totalCost;
+    return byteCount;
 }
 
 -(NSString*)descriptionOfByteCountWithEmptyString:(NSString*)emptyString

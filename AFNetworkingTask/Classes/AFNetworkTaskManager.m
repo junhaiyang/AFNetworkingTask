@@ -4,6 +4,7 @@
 #import "NSObject+NSKeyValueOption.h"
 
 #import "AFTextResponseSerializer.h"
+#import "AFNetworkActivityLogger.h"
 
 
 #import <CommonCrypto/CommonDigest.h>
@@ -19,6 +20,16 @@
 @end
 
 @implementation AFNetworkTaskManager
+
++(dispatch_queue_t)afnet_sharedafnetworkCompletionQueue {
+    static dispatch_queue_t  afnet_sharedafnetworkCompletionQueue = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        afnet_sharedafnetworkCompletionQueue = dispatch_queue_create("afnet_sharedafnetworkCompletionQueue", nil);
+    });
+    
+    return afnet_sharedafnetworkCompletionQueue;
+}
 
 -(void)dealloc{
     self.progressBlock = NULL;
@@ -71,27 +82,29 @@
     
 }
 
-+ (AFNetworkTask *)GET:(NSString *)URLString
+- (AFNetworkTask *)GET:(NSString *)URLString
             parameters:(id)parameters
                 target:(id)target
               selector:(SEL)aSelector
                 finish:(AFNetworkTaskFinishedBlock)finish{
-    AFNetworkTaskManager *manager =[[[self class] alloc] init];
     
-    return [manager GET:URLString parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+    AFNetworkTask *dataTask = [self GET:URLString parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
         
         NSHTTPURLResponse  *response = (NSHTTPURLResponse  *)task.response;
         
-        [manager processResult:responseObject task:task target:target selector:aSelector  finish:finish statusCode:response.statusCode];
+        [self processResult:responseObject task:task target:target selector:aSelector  finish:finish statusCode:response.statusCode];
     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
         if(finish){
             finish(task,nil,target,AFNetworkStatusCodeProcessError,AFNetworkStatusCodeHttpError);
         }
     }];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidRequestNotification object:dataTask];
+    return dataTask;
      
 }
 
-+ (AFNetworkTask *)POST:(NSString *)URLString
+- (AFNetworkTask *)POST:(NSString *)URLString
             parameters:(id)parameters
                  files:(id)files
                 target:(id)target
@@ -99,9 +112,8 @@
                 finish:(AFNetworkTaskFinishedBlock)finish{
     
     
-    AFNetworkTaskManager *manager =[[[self class] alloc] init];
     
-    return [manager POST:URLString parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
+    AFNetworkTask *dataTask = [self POST:URLString parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
         for (NSString *key  in files) {
             NSObject *fileObj =[files objectForKey:key];
             
@@ -115,120 +127,132 @@
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
         
         NSHTTPURLResponse  *response = (NSHTTPURLResponse  *)task.response;
-        [manager processResult:responseObject task:task target:target selector:aSelector  finish:finish statusCode:response.statusCode];
+        [self processResult:responseObject task:task target:target selector:aSelector  finish:finish statusCode:response.statusCode];
     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
         if(finish){
             finish(task,nil,target,AFNetworkStatusCodeProcessError,AFNetworkStatusCodeHttpError);
         }
     }];
     
+    [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidRequestNotification object:dataTask];
+    return dataTask;
+    
     
 }
-+ (AFNetworkTask *)POST:(NSString *)URLString
+- (AFNetworkTask *)POST:(NSString *)URLString
                 target:(id)target
               selector:(SEL)aSelector
                 finish:(AFNetworkTaskFinishedBlock)finish{
     
-    AFNetworkTaskManager *manager =[[[self class] alloc] init];
     
     NSDictionary *parameters =[target dictionaryKeysValues];
     
     if(parameters.count==0)
         parameters = nil;
      
-    return [manager POST:URLString parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+    AFNetworkTask *dataTask = [self POST:URLString parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
         
         NSHTTPURLResponse  *response = (NSHTTPURLResponse  *)task.response;
         
-        [manager processResult:responseObject task:task target:target selector:aSelector  finish:finish statusCode:response.statusCode];
+        [self processResult:responseObject task:task target:target selector:aSelector  finish:finish statusCode:response.statusCode];
     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
         if(finish){
             finish(task,nil,target,AFNetworkStatusCodeProcessError,AFNetworkStatusCodeHttpError);
         }
     }];
     
+    [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidRequestNotification object:dataTask];
+    return dataTask;
+    
     
 }
-+ (AFNetworkTask *)GET:(NSString *)URLString
+- (AFNetworkTask *)GET:(NSString *)URLString
                 target:(id)target
               selector:(SEL)aSelector
                 finish:(AFNetworkTaskFinishedBlock)finish{
     
-    AFNetworkTaskManager *manager =[[[self class] alloc] init];
     
     NSDictionary *parameters =[target dictionaryKeysValues];
     
     if(parameters.count==0)
         parameters = nil;
     
-    return [manager POST:URLString parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+    AFNetworkTask *dataTask = [self POST:URLString parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
         
         NSHTTPURLResponse  *response = (NSHTTPURLResponse  *)task.response;
         
-        [manager processResult:responseObject task:task target:target selector:aSelector  finish:finish statusCode:response.statusCode];
+        [self processResult:responseObject task:task target:target selector:aSelector  finish:finish statusCode:response.statusCode];
     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
         if(finish){
             finish(task,nil,target,AFNetworkStatusCodeProcessError,AFNetworkStatusCodeHttpError);
         }
     }];
     
+    [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidRequestNotification object:dataTask];
+    return dataTask;
+    
 }
 
-+ (AFNetworkTask *)GET:(NSString *)URLString
+- (AFNetworkTask *)GET:(NSString *)URLString
             parameters:(id)parameters
          processResult:(AFNetworkTaskProcessResultBlock)processResult
                 finish:(AFNetworkTaskFinishedBlock)finish{
     
-    AFNetworkTaskManager *manager =[[[self class] alloc] init];
      
-    return [manager GET:URLString parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+    AFNetworkTask *dataTask = [self GET:URLString parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
         
         NSHTTPURLResponse  *response = (NSHTTPURLResponse  *)task.response;
         
-        [manager processResult:responseObject task:task processResult:processResult finish:finish statusCode:response.statusCode];
+        [self processResult:responseObject task:task processResult:processResult finish:finish statusCode:response.statusCode];
     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
         if(finish){
             finish(task,nil,nil,AFNetworkStatusCodeProcessError,AFNetworkStatusCodeHttpError);
         }
     }];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidRequestNotification object:dataTask];
+    return dataTask;
     
 }
 
-+ (AFNetworkTask *)POST:(NSString *)URLString
+- (AFNetworkTask *)POST:(NSString *)URLString
              parameters:(id)parameters
           processResult:(AFNetworkTaskProcessResultBlock)processResult
                  finish:(AFNetworkTaskFinishedBlock)finish{
     
-    AFNetworkTaskManager *manager =[[[self class] alloc] init];
-    
-    return [manager POST:URLString parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+    AFNetworkTask *dataTask = [self POST:URLString parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
         
         NSHTTPURLResponse  *response = (NSHTTPURLResponse  *)task.response;
         
-        [manager processResult:responseObject task:task processResult:processResult finish:finish statusCode:response.statusCode];
+        [self processResult:responseObject task:task processResult:processResult finish:finish statusCode:response.statusCode];
     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
         if(finish){
             finish(task,nil,nil,AFNetworkStatusCodeProcessError,AFNetworkStatusCodeHttpError);
         }
     }];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidRequestNotification object:dataTask];
+    return dataTask;
 }
-+ (AFNetworkTask *)DELETE:(NSString *)URLString
+- (AFNetworkTask *)DELETE:(NSString *)URLString
              parameters:(id)parameters
           processResult:(AFNetworkTaskProcessResultBlock)processResult
                  finish:(AFNetworkTaskFinishedBlock)finish{
     
-    AFNetworkTaskManager *manager =[[[self class] alloc] init];
      
-    return [manager DELETE:URLString parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+    AFNetworkTask *dataTask = [self DELETE:URLString parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
         
         NSHTTPURLResponse  *response = (NSHTTPURLResponse  *)task.response;
         
-        [manager processResult:responseObject task:task processResult:processResult finish:finish statusCode:response.statusCode];
+        [self processResult:responseObject task:task processResult:processResult finish:finish statusCode:response.statusCode];
     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
         if(finish){
             finish(task,nil,nil,AFNetworkStatusCodeProcessError,AFNetworkStatusCodeHttpError);
         }
     }];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidRequestNotification object:dataTask];
+    return dataTask;
 }
 
 - (NSURLSessionUploadTask *)downloadTaskWithHTTPMethod:(NSString *)method
@@ -289,6 +313,7 @@
                          context:NULL];
     }];
     
+    [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidRequestNotification object:dataTask];
     
     
     [dataTask resume];
@@ -350,7 +375,8 @@
         [progress removeObserver:self
                       forKeyPath:@"fractionCompleted"
                          context:NULL];
-    }];  
+    }];
+    [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidRequestNotification object:dataTask];
     
     [dataTask resume];
     
@@ -370,18 +396,17 @@
 }
 
 
-+ (AFNetworkTask *)UPLOAD:(NSString *)URLString
+- (AFNetworkTask *)UPLOAD:(NSString *)URLString
                parameters:(id)parameters
                     files:(id)files
                  progress:(AFNetworkTaskProgressBlock)progress
                    finish:(AFNetworkTaskFinishedBlock)finish{
     
-    AFNetworkTaskManager *manager =[[[self class] alloc] init];
     
-    manager.progressBlock = progress;
+    self.progressBlock = progress;
     
     
-    return [manager uploadTaskWithHTTPMethod:@"POST" URLString:URLString parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+    return [self uploadTaskWithHTTPMethod:@"POST" URLString:URLString parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
         
         for (NSString *key  in files) {
             NSObject *fileObj =[files objectForKey:key];
@@ -398,7 +423,7 @@
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
         NSHTTPURLResponse  *response = (NSHTTPURLResponse  *)task.response;
         
-        [manager processResult:responseObject task:task processResult:NULL finish:finish statusCode:response.statusCode];
+        [self processResult:responseObject task:task processResult:NULL finish:finish statusCode:response.statusCode];
         
     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
         if(finish){
@@ -434,23 +459,22 @@
 
 }
 
-+ (AFNetworkTask *)DOWNLOAD:(NSString *)URLString
+- (AFNetworkTask *)DOWNLOAD:(NSString *)URLString
                  parameters:(id)parameters
                    progress:(AFNetworkTaskProgressBlock)progress
                      finish:(AFNetworkTaskFinishedBlock)finish{
-    AFNetworkTaskManager *manager =[[AFNetworkTaskManager alloc] init];
     
     
-    manager.responseType = AFNetworkResponseProtocolTypeFile;
+    self.responseType = AFNetworkResponseProtocolTypeFile;
     
-    manager.progressBlock = progress;
+    self.progressBlock = progress;
     
-    return [manager downloadTaskWithHTTPMethod:@"GET" URLString:URLString parameters:parameters  success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+    return [self downloadTaskWithHTTPMethod:@"GET" URLString:URLString parameters:parameters  success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
         
         
         NSHTTPURLResponse  *response = (NSHTTPURLResponse  *)task.response;
         
-        [manager processResult:responseObject task:task processResult:NULL finish:finish statusCode:response.statusCode];
+        [self processResult:responseObject task:task processResult:NULL finish:finish statusCode:response.statusCode];
     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
         
         
@@ -464,6 +488,20 @@
 #pragma mark - process  Result
 -(void)processResult:(id)responseObject task:(NSURLSessionDataTask * _Nonnull)task processResult:(AFNetworkTaskProcessResultBlock)processResult finish:(AFNetworkTaskFinishedBlock)finish statusCode:(NSInteger)statusCode{
     @try {
+        
+        self.responseHeaders = ((NSHTTPURLResponse *)task.response).allHeaderFields;
+        
+        NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
+        
+        if (responseObject) {
+            userInfo[AFNetworkingTaskDidCompleteSerializedResponseKey] = responseObject;
+        }
+        
+//        if (serializationError) {
+//            userInfo[AFNetworkingTaskDidCompleteErrorKey] = serializationError;
+//        }
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidResponseNotification object:task userInfo:userInfo];
         
         if(self.responseType==AFNetworkResponseProtocolTypeFile){
             if(processResult){
@@ -498,6 +536,20 @@
 -(void)processResult:(id)responseObject task:(NSURLSessionDataTask * _Nonnull)task  target:(NSObject *)target
             selector:(SEL)aSelector finish:(AFNetworkTaskFinishedBlock)finish statusCode:(NSInteger)statusCode{
     @try {
+        NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
+        
+        
+        self.responseHeaders = ((NSHTTPURLResponse *)task.response).allHeaderFields;
+        
+        if (responseObject) {
+            userInfo[AFNetworkingTaskDidCompleteSerializedResponseKey] = responseObject;
+        }
+        
+//        if (serializationError) {
+//            userInfo[AFNetworkingTaskDidCompleteErrorKey] = serializationError;
+//        }
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidResponseNotification object:task userInfo:userInfo];
         
         if(self.responseType==AFNetworkResponseProtocolTypeFile){
             if(target){

@@ -12,4 +12,7 @@
 
 -(NSString*)descriptionOfByteCountWithEmptyString:(NSString*)emptyString;
 
+
+- (nullable UIImage *)imageforObj:(NSObject *)cachedData;
+
 @end

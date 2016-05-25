@@ -49,12 +49,7 @@ Pod::Spec.new do |s|
     
     ds.source_files = 'AFNetworkingTask/Classes/NSObjectKeyValueOption/*.{h,m,mm}' 
           
-  end
-  s.subspec 'NSObjectCategory' do |ds|
-    
-    ds.source_files = 'AFNetworkingTask/Classes/NSObjectCategory/*.{h,m,mm}' 
-          
-  end
+  end 
   
     
   s.subspec 'UIKit' do |ks| 

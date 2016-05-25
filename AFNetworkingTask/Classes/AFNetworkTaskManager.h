@@ -53,37 +53,38 @@ typedef void(^AFNetworkTaskProgressBlock)(CGFloat progress);
 
 @interface AFNetworkTaskManager : AFHTTPSessionManager
 
+@property (nonatomic,strong) NSDictionary *responseHeaders;
 
 @property (nonatomic,assign) AFNetworkResponseProtocolType responseType;  //响应协议类型
 @property (nonatomic,assign) AFNetworkRequestProtocolType  requestType;  //请求协议类型
-
-
+  
++(dispatch_queue_t)afnet_sharedafnetworkCompletionQueue;
 
 -(void)buildCommonHeader:(AFHTTPRequestSerializer *)requestSerializer;
 
 
 +(NSURL *)pathWithURL:(NSString *)URLString;
  
-+ (AFNetworkTask *)GET:(NSString *)URLString
+- (AFNetworkTask *)GET:(NSString *)URLString
                 target:(id)target
               selector:(SEL)aSelector
                 finish:(AFNetworkTaskFinishedBlock)finish;
 
-+ (AFNetworkTask *)GET:(NSString *)URLString
+- (AFNetworkTask *)GET:(NSString *)URLString
             parameters:(id)parameters
                 target:(id)target
               selector:(SEL)aSelector
                 finish:(AFNetworkTaskFinishedBlock)finish;
 
 
-+ (AFNetworkTask *)POST:(NSString *)URLString
+- (AFNetworkTask *)POST:(NSString *)URLString
                 target:(id)target
               selector:(SEL)aSelector
                 finish:(AFNetworkTaskFinishedBlock)finish;
 
 
 
-+ (AFNetworkTask *)POST:(NSString *)URLString
+- (AFNetworkTask *)POST:(NSString *)URLString
              parameters:(id)parameters
                   files:(id)files
                  target:(id)target
@@ -92,31 +93,31 @@ typedef void(^AFNetworkTaskProgressBlock)(CGFloat progress);
 
 
 
-+ (AFNetworkTask *)GET:(NSString *)URLString
+- (AFNetworkTask *)GET:(NSString *)URLString
             parameters:(id)parameters
                 processResult:(AFNetworkTaskProcessResultBlock)processResult
                 finish:(AFNetworkTaskFinishedBlock)finish;
 
-+ (AFNetworkTask *)POST:(NSString *)URLString
+- (AFNetworkTask *)POST:(NSString *)URLString
              parameters:(id)parameters
           processResult:(AFNetworkTaskProcessResultBlock)processResult
                     finish:(AFNetworkTaskFinishedBlock)finish;
 
  
 
-+ (AFNetworkTask *)DELETE:(NSString *)URLString
+- (AFNetworkTask *)DELETE:(NSString *)URLString
                parameters:(id)parameters
             processResult:(AFNetworkTaskProcessResultBlock)processResult
                    finish:(AFNetworkTaskFinishedBlock)finish;
 
 
-+ (AFNetworkTask *)UPLOAD:(NSString *)URLString
+- (AFNetworkTask *)UPLOAD:(NSString *)URLString
                parameters:(id)parameters
                     files:(id)files
                  progress:(AFNetworkTaskProgressBlock)progress
                    finish:(AFNetworkTaskFinishedBlock)finish;
 
-+ (AFNetworkTask *)DOWNLOAD:(NSString *)URLString
+- (AFNetworkTask *)DOWNLOAD:(NSString *)URLString
                parameters:(id)parameters
             progress:(AFNetworkTaskProgressBlock)progress
                    finish:(AFNetworkTaskFinishedBlock)finish;
