@@ -63,33 +63,7 @@ typedef void(^AFNetworkTaskProgressBlock)(CGFloat progress);
 -(void)buildCommonHeader:(AFHTTPRequestSerializer *)requestSerializer;
 
 
-+(NSURL *)pathWithURL:(NSString *)URLString;
- 
-- (AFNetworkTask *)GET:(NSString *)URLString
-                target:(id)target
-              selector:(SEL)aSelector
-                finish:(AFNetworkTaskFinishedBlock)finish;
-
-- (AFNetworkTask *)GET:(NSString *)URLString
-            parameters:(id)parameters
-                target:(id)target
-              selector:(SEL)aSelector
-                finish:(AFNetworkTaskFinishedBlock)finish;
-
-
-- (AFNetworkTask *)POST:(NSString *)URLString
-                target:(id)target
-              selector:(SEL)aSelector
-                finish:(AFNetworkTaskFinishedBlock)finish;
-
-
-
-- (AFNetworkTask *)POST:(NSString *)URLString
-             parameters:(id)parameters
-                  files:(id)files
-                 target:(id)target
-               selector:(SEL)aSelector
-                 finish:(AFNetworkTaskFinishedBlock)finish;
++(NSURL *)pathWithURL:(NSString *)URLString; 
 
 
 

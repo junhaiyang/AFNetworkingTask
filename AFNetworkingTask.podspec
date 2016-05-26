@@ -59,10 +59,10 @@ Pod::Spec.new do |s|
          
   end 
 
-  s.dependency 'AFNetworking' , '~> 3.0.4'
-  s.dependency 'Godzippa'
-  s.dependency 'YLGIFImage' 
-  s.dependency 'TMCache'
+  s.dependency 'AFNetworking' , '3.1.0'
+  s.dependency 'Godzippa' , '1.1.0'
+  s.dependency 'YLGIFImage'  , '0.11'
+  s.dependency 'TMCache' , '2.1.0'
    
  
 end
