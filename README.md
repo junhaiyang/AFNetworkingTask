@@ -1,2 +1,2 @@
 # AFNetworkingTask
-AFNetworking  OC &amp;&amp; Swift  Sample 
+AFNetworking  OC   Sample 
