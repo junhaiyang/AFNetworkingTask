@@ -82,13 +82,13 @@
 }
 
 
-- (AFNetworkTask *)GET:(NSString *)URLString
+- (NSURLSessionTask *)GET:(NSString *)URLString
             parameters:(id)parameters
          processResult:(AFNetworkTaskProcessResultBlock)processResult
                 finish:(AFNetworkTaskFinishedBlock)finish{
     
      
-    AFNetworkTask *dataTask = [self GET:URLString parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+    NSURLSessionTask *dataTask = [self GET:URLString parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
         
         NSHTTPURLResponse  *response = (NSHTTPURLResponse  *)task.response;
         
@@ -104,12 +104,12 @@
     
 }
 
-- (AFNetworkTask *)POST:(NSString *)URLString
+- (NSURLSessionTask *)POST:(NSString *)URLString
              parameters:(id)parameters
           processResult:(AFNetworkTaskProcessResultBlock)processResult
                  finish:(AFNetworkTaskFinishedBlock)finish{
     
-    AFNetworkTask *dataTask = [self POST:URLString parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+    NSURLSessionTask *dataTask = [self POST:URLString parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
         
         NSHTTPURLResponse  *response = (NSHTTPURLResponse  *)task.response;
         
@@ -123,13 +123,13 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidRequestNotification object:dataTask];
     return dataTask;
 }
-- (AFNetworkTask *)DELETE:(NSString *)URLString
+- (NSURLSessionTask *)DELETE:(NSString *)URLString
              parameters:(id)parameters
           processResult:(AFNetworkTaskProcessResultBlock)processResult
                  finish:(AFNetworkTaskFinishedBlock)finish{
     
      
-    AFNetworkTask *dataTask = [self DELETE:URLString parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+    NSURLSessionTask *dataTask = [self DELETE:URLString parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
         
         NSHTTPURLResponse  *response = (NSHTTPURLResponse  *)task.response;
         
@@ -285,7 +285,7 @@
 }
 
 
-- (AFNetworkTask *)UPLOAD:(NSString *)URLString
+- (NSURLSessionTask *)UPLOAD:(NSString *)URLString
                parameters:(id)parameters
                     files:(id)files
                  progress:(AFNetworkTaskProgressBlock)progress
@@ -348,7 +348,7 @@
 
 }
 
-- (AFNetworkTask *)DOWNLOAD:(NSString *)URLString
+- (NSURLSessionTask *)DOWNLOAD:(NSString *)URLString
                  parameters:(id)parameters
                    progress:(AFNetworkTaskProgressBlock)progress
                      finish:(AFNetworkTaskFinishedBlock)finish{

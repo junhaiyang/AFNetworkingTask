@@ -1,8 +1,7 @@
 //
  
 
-#import <Foundation/Foundation.h>
-#import "AFNetworkTask.h"
+#import <Foundation/Foundation.h> 
 #import "AFHTTPSessionManager.h"
 
 
@@ -67,31 +66,31 @@ typedef void(^AFNetworkTaskProgressBlock)(CGFloat progress);
 
 
 
-- (AFNetworkTask *)GET:(NSString *)URLString
+- (NSURLSessionTask *)GET:(NSString *)URLString
             parameters:(id)parameters
                 processResult:(AFNetworkTaskProcessResultBlock)processResult
                 finish:(AFNetworkTaskFinishedBlock)finish;
 
-- (AFNetworkTask *)POST:(NSString *)URLString
+- (NSURLSessionTask *)POST:(NSString *)URLString
              parameters:(id)parameters
           processResult:(AFNetworkTaskProcessResultBlock)processResult
                     finish:(AFNetworkTaskFinishedBlock)finish;
 
  
 
-- (AFNetworkTask *)DELETE:(NSString *)URLString
+- (NSURLSessionTask *)DELETE:(NSString *)URLString
                parameters:(id)parameters
             processResult:(AFNetworkTaskProcessResultBlock)processResult
                    finish:(AFNetworkTaskFinishedBlock)finish;
 
 
-- (AFNetworkTask *)UPLOAD:(NSString *)URLString
+- (NSURLSessionTask *)UPLOAD:(NSString *)URLString
                parameters:(id)parameters
                     files:(id)files
                  progress:(AFNetworkTaskProgressBlock)progress
                    finish:(AFNetworkTaskFinishedBlock)finish;
 
-- (AFNetworkTask *)DOWNLOAD:(NSString *)URLString
+- (NSURLSessionTask *)DOWNLOAD:(NSString *)URLString
                parameters:(id)parameters
             progress:(AFNetworkTaskProgressBlock)progress
                    finish:(AFNetworkTaskFinishedBlock)finish;

@@ -14,7 +14,7 @@
 
 
 
-- (AFNetworkTask *)requestBaidu:(NSString *)file finish:(AFNetworkTaskFinishedBlock)finish;
+//- (AFNetworkTask *)requestBaidu:(NSString *)file finish:(AFNetworkTaskFinishedBlock)finish;
 
 
 
