@@ -2,14 +2,7 @@
 
 #import "AFNetworkTask.h"
 #import "MJExtension.h"
-
-@interface AFNetworkAnalysis() 
-
-@property (nonatomic,strong,readwrite) NSDictionary *body NS_AVAILABLE_IOS(7_0);
-
-@property (nonatomic,strong,readwrite) id originalBody NS_AVAILABLE_IOS(7_0);
-
-@end
+ 
 
 
 @interface AFNetworkTask(){
@@ -71,9 +64,9 @@
 
 -(void)buildCommonHeader:(AFHTTPRequestSerializer *)requestSerializer{
     NSDictionary *headers =[analysis buildCommonHeader];
-    for (NSString *key in headers) {
-        [requestSerializer setValue:[headers objectForKey:key] forHTTPHeaderField:key];
-    }
+//    for (NSString *key in headers.allKeys) {
+//        [requestSerializer setValue:[headers objectForKey:key] forHTTPHeaderField:key];
+//    }
     
 }
 
@@ -319,4 +312,118 @@
 //    @throw exction;
 }
 
+//切换到主线程
+-(void)serializeFinishedInMainQueue{
+    self.completionQueue = [[self class] afnet_sharedafnetworkCompletionQueue];
+}
+
+//执行操作
+-(void)executeGet:(NSString *)url  finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
+    [self executeGet:url form:nil finishedBlock:finishedBlock];
+}
+-(void)executeDelete:(NSString *)url  finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
+    [self executeDelete:url form:nil finishedBlock:finishedBlock];
+    
+}
+
+-(void)executeGet:(NSString *)url form:(NSDictionary *)form finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
+    self.networkingTaskFinishedBlock = finishedBlock;
+    
+    sessionTask =[self GET:url parameters:form processResult:^(id responseObject) {
+        [self processDictionary:responseObject];
+        
+    } finish:^(NSURLSessionTask *task, id responseObject, id target, AFNetworkStatusCode errorCode, NSInteger httpStatusCode) {
+        @try {
+            [self processResponseErrorCode:errorCode httpStatusCode:httpStatusCode];
+            
+            if(self.networkingTaskFinishedBlock){
+                self.networkingTaskFinishedBlock(analysis.msg,analysis.originalBody,analysis.body);
+            }
+            
+        }
+        @catch (NSException *exception) {
+            NSLog(@"buildGetRequest:%@",exception);
+        }@finally{
+            [self recyle];
+        }
+    }];
+    
+}
+-(void)executePOST:(NSString *)url form:(NSDictionary *)form finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
+    self.networkingTaskFinishedBlock = finishedBlock;
+    
+    
+    sessionTask =[self POST:url parameters:form processResult:^(id responseObject) {
+        [self processDictionary:responseObject];
+    } finish:^(NSURLSessionTask *task, id responseObject, id target, AFNetworkStatusCode errorCode, NSInteger httpStatusCode) {
+        @try {
+            [self processResponseErrorCode:errorCode httpStatusCode:httpStatusCode];
+            
+            if(self.networkingTaskFinishedBlock){
+                self.networkingTaskFinishedBlock(analysis.msg,analysis.originalBody,analysis.body);
+            }
+        }
+        @catch (NSException *exception) {
+            NSLog(@"buildPostRequest:%@",exception);
+        }@finally{
+            [self recyle];
+        }
+    }];
+    
+}
+-(void)executePostFile:(NSString *)url files:(NSDictionary *)files finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
+    [self executePostFile:url form:nil files:files finishedBlock:finishedBlock];
+}
+-(void)executePostFile:(NSString *)url form:(NSDictionary *)form  files:(NSDictionary *)files finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
+    self.networkingTaskFinishedBlock = finishedBlock;
+    
+    sessionTask =[self UPLOAD:url parameters:form files:files progress:^(CGFloat progress) {
+        
+    } finish:^(NSURLSessionTask *task, id responseObject, id target, AFNetworkStatusCode errorCode, NSInteger httpStatusCode) {
+        @try {
+            [self processDictionary:responseObject];
+        }
+        @catch (NSException *exception) {
+            NSLog(@"buildPostFileRequest:%@",exception);
+        }
+        @finally {
+            [self processResponseErrorCode:errorCode httpStatusCode:httpStatusCode];
+            
+            @try {
+                if(self.networkingTaskFinishedBlock){
+                    self.networkingTaskFinishedBlock(analysis.msg,analysis.originalBody,analysis.body);
+                }
+            }
+            @catch (NSException *exception) {
+                NSLog(@"buildPostFileRequest:%@",exception);
+            }@finally{
+                [self recyle];
+            }
+        }
+        
+        
+    }];
+    
+}
+-(void)executeDelete:(NSString *)url form:(NSDictionary *)form finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
+    self.networkingTaskFinishedBlock = finishedBlock;
+    
+    sessionTask =[self DELETE:url parameters:form processResult:^(id responseObject) {
+        [self processDictionary:responseObject];
+    } finish:^(NSURLSessionTask *task, id responseObject, id target, AFNetworkStatusCode errorCode, NSInteger httpStatusCode) {
+        @try {
+            [self processResponseErrorCode:errorCode httpStatusCode:httpStatusCode];
+            
+            if(self.networkingTaskFinishedBlock){
+                self.networkingTaskFinishedBlock(analysis.msg,analysis.originalBody,analysis.body);
+            }
+        }
+        @catch (NSException *exception) {
+            NSLog(@"buildDeleteRequest:%@",exception);
+        }@finally{
+            [self recyle];
+        }
+    }];
+
+}
 @end

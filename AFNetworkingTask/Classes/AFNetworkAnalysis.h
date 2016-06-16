@@ -48,14 +48,14 @@
  * 解析出来的数据体
  *
  **/
-@property (nonatomic,strong,readonly) NSDictionary *body NS_AVAILABLE_IOS(7_0);
+@property (nonatomic,strong) NSDictionary *body NS_AVAILABLE_IOS(7_0);
 
 /**
  *
  * 原始数据体
  *
  **/
-@property (nonatomic,strong,readonly) id originalBody NS_AVAILABLE_IOS(7_0);
+@property (nonatomic,strong) id originalBody NS_AVAILABLE_IOS(7_0);
 
 
 -(NSDictionary *)buildCommonHeader NS_AVAILABLE_IOS(7_0);

@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "AFNetworkTask.h"
 
 @interface AppDelegate ()
 
@@ -19,6 +20,14 @@
     // Override point for customization after application launch.
 //    [[AFNetworkActivityLogger sharedLogger] startLogging];
 //    [AFNetworkActivityLogger sharedLogger].level = AFLoggerLevelDebug;
+    
+    AFNetworkAnalysis * analysis= [AFNetworkAnalysis defaultAnalysis];
+    analysis.responseType= AFNetworkResponseProtocolTypeNormal;
+    
+    AFNetworkTask *task =[[AFNetworkTask alloc] initWithTask:analysis];
+    [task executeGet:@"http://www.baidu.com" finishedBlock:^(AFNetworkMsg *msg, id originalObj, NSDictionary *jsonBody) {
+        NSLog(@"finish .........%@",originalObj);
+    }];
     return YES;
 }
 

@@ -7,7 +7,8 @@
 //
 
 #import "ViewController.h"
-#import "UserRequest.h" 
+#import "UserRequest.h"
+#import "AFNetworkTask.h"
 
 @interface ViewController ()
 
@@ -37,6 +38,11 @@
     
      [UIImageJPEGRepresentation(selectedImage,1.0) writeToFile:savedImagePath atomically:YES];
     
+    
+    AFNetworkTask *task =[AFNetworkTask init];
+    [task executeGet:@"http://www.baidu.com" finishedBlock:^(AFNetworkMsg *msg, id originalObj, NSDictionary *jsonBody) {
+         NSLog(@"finish .........");
+    }];
     
     UserRequest  *request =[UserRequest new];
 //    [request requestBaidu:savedImagePath finish:^(id responseObject, AFNetworkStatusCode errorCode, NSInteger httpStatusCode) {
