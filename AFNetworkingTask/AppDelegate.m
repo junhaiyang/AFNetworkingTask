@@ -8,7 +8,7 @@
 
 #import "AppDelegate.h"
 #import "AFNetworkTask.h"
-
+#import "UserData.h"
 @interface AppDelegate ()
 
 @end
@@ -22,10 +22,10 @@
 //    [AFNetworkActivityLogger sharedLogger].level = AFLoggerLevelDebug;
     
     AFNetworkAnalysis * analysis= [AFNetworkAnalysis defaultAnalysis];
-    analysis.responseType= AFNetworkResponseProtocolTypeNormal;
-    
+//    analysis.responseType= AFNetworkResponseProtocolTypeNormal;
+    analysis.analysises=@{@"result":[UserData class]};
     AFNetworkTask *task =[[AFNetworkTask alloc] initWithTask:analysis];
-    [task executeGet:@"http://www.baidu.com" finishedBlock:^(AFNetworkMsg *msg, id originalObj, NSDictionary *jsonBody) {
+    [task executeGet:@"http://app.ohwit.com/i/app/category" finishedBlock:^(AFNetworkMsg *msg, id originalObj, NSDictionary *jsonBody) {
         NSLog(@"finish .........%@",originalObj);
     }];
     return YES;

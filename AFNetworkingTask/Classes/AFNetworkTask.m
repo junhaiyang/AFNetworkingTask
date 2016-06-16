@@ -262,10 +262,15 @@
             
             if([obj isKindOfClass:[NSArray class]]){
                 NSArray *array = obj;
-                if(array.count==2){
+                
+                if(array.count==1){
+                    Class clazz = [array objectAtIndex:0];
+                    NSObject *object =  [clazz mj_objectWithKeyValues:value];
+                    [body setObject:object forKey:key];
+                }else if(array.count==2){
                     Class clazz = [array objectAtIndex:0];
                     Class type = [array objectAtIndex:1];
-                    if([type isSubclassOfClass:[NSArray class]]){
+                    if(![type isSubclassOfClass:[NSArray class]]){
                         NSObject *object =  [clazz mj_objectWithKeyValues:value];
                         [body setObject:object forKey:key];
                     }else{
@@ -277,8 +282,13 @@
                     @throw exction;
                 }
             }else{
-                NSException *exction =[[NSException alloc] initWithName:@"解析方法构造错误" reason:key userInfo:nil];
-                @throw exction;
+                
+                Class clazz = obj;
+                NSObject *object =  [clazz mj_objectWithKeyValues:value];
+                [body setObject:object forKey:key];
+                
+//                NSException *exction =[[NSException alloc] initWithName:@"解析方法构造错误" reason:key userInfo:nil];
+//                @throw exction;
             }
         }
         analysis.body = body;

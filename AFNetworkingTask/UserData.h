@@ -11,6 +11,11 @@
 
 @interface UserData : NSObject
 
+
+@property (nonatomic,strong) NSArray *category1;
+@property (nonatomic,strong) NSArray *category2;
+
+
 @property (nonatomic,strong) NSString *name;
 
 
