@@ -22,11 +22,24 @@
 - (instancetype)init
 {
     self = [super init];
-    if (self) { 
+    if (self) {
+        
         self.msg = [AFNetworkMsg new];
+        
+        self.requestType = AFNetworkRequestProtocolTypeNormal;
+        self.responseType = AFNetworkResponseProtocolTypeJSON;
+        
     }
     return self;
 }
 
- 
++(instancetype)defaultAnalysis{
+    AFNetworkAnalysis *analysis =[AFNetworkAnalysis new];
+    
+    return analysis;
+}
+-(NSDictionary *)buildCommonHeader{
+    
+    
+}
 @end

@@ -52,14 +52,14 @@ typedef void(^AFNetworkTaskProgressBlock)(CGFloat progress);
 
 @interface AFNetworkTaskManager : AFHTTPSessionManager
 
-@property (nonatomic,strong) NSDictionary *responseHeaders;
+@property (nonatomic,strong) NSDictionary *responseHeaders  NS_DEPRECATED_IOS(7_0,7_0);
 
-@property (nonatomic,assign) AFNetworkResponseProtocolType responseType;  //响应协议类型
-@property (nonatomic,assign) AFNetworkRequestProtocolType  requestType;  //请求协议类型
+@property (nonatomic,assign) AFNetworkResponseProtocolType responseType  NS_DEPRECATED_IOS(7_0,7_0);  //响应协议类型
+@property (nonatomic,assign) AFNetworkRequestProtocolType  requestType  NS_DEPRECATED_IOS(7_0,7_0);  //请求协议类型
   
 +(dispatch_queue_t)afnet_sharedafnetworkCompletionQueue;
 
--(void)buildCommonHeader:(AFHTTPRequestSerializer *)requestSerializer;
+-(void)buildCommonHeader:(AFHTTPRequestSerializer *)requestSerializer  NS_DEPRECATED_IOS(7_0,7_0);
 
 
 +(NSURL *)pathWithURL:(NSString *)URLString; 

@@ -7,12 +7,10 @@
 
 typedef void(^AFNetworkingFinishedBlock)(AFNetworkTask *request, AFNetworkStatusCode errorCode, NSInteger httpStatusCode)  NS_DEPRECATED_IOS(7_0,7_0);  //请求协议类型
 
-typedef void(^AFNetworkingTaskFinishedBlock)(AFNetworkMsg *msg,id originalObj,id obj,...)  NS_AVAILABLE_IOS(7_0);  //请求协议类型
+typedef void(^AFNetworkingTaskFinishedBlock)(AFNetworkMsg *msg,id originalObj,NSDictionary *jsonBody)  NS_AVAILABLE_IOS(7_0);  //请求协议类型
 
-@interface AFNetworkTask : NSObject{
+@interface AFNetworkTask : AFNetworkTaskManager{
     
-    AFNetworkTaskManager *manager; 
-
 }
 
 -(void)finishedWithMainQueue:(AFNetworkingFinishedBlock)finishedBlock  NS_DEPRECATED_IOS(7_0,7_0);
@@ -40,19 +38,10 @@ typedef void(^AFNetworkingTaskFinishedBlock)(AFNetworkMsg *msg,id originalObj,id
 #pragma mark - new method
 
 -(instancetype)initWithTask:(AFNetworkAnalysis *)analysis  NS_AVAILABLE_IOS(7_0);
-
--(instancetype)initWithSerialize:(Class)clazz  NS_AVAILABLE_IOS(7_0);
-
--(void)setAnalysis:(AFNetworkAnalysis *)analysis;  //完全自定义结果处理
--(void)setSerialize:(Class)clazz;    //序列化结果
--(void)setMsgSerialize:(Class)clazz; //重定义  AFNetworkMsg
+ 
 
 //切换到主线程
--(void)serializeFinishedInMainQueue;
-//
-//-(void)finishedTaskWithMainQueue:(AFNetworkingTaskFinishedBlock)finishedBlock NS_AVAILABLE_IOS(7_0);
-//
-//-(void)finishedTaskWithCustomQueue:(AFNetworkingTaskFinishedBlock)finishedBlock NS_AVAILABLE_IOS(7_0);
+-(void)serializeFinishedInMainQueue  NS_AVAILABLE_IOS(7_0);
 
 //执行操作
 -(void)executeGet:(NSString *)url  finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock NS_AVAILABLE_IOS(7_0);
@@ -62,10 +51,11 @@ typedef void(^AFNetworkingTaskFinishedBlock)(AFNetworkMsg *msg,id originalObj,id
 -(void)executePOST:(NSString *)url form:(NSDictionary *)form finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock NS_AVAILABLE_IOS(7_0);
 -(void)executePostFile:(NSString *)url files:(NSDictionary *)files finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock NS_AVAILABLE_IOS(7_0);
 -(void)executePostFile:(NSString *)url form:(NSDictionary *)form  files:(NSDictionary *)files finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock NS_AVAILABLE_IOS(7_0);
+-(void)executeDelete:(NSString *)url form:(NSDictionary *)form finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock NS_AVAILABLE_IOS(7_0);
 
-//-(void)finishedTaskWithCustomQueue:(AFNetworkingTaskFinishedBlock)finishedBlock NS_AVAILABLE_IOS(7_0);
 
 -(void)cancel NS_AVAILABLE_IOS(7_0);
+-(void)recyle NS_AVAILABLE_IOS(7_0);
 
 
 
