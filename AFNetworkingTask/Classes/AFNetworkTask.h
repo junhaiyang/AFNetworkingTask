@@ -38,7 +38,7 @@ typedef void(^AFNetworkingTaskFinishedBlock)(AFNetworkMsg *msg,id originalObj,NS
 #pragma mark - new method
 -(instancetype)initWithTask:(AFNetworkAnalysis *)analysis  NS_AVAILABLE_IOS(7_0);
 
--(void)addAnalysis:(NSString *)key value:(id)value;
+-(void)addAnalysis:(NSString *)key structure:(id)value;
 
 //执行操作
 -(void)executeGet:(NSString *)url  finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock NS_AVAILABLE_IOS(7_0);

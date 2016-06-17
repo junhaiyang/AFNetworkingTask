@@ -60,7 +60,7 @@
  **/
 @property (nonatomic,strong) id originalBody NS_AVAILABLE_IOS(7_0);
 
--(void)addAnalysis:(NSString *)key value:(id)value;
+-(void)addAnalysis:(NSString *)key structure:(id)value;
 
 
 -(NSDictionary *)buildCommonHeader NS_AVAILABLE_IOS(7_0);

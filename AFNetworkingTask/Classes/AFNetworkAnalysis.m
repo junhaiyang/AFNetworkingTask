@@ -55,7 +55,7 @@
 -(void)setAnalysises:(NSDictionary *)_analysises{
     analysises =[[NSMutableDictionary alloc] initWithDictionary:_analysises];
 }
--(void)addAnalysis:(NSString *)key value:(id)value{
+-(void)addAnalysis:(NSString *)key structure:(id)value{
     [(NSMutableDictionary *)self.analysises setObject:value forKey:key];
 
 }

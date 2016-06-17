@@ -3,6 +3,30 @@
 #import "AFNetworkTask.h"
 #import "MJExtension.h"
 
+
+typedef void (^AFURLSessionDidBecomeInvalidBlock)(NSURLSession *session, NSError *error);
+typedef NSURLSessionAuthChallengeDisposition (^AFURLSessionDidReceiveAuthenticationChallengeBlock)(NSURLSession *session, NSURLAuthenticationChallenge *challenge, NSURLCredential * __autoreleasing *credential);
+
+typedef NSURLRequest * (^AFURLSessionTaskWillPerformHTTPRedirectionBlock)(NSURLSession *session, NSURLSessionTask *task, NSURLResponse *response, NSURLRequest *request);
+typedef NSURLSessionAuthChallengeDisposition (^AFURLSessionTaskDidReceiveAuthenticationChallengeBlock)(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential * __autoreleasing *credential);
+typedef void (^AFURLSessionDidFinishEventsForBackgroundURLSessionBlock)(NSURLSession *session);
+
+typedef NSInputStream * (^AFURLSessionTaskNeedNewBodyStreamBlock)(NSURLSession *session, NSURLSessionTask *task);
+typedef void (^AFURLSessionTaskDidSendBodyDataBlock)(NSURLSession *session, NSURLSessionTask *task, int64_t bytesSent, int64_t totalBytesSent, int64_t totalBytesExpectedToSend);
+typedef void (^AFURLSessionTaskDidCompleteBlock)(NSURLSession *session, NSURLSessionTask *task, NSError *error);
+
+typedef NSURLSessionResponseDisposition (^AFURLSessionDataTaskDidReceiveResponseBlock)(NSURLSession *session, NSURLSessionDataTask *dataTask, NSURLResponse *response);
+typedef void (^AFURLSessionDataTaskDidBecomeDownloadTaskBlock)(NSURLSession *session, NSURLSessionDataTask *dataTask, NSURLSessionDownloadTask *downloadTask);
+typedef void (^AFURLSessionDataTaskDidReceiveDataBlock)(NSURLSession *session, NSURLSessionDataTask *dataTask, NSData *data);
+typedef NSCachedURLResponse * (^AFURLSessionDataTaskWillCacheResponseBlock)(NSURLSession *session, NSURLSessionDataTask *dataTask, NSCachedURLResponse *proposedResponse);
+
+typedef NSURL * (^AFURLSessionDownloadTaskDidFinishDownloadingBlock)(NSURLSession *session, NSURLSessionDownloadTask *downloadTask, NSURL *location);
+typedef void (^AFURLSessionDownloadTaskDidWriteDataBlock)(NSURLSession *session, NSURLSessionDownloadTask *downloadTask, int64_t bytesWritten, int64_t totalBytesWritten, int64_t totalBytesExpectedToWrite);
+typedef void (^AFURLSessionDownloadTaskDidResumeBlock)(NSURLSession *session, NSURLSessionDownloadTask *downloadTask, int64_t fileOffset, int64_t expectedTotalBytes);
+typedef void (^AFURLSessionTaskProgressBlock)(NSProgress *);
+
+typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id responseObject, NSError *error);
+
 @interface AFURLSessionManager(Ext)
 @property (readwrite, nonatomic, strong) NSOperationQueue *operationQueue;
 @property (readwrite, nonatomic, strong) NSURLSession *session;
@@ -10,9 +34,22 @@
 @property (readwrite, nonatomic, strong) NSURLSessionConfiguration *sessionConfiguration;
 @property (readwrite, nonatomic, strong) NSLock *lock;
 
-//@property (nonatomic, strong) AFHTTPRequestSerializer <AFURLRequestSerialization> * requestSerializer;
-//
-//@property (nonatomic, strong) AFHTTPResponseSerializer <AFURLResponseSerialization> * responseSerializer;
+@property (readonly, nonatomic, copy) NSString *taskDescriptionForSessionTasks; 
+@property (readwrite, nonatomic, copy) AFURLSessionDidBecomeInvalidBlock sessionDidBecomeInvalid;
+@property (readwrite, nonatomic, copy) AFURLSessionDidReceiveAuthenticationChallengeBlock sessionDidReceiveAuthenticationChallenge;
+@property (readwrite, nonatomic, copy) AFURLSessionDidFinishEventsForBackgroundURLSessionBlock didFinishEventsForBackgroundURLSession;
+@property (readwrite, nonatomic, copy) AFURLSessionTaskWillPerformHTTPRedirectionBlock taskWillPerformHTTPRedirection;
+@property (readwrite, nonatomic, copy) AFURLSessionTaskDidReceiveAuthenticationChallengeBlock taskDidReceiveAuthenticationChallenge;
+@property (readwrite, nonatomic, copy) AFURLSessionTaskNeedNewBodyStreamBlock taskNeedNewBodyStream;
+@property (readwrite, nonatomic, copy) AFURLSessionTaskDidSendBodyDataBlock taskDidSendBodyData;
+@property (readwrite, nonatomic, copy) AFURLSessionTaskDidCompleteBlock taskDidComplete;
+@property (readwrite, nonatomic, copy) AFURLSessionDataTaskDidReceiveResponseBlock dataTaskDidReceiveResponse;
+@property (readwrite, nonatomic, copy) AFURLSessionDataTaskDidBecomeDownloadTaskBlock dataTaskDidBecomeDownloadTask;
+@property (readwrite, nonatomic, copy) AFURLSessionDataTaskDidReceiveDataBlock dataTaskDidReceiveData;
+@property (readwrite, nonatomic, copy) AFURLSessionDataTaskWillCacheResponseBlock dataTaskWillCacheResponse;
+@property (readwrite, nonatomic, copy) AFURLSessionDownloadTaskDidFinishDownloadingBlock downloadTaskDidFinishDownloading;
+@property (readwrite, nonatomic, copy) AFURLSessionDownloadTaskDidWriteDataBlock downloadTaskDidWriteData;
+@property (readwrite, nonatomic, copy) AFURLSessionDownloadTaskDidResumeBlock downloadTaskDidResume;
 
 @end
 
@@ -56,8 +93,8 @@
     }
     return self;
 }
--(void)addAnalysis:(NSString *)key value:(id)value{
-    [analysis addAnalysis:key value:value];
+-(void)addAnalysis:(NSString *)key structure:(id)value{
+    [analysis addAnalysis:key structure:value];
 }
 -(NSDictionary *)responseHeaders{
     return analysis.msg.responseHeaders;
@@ -92,10 +129,11 @@
 -(void)finishedWithMainQueue:(AFNetworkingFinishedBlock)finishedBlock{
     
     analysis.completionCustomQueue =NO;
+    __weak AFNetworkTask *weakSelf = self;
     
     [self finishedTaskWithQueue:^(AFNetworkMsg *msg, id originalObj, NSDictionary *jsonBody) {
         if(finishedBlock){
-            finishedBlock(self,msg.errorCode,msg.httpStatusCode);
+            finishedBlock(weakSelf,msg.errorCode,msg.httpStatusCode);
         }
     }];
     
@@ -103,10 +141,11 @@
 -(void)finishedWithCustomQueue:(AFNetworkingFinishedBlock)finishedBlock{
     
     analysis.completionCustomQueue =YES;
+    __weak AFNetworkTask *weakSelf = self;
     
     [self finishedTaskWithQueue:^(AFNetworkMsg *msg, id originalObj, NSDictionary *jsonBody) {
         if(finishedBlock){
-            finishedBlock(self,msg.errorCode,msg.httpStatusCode);
+            finishedBlock(weakSelf,msg.errorCode,msg.httpStatusCode);
         }
     }];
 }
@@ -126,27 +165,28 @@
         self.completionQueue = NULL;
     }
     
+    __weak AFNetworkTask *weakSelf = self;
     sessionTask =[self UPLOAD:url parameters:nil files:files progress:^(CGFloat progress) {
         
     } finish:^(NSURLSessionTask *task, id responseObject, id target, AFNetworkStatusCode errorCode, NSInteger httpStatusCode) {
         @try {
-            [self processDictionary:responseObject];
+            [weakSelf processDictionary:responseObject];
         }
         @catch (NSException *exception) {
             NSLog(@"buildPostFileRequest:%@",exception);
         }
         @finally {
-            [self processResponseErrorCode:errorCode httpStatusCode:httpStatusCode];
+            [weakSelf processResponseErrorCode:errorCode httpStatusCode:httpStatusCode];
             
             @try {
-                if(self.networkingTaskFinishedBlock){
-                    self.networkingTaskFinishedBlock(analysis.msg,analysis.originalBody,analysis.body);
+                if(weakSelf.networkingTaskFinishedBlock){
+                    weakSelf.networkingTaskFinishedBlock(weakSelf.analysis.msg,weakSelf.analysis.originalBody,weakSelf.analysis.body);
                 }
             }
             @catch (NSException *exception) {
                 NSLog(@"buildPostFileRequest:%@",exception);
             }@finally{
-                [self recyle];
+                [weakSelf recyle];
             }
         }
         
@@ -162,28 +202,29 @@
         self.completionQueue = NULL;
     }
     
+    __weak AFNetworkTask *weakSelf = self;
     
     sessionTask =[self UPLOAD:url parameters:form files:files progress:^(CGFloat progress) {
         
     } finish:^(NSURLSessionTask *task, id responseObject, id target, AFNetworkStatusCode errorCode, NSInteger httpStatusCode) {
         @try {
-            [self processDictionary:responseObject];
+            [weakSelf processDictionary:responseObject];
         }
         @catch (NSException *exception) {
             NSLog(@"buildPostFileRequest:%@",exception);
         }
         @finally {
-            [self processResponseErrorCode:errorCode httpStatusCode:httpStatusCode];
+            [weakSelf processResponseErrorCode:errorCode httpStatusCode:httpStatusCode];
             
             @try {
-                if(self.networkingTaskFinishedBlock){
-                    self.networkingTaskFinishedBlock(analysis.msg,analysis.originalBody,analysis.body);
+                if(weakSelf.networkingTaskFinishedBlock){
+                    weakSelf.networkingTaskFinishedBlock(weakSelf.analysis.msg,weakSelf.analysis.originalBody,weakSelf.analysis.body);
                 }
             }
             @catch (NSException *exception) {
                 NSLog(@"buildPostFileRequest:%@",exception);
             }@finally{
-                [self recyle];
+                [weakSelf recyle];
             }
         }
         
@@ -197,21 +238,22 @@
     }else{
         self.completionQueue = NULL;
     }
+    __weak AFNetworkTask *weakSelf = self;
     
     sessionTask =[self POST:url parameters:form processResult:^(id responseObject) {
-        [self processDictionary:responseObject];
+        [weakSelf processDictionary:responseObject];
     } finish:^(NSURLSessionTask *task, id responseObject, id target, AFNetworkStatusCode errorCode, NSInteger httpStatusCode) {
         @try {
-            [self processResponseErrorCode:errorCode httpStatusCode:httpStatusCode];
+            [weakSelf processResponseErrorCode:errorCode httpStatusCode:httpStatusCode];
             
-            if(self.networkingTaskFinishedBlock){
-                self.networkingTaskFinishedBlock(analysis.msg,analysis.originalBody,analysis.body);
+            if(weakSelf.networkingTaskFinishedBlock){
+                weakSelf.networkingTaskFinishedBlock(weakSelf.analysis.msg,weakSelf.analysis.originalBody,weakSelf.analysis.body);
             }
         }
         @catch (NSException *exception) {
             NSLog(@"buildPostRequest:%@",exception);
         }@finally{
-            [self recyle];
+            [weakSelf recyle];
         }
     }];
     
@@ -259,21 +301,22 @@
         self.completionQueue = NULL;
     }
     
+    __weak AFNetworkTask *weakSelf = self;
     sessionTask =[self DELETE:url parameters:nil processResult:^(id responseObject) {
-        [self processDictionary:responseObject];
+        [weakSelf processDictionary:responseObject];
     } finish:^(NSURLSessionTask *task, id responseObject, id target, AFNetworkStatusCode errorCode, NSInteger httpStatusCode) {
         @try {
             
-            [self processResponseErrorCode:errorCode httpStatusCode:httpStatusCode];
+            [weakSelf processResponseErrorCode:errorCode httpStatusCode:httpStatusCode];
             
-            if(self.networkingTaskFinishedBlock){
-                self.networkingTaskFinishedBlock(analysis.msg,analysis.originalBody,analysis.body);
+            if(weakSelf.networkingTaskFinishedBlock){
+                weakSelf.networkingTaskFinishedBlock(weakSelf.analysis.msg,weakSelf.analysis.originalBody,weakSelf.analysis.body);
             }
         }
         @catch (NSException *exception) {
             NSLog(@"buildDeleteRequest:%@",exception);
         }@finally{
-            [self recyle];
+            [weakSelf recyle];
         }
     }];
 }
@@ -309,7 +352,24 @@
     self.mutableTaskDelegatesKeyedByTaskIdentifier = nil;
     self.sessionConfiguration = nil;
     
-    analysis = nil;
+    self.sessionDidBecomeInvalid = nil;
+    self.sessionDidReceiveAuthenticationChallenge = nil;
+    self.didFinishEventsForBackgroundURLSession = nil;
+    self.taskWillPerformHTTPRedirection = nil;
+    self.taskDidReceiveAuthenticationChallenge = nil;
+    self.taskNeedNewBodyStream = nil;
+    self.taskDidSendBodyData = nil;
+    
+    self.taskDidComplete = nil;
+    self.dataTaskDidReceiveResponse = nil;
+    self.dataTaskDidBecomeDownloadTask = nil;
+    self.dataTaskDidReceiveData = nil;
+    self.dataTaskWillCacheResponse = nil;
+    self.downloadTaskDidFinishDownloading = nil;
+    self.downloadTaskDidWriteData = nil;
+    self.downloadTaskDidResume = nil;
+     
+    
     analysis = nil;
      
       
@@ -445,20 +505,21 @@
         self.completionQueue = NULL;
     }
     
+    __weak AFNetworkTask *weakSelf = self;
     sessionTask =[self POST:url parameters:form processResult:^(id responseObject) {
-        [self processDictionary:responseObject];
+        [weakSelf processDictionary:responseObject];
     } finish:^(NSURLSessionTask *task, id responseObject, id target, AFNetworkStatusCode errorCode, NSInteger httpStatusCode) {
         @try {
-            [self processResponseErrorCode:errorCode httpStatusCode:httpStatusCode];
+            [weakSelf processResponseErrorCode:errorCode httpStatusCode:httpStatusCode];
             
-            if(self.networkingTaskFinishedBlock){
-                self.networkingTaskFinishedBlock(analysis.msg,analysis.originalBody,analysis.body);
+            if(weakSelf.networkingTaskFinishedBlock){
+                weakSelf.networkingTaskFinishedBlock(weakSelf.analysis.msg,weakSelf.analysis.originalBody,weakSelf.analysis.body);
             }
         }
         @catch (NSException *exception) {
             NSLog(@"buildPostRequest:%@",exception);
         }@finally{
-            [self recyle];
+            [weakSelf recyle];
         }
     }];
     
@@ -475,6 +536,7 @@
         self.completionQueue = NULL;
     }
     
+    __weak AFNetworkTask *weakSelf = self;
     sessionTask =[self UPLOAD:url parameters:form files:files progress:^(CGFloat progress) {
         
     } finish:^(NSURLSessionTask *task, id responseObject, id target, AFNetworkStatusCode errorCode, NSInteger httpStatusCode) {
@@ -485,17 +547,17 @@
             NSLog(@"buildPostFileRequest:%@",exception);
         }
         @finally {
-            [self processResponseErrorCode:errorCode httpStatusCode:httpStatusCode];
+            [weakSelf processResponseErrorCode:errorCode httpStatusCode:httpStatusCode];
             
             @try {
-                if(self.networkingTaskFinishedBlock){
-                    self.networkingTaskFinishedBlock(analysis.msg,analysis.originalBody,analysis.body);
+                if(weakSelf.networkingTaskFinishedBlock){
+                    weakSelf.networkingTaskFinishedBlock(weakSelf.analysis.msg,weakSelf.analysis.originalBody,weakSelf.analysis.body);
                 }
             }
             @catch (NSException *exception) {
                 NSLog(@"buildPostFileRequest:%@",exception);
             }@finally{
-                [self recyle];
+                [weakSelf recyle];
             }
         }
         
@@ -512,30 +574,31 @@
         self.completionQueue = NULL;
     }
     
+    __weak AFNetworkTask *weakSelf = self;
     sessionTask =[self DELETE:url parameters:form processResult:^(id responseObject) {
-        [self processDictionary:responseObject];
+        [weakSelf processDictionary:responseObject];
     } finish:^(NSURLSessionTask *task, id responseObject, id target, AFNetworkStatusCode errorCode, NSInteger httpStatusCode) {
         @try {
-            [self processResponseErrorCode:errorCode httpStatusCode:httpStatusCode];
+            [weakSelf processResponseErrorCode:errorCode httpStatusCode:httpStatusCode];
             
-            if(self.networkingTaskFinishedBlock){
-                self.networkingTaskFinishedBlock(analysis.msg,analysis.originalBody,analysis.body);
+            if(weakSelf.networkingTaskFinishedBlock){
+                weakSelf.networkingTaskFinishedBlock(weakSelf.analysis.msg,weakSelf.analysis.originalBody,weakSelf.analysis.body);
             }
         }
         @catch (NSException *exception) {
             NSLog(@"buildDeleteRequest:%@",exception);
         }@finally{
-            [self recyle];
+            [weakSelf recyle];
         }
     }];
 
 }
 
--(void)dealloc{
-#if DEBUG
-    NSLog(@"---网络协议内存完全回收----");
-#endif
-}
+//-(void)dealloc{
+//#if DEBUG
+//    NSLog(@"---dealloc----");
+//#endif
+//}
 
 -(void)executeGetFile:(NSString *)url form:(NSDictionary *)form  finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
     self.networkingTaskFinishedBlock = finishedBlock;
@@ -547,20 +610,21 @@
     }
     
     
+    __weak AFNetworkTask *weakSelf = self;
     [self DOWNLOAD:url parameters:form progress:^(CGFloat progress) {
         
     } finish:^(NSURLSessionTask *task, id responseObject, id target, AFNetworkStatusCode errorCode, NSInteger httpStatusCode) {
         @try {
-            [self processResponseErrorCode:errorCode httpStatusCode:httpStatusCode];
+            [weakSelf processResponseErrorCode:errorCode httpStatusCode:httpStatusCode];
             
-            if(self.networkingTaskFinishedBlock){
-                self.networkingTaskFinishedBlock(analysis.msg,analysis.originalBody,analysis.body);
+            if(weakSelf.networkingTaskFinishedBlock){
+                weakSelf.networkingTaskFinishedBlock(weakSelf.analysis.msg,weakSelf.analysis.originalBody,weakSelf.analysis.body);
             }
         }
         @catch (NSException *exception) {
             NSLog(@"buildDeleteRequest:%@",exception);
         }@finally{
-            [self recyle];
+            [weakSelf recyle];
         }
     }];
     
