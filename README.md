@@ -93,12 +93,12 @@ AFNetworking  OC   Sample
    		 
    		
    			// 声明 单个对象解析
-    		[analysis addAnalysis:@"result" structure:[UserData class]];
+    		[task addAnalysis:@"result" structure:[UserData class]];
     		
     		上面的例子也等同于
-    		[analysis addAnalysis:@"result" structure:@[[UserData class]]];
+    		[task addAnalysis:@"result" structure:@[[UserData class]]];
     		和
-    		[analysis addAnalysis:@"result" structure:@[[UserData class],[NSObject class]]];
+    		[task addAnalysis:@"result" structure:@[[UserData class],[NSObject class]]];
     		 
     		最终返回 UserData 的实例化对象   
             UserData *value = [jsonBody objectForKey:@"result"];
@@ -106,7 +106,7 @@ AFNetworking  OC   Sample
     		
    		
    			// 声明 单个列表对象解析
-    		[analysis addAnalysis:@"result" structure:@[[UserData class],[NSArray class]]];
+    		[task addAnalysis:@"result" structure:@[[UserData class],[NSArray class]]];
     		最终返回 UserData 的实例化列表对象   
             NSArray<UserData *> *value = [jsonBody objectForKey:@"result"];
 			
