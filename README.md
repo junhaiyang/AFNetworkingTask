@@ -93,6 +93,7 @@ AFNetworking  OC   Sample
 		* 可以为 数组 声明，数组最多为两个参数，最少为一个参数
 			* 第一个参数 ：为 实例化对象的类声明
 			* 第二个参数 ：为 实例化对象的集合类型声明，可以使用两种：[NSArray class] 或者 [NSObject class] 
+			* 数组如果只有一个参数的时候即默认集合类型声明 [NSObject class]
 	* 例子说明
 	
 		
