@@ -87,12 +87,13 @@
          processResult:(AFNetworkTaskProcessResultBlock)processResult
                 finish:(AFNetworkTaskFinishedBlock)finish{
     
-     
+    __block AFNetworkTaskManager *weakSelf = self;
+    
     NSURLSessionTask *dataTask = [self GET:URLString parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
         
         NSHTTPURLResponse  *response = (NSHTTPURLResponse  *)task.response;
         
-        [self processResult:responseObject task:task processResult:processResult finish:finish statusCode:response.statusCode];
+        [weakSelf processResult:responseObject task:task processResult:processResult finish:finish statusCode:response.statusCode];
     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
         if(finish){
             finish(task,nil,nil,AFNetworkStatusCodeProcessError,AFNetworkStatusCodeHttpError);
@@ -352,6 +353,7 @@
                  parameters:(id)parameters
                    progress:(AFNetworkTaskProgressBlock)progress
                      finish:(AFNetworkTaskFinishedBlock)finish{
+     
     
     
     self.responseType = AFNetworkResponseProtocolTypeFile;

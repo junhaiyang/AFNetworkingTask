@@ -25,6 +25,8 @@
 
 @interface AFNetworkAnalysis : NSObject
 
+@property (nonatomic,assign)BOOL completionCustomQueue;
+
 @property (nonatomic,strong)AFNetworkMsg *msg NS_AVAILABLE_IOS(7_0);
 
 @property (nonatomic,assign) AFNetworkResponseProtocolType responseType NS_AVAILABLE_IOS(7_0);  //响应协议类型
@@ -32,6 +34,7 @@
 
 
 +(instancetype)defaultAnalysis NS_AVAILABLE_IOS(7_0);
++(instancetype)defaultCustomQueueAnalysis NS_AVAILABLE_IOS(7_0);
 
 
 /**
@@ -56,6 +59,8 @@
  *
  **/
 @property (nonatomic,strong) id originalBody NS_AVAILABLE_IOS(7_0);
+
+-(void)addAnalysis:(NSString *)key value:(id)value;
 
 
 -(NSDictionary *)buildCommonHeader NS_AVAILABLE_IOS(7_0);
