@@ -152,6 +152,7 @@
 				TargetAttributes = {
 					2C1F7B071BEC341C00EAEE6B = {
 						CreatedOnToolsVersion = 7.1;
+						DevelopmentTeam = 2J8ZHP25BP;
 					};
 				};
 			};
@@ -309,6 +310,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				PROVISIONING_PROFILE = "7916eb7b-c096-45f7-bf58-2ce3764f4399";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -346,6 +348,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				PROVISIONING_PROFILE = "7916eb7b-c096-45f7-bf58-2ce3764f4399";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -357,10 +360,12 @@
 			baseConfigurationReference = E81474BCA9FEC61C90C4CD3F /* Pods-AFNetworkingTask.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = AFNetworkingTask/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.ohwit.AFNetworkingTask;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ohwit.witclass;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "7916eb7b-c096-45f7-bf58-2ce3764f4399";
 			};
 			name = Debug;
 		};
@@ -369,10 +374,12 @@
 			baseConfigurationReference = 5509A9F2382DA3F8CDFA51B8 /* Pods-AFNetworkingTask.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = AFNetworkingTask/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.ohwit.AFNetworkingTask;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ohwit.witclass;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "7916eb7b-c096-45f7-bf58-2ce3764f4399";
 			};
 			name = Release;
 		};

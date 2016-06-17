@@ -70,9 +70,9 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 
 @implementation AFNetworkTask
 @synthesize analysis;
-
-@synthesize requestSerializer = _requestSerializer;
-@synthesize responseSerializer = _responseSerializer;
+//
+//@synthesize requestSerializer = _requestSerializer;
+//@synthesize responseSerializer = _responseSerializer;
 
 @synthesize networkingTaskFinishedBlock;
 
@@ -96,9 +96,9 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 -(void)addAnalysis:(NSString *)key structure:(id)value{
     [analysis addAnalysis:key structure:value];
 }
--(NSDictionary *)responseHeaders{
-    return analysis.msg.responseHeaders;
-}
+//-(NSDictionary *)responseHeaders{
+//    return analysis.msg.responseHeaders;
+//}
 -(AFNetworkResponseProtocolType)responseType{
     return analysis.responseType;
 }
@@ -344,8 +344,8 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
     self.completionGroup = nil;
     [self.operationQueue cancelAllOperations];
     self.operationQueue = nil;
-    _responseSerializer = nil;
-    _requestSerializer = nil;
+//    _responseSerializer = nil;
+//    _requestSerializer = nil;
     self.lock = nil;
     [self.session finishTasksAndInvalidate];
     self.session = nil;
@@ -594,11 +594,11 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 
 }
 
-//-(void)dealloc{
-//#if DEBUG
-//    NSLog(@"---dealloc----");
-//#endif
-//}
+-(void)dealloc{
+#if DEBUG
+    NSLog(@"---开发测试阶段，打印网络协议对象回收日志----");
+#endif
+}
 
 -(void)executeGetFile:(NSString *)url form:(NSDictionary *)form  finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
     self.networkingTaskFinishedBlock = finishedBlock;

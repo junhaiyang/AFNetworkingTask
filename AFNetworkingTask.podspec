@@ -63,6 +63,7 @@ Pod::Spec.new do |s|
   s.dependency 'Godzippa' , '1.1.0'
   s.dependency 'YLGIFImage'  , '0.11'
   s.dependency 'TMCache' , '2.1.0'
+  s.dependency 'MJExtension' , '3.0.10' 
    
  
 end

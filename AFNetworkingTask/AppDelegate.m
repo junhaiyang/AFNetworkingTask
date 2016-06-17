@@ -38,129 +38,129 @@
     {
         AFNetworkTask *task1 =[[AFNetworkTask alloc] initWithTask: [AFNetworkAnalysis defaultCustomQueueAnalysis]];
         
-//        [task1 addAnalysis:@"result" value:[UserData class]];
+//        [task1 addAnalysis:@"result" structure:[UserData class]];
         
         [task1 executeGet:@"http://app.ohwit.com/i/app/category" finishedBlock:^(AFNetworkMsg *msg, id originalObj, NSDictionary *jsonBody) {
-//            NSLog(@"finish .........%@",originalObj);
+            NSLog(@"finish .........%@",jsonBody);
         }];
     }
-    {
-        AFNetworkTask *task2=[[AFNetworkTask alloc] initWithTask: [AFNetworkAnalysis defaultCustomQueueAnalysis]];
-        
-//        [task2 addAnalysis:@"result" value:[UserData class]];
-        
-        [task2 executeGet:@"http://app.ohwit.com/i/app/category" finishedBlock:^(AFNetworkMsg *msg, id originalObj, NSDictionary *jsonBody) {
-//            NSLog(@"finish .........%@",originalObj);
-        }];
-    }
-    {
-        AFNetworkTask *task3 =[[AFNetworkTask alloc] initWithTask: [AFNetworkAnalysis defaultCustomQueueAnalysis]];
-        
-//        [task3 addAnalysis:@"result" value:[UserData class]];
-        
-        [task3 executeGet:@"http://app.ohwit.com/i/app/category" finishedBlock:^(AFNetworkMsg *msg, id originalObj, NSDictionary *jsonBody) {
-//            NSLog(@"finish .........%@",originalObj);
-        }];
-    }
-    {
-        AFNetworkTask *task4 =[[AFNetworkTask alloc] initWithTask: [AFNetworkAnalysis defaultCustomQueueAnalysis]];
-        
-//        [task4 addAnalysis:@"result" value:[UserData class]];
-        
-        [task4 executeGet:@"http://app.ohwit.com/i/app/category" finishedBlock:^(AFNetworkMsg *msg, id originalObj, NSDictionary *jsonBody) {
-//            NSLog(@"finish .........%@",originalObj);
-        }];
-    }
-    {
-        AFNetworkTask *task5 =[[AFNetworkTask alloc] initWithTask: [AFNetworkAnalysis defaultCustomQueueAnalysis]];
-        
-//        [task5 addAnalysis:@"result" value:[UserData class]];
-        
-        [task5 executeGet:@"http://app.ohwit.com/i/app/category" finishedBlock:^(AFNetworkMsg *msg, id originalObj, NSDictionary *jsonBody) {
-//            NSLog(@"finish .........%@",originalObj);
-        }];
-    }
-    {
-        AFNetworkTask *task5 =[[AFNetworkTask alloc] initWithTask: [AFNetworkAnalysis defaultCustomQueueAnalysis]];
-        
-//        [task5 addAnalysis:@"result" value:[UserData class]];
-        
-        [task5 executeGet:@"http://app.ohwit.com/i/app/category" finishedBlock:^(AFNetworkMsg *msg, id originalObj, NSDictionary *jsonBody) {
-//            NSLog(@"finish .........%@",originalObj);
-        }];
-    }
-    {
-        AFNetworkTask *task5 =[[AFNetworkTask alloc] initWithTask: [AFNetworkAnalysis defaultCustomQueueAnalysis]];
-        
-//        [task5 addAnalysis:@"result" value:[UserData class]];
-        
-        [task5 executeGet:@"http://app.ohwit.com/i/app/category" finishedBlock:^(AFNetworkMsg *msg, id originalObj, NSDictionary *jsonBody) {
-//            NSLog(@"finish .........%@",originalObj);
-        }];
-    }
-    {
-        AFNetworkTask *task5 =[[AFNetworkTask alloc] initWithTask: [AFNetworkAnalysis defaultCustomQueueAnalysis]];
-        
-//        [task5 addAnalysis:@"result" value:[UserData class]];
-        
-        [task5 executeGet:@"http://app.ohwit.com/i/app/category" finishedBlock:^(AFNetworkMsg *msg, id originalObj, NSDictionary *jsonBody) {
-//            NSLog(@"finish .........%@",originalObj);
-        }];
-    }
-    {
-        AFNetworkTask *task5 =[[AFNetworkTask alloc] initWithTask: [AFNetworkAnalysis defaultCustomQueueAnalysis]];
-        
-//        [task5 addAnalysis:@"result" value:[UserData class]];
-        
-        [task5 executeGet:@"http://app.ohwit.com/i/app/category" finishedBlock:^(AFNetworkMsg *msg, id originalObj, NSDictionary *jsonBody) {
-//            NSLog(@"finish .........%@",originalObj);
-        }];
-    }
-    {
-        AFNetworkTask *task5 =[[AFNetworkTask alloc] initWithTask: [AFNetworkAnalysis defaultCustomQueueAnalysis]];
-        
-//        [task5 addAnalysis:@"result" value:[UserData class]];
-        
-        [task5 executeGet:@"http://app.ohwit.com/i/app/category" finishedBlock:^(AFNetworkMsg *msg, id originalObj, NSDictionary *jsonBody) {
-//            NSLog(@"finish .........%@",originalObj);
-        }];
-    }
-    {
-        AFNetworkTask *task5 =[[AFNetworkTask alloc] initWithTask: [AFNetworkAnalysis defaultCustomQueueAnalysis]];
-        
-//        [task5 addAnalysis:@"result" value:[UserData class]];
-        
-        [task5 executeGet:@"http://app.ohwit.com/i/app/category" finishedBlock:^(AFNetworkMsg *msg, id originalObj, NSDictionary *jsonBody) {
-//            NSLog(@"finish .........%@",originalObj);
-        }];
-    }
-    {
-        AFNetworkTask *task5 =[[AFNetworkTask alloc] initWithTask: [AFNetworkAnalysis defaultCustomQueueAnalysis]];
-        
-//        [task5 addAnalysis:@"result" value:[UserData class]];
-        
-        [task5 executeGet:@"http://app.ohwit.com/i/app/category" finishedBlock:^(AFNetworkMsg *msg, id originalObj, NSDictionary *jsonBody) {
-//            NSLog(@"finish .........%@",originalObj);
-        }];
-    }
-    {
-        AFNetworkTask *task5 =[[AFNetworkTask alloc] initWithTask: [AFNetworkAnalysis defaultCustomQueueAnalysis]];
-        
-//        [task5 addAnalysis:@"result" value:[UserData class]];
-        
-        [task5 executeGet:@"http://app.ohwit.com/i/app/category" finishedBlock:^(AFNetworkMsg *msg, id originalObj, NSDictionary *jsonBody) {
-//            NSLog(@"finish .........%@",originalObj);
-        }];
-    }
-    {
-        AFNetworkTask *task5 =[[AFNetworkTask alloc] initWithTask: [AFNetworkAnalysis defaultCustomQueueAnalysis]];
-        
-//        [task5 addAnalysis:@"result" value:[UserData class]];
-        
-        [task5 executeGet:@"http://app.ohwit.com/i/app/category" finishedBlock:^(AFNetworkMsg *msg, id originalObj, NSDictionary *jsonBody) {
-//            NSLog(@"finish .........%@",originalObj);
-        }];
-    }
+//    {
+//        AFNetworkTask *task2=[[AFNetworkTask alloc] initWithTask: [AFNetworkAnalysis defaultCustomQueueAnalysis]];
+//        
+////        [task2 addAnalysis:@"result" value:[UserData class]];
+//        
+//        [task2 executeGet:@"http://app.ohwit.com/i/app/category" finishedBlock:^(AFNetworkMsg *msg, id originalObj, NSDictionary *jsonBody) {
+////            NSLog(@"finish .........%@",originalObj);
+//        }];
+//    }
+//    {
+//        AFNetworkTask *task3 =[[AFNetworkTask alloc] initWithTask: [AFNetworkAnalysis defaultCustomQueueAnalysis]];
+//        
+////        [task3 addAnalysis:@"result" value:[UserData class]];
+//        
+//        [task3 executeGet:@"http://app.ohwit.com/i/app/category" finishedBlock:^(AFNetworkMsg *msg, id originalObj, NSDictionary *jsonBody) {
+////            NSLog(@"finish .........%@",originalObj);
+//        }];
+//    }
+//    {
+//        AFNetworkTask *task4 =[[AFNetworkTask alloc] initWithTask: [AFNetworkAnalysis defaultCustomQueueAnalysis]];
+//        
+////        [task4 addAnalysis:@"result" value:[UserData class]];
+//        
+//        [task4 executeGet:@"http://app.ohwit.com/i/app/category" finishedBlock:^(AFNetworkMsg *msg, id originalObj, NSDictionary *jsonBody) {
+////            NSLog(@"finish .........%@",originalObj);
+//        }];
+//    }
+//    {
+//        AFNetworkTask *task5 =[[AFNetworkTask alloc] initWithTask: [AFNetworkAnalysis defaultCustomQueueAnalysis]];
+//        
+////        [task5 addAnalysis:@"result" value:[UserData class]];
+//        
+//        [task5 executeGet:@"http://app.ohwit.com/i/app/category" finishedBlock:^(AFNetworkMsg *msg, id originalObj, NSDictionary *jsonBody) {
+////            NSLog(@"finish .........%@",originalObj);
+//        }];
+//    }
+//    {
+//        AFNetworkTask *task5 =[[AFNetworkTask alloc] initWithTask: [AFNetworkAnalysis defaultCustomQueueAnalysis]];
+//        
+////        [task5 addAnalysis:@"result" value:[UserData class]];
+//        
+//        [task5 executeGet:@"http://app.ohwit.com/i/app/category" finishedBlock:^(AFNetworkMsg *msg, id originalObj, NSDictionary *jsonBody) {
+////            NSLog(@"finish .........%@",originalObj);
+//        }];
+//    }
+//    {
+//        AFNetworkTask *task5 =[[AFNetworkTask alloc] initWithTask: [AFNetworkAnalysis defaultCustomQueueAnalysis]];
+//        
+////        [task5 addAnalysis:@"result" value:[UserData class]];
+//        
+//        [task5 executeGet:@"http://app.ohwit.com/i/app/category" finishedBlock:^(AFNetworkMsg *msg, id originalObj, NSDictionary *jsonBody) {
+////            NSLog(@"finish .........%@",originalObj);
+//        }];
+//    }
+//    {
+//        AFNetworkTask *task5 =[[AFNetworkTask alloc] initWithTask: [AFNetworkAnalysis defaultCustomQueueAnalysis]];
+//        
+////        [task5 addAnalysis:@"result" value:[UserData class]];
+//        
+//        [task5 executeGet:@"http://app.ohwit.com/i/app/category" finishedBlock:^(AFNetworkMsg *msg, id originalObj, NSDictionary *jsonBody) {
+////            NSLog(@"finish .........%@",originalObj);
+//        }];
+//    }
+//    {
+//        AFNetworkTask *task5 =[[AFNetworkTask alloc] initWithTask: [AFNetworkAnalysis defaultCustomQueueAnalysis]];
+//        
+////        [task5 addAnalysis:@"result" value:[UserData class]];
+//        
+//        [task5 executeGet:@"http://app.ohwit.com/i/app/category" finishedBlock:^(AFNetworkMsg *msg, id originalObj, NSDictionary *jsonBody) {
+////            NSLog(@"finish .........%@",originalObj);
+//        }];
+//    }
+//    {
+//        AFNetworkTask *task5 =[[AFNetworkTask alloc] initWithTask: [AFNetworkAnalysis defaultCustomQueueAnalysis]];
+//        
+////        [task5 addAnalysis:@"result" value:[UserData class]];
+//        
+//        [task5 executeGet:@"http://app.ohwit.com/i/app/category" finishedBlock:^(AFNetworkMsg *msg, id originalObj, NSDictionary *jsonBody) {
+////            NSLog(@"finish .........%@",originalObj);
+//        }];
+//    }
+//    {
+//        AFNetworkTask *task5 =[[AFNetworkTask alloc] initWithTask: [AFNetworkAnalysis defaultCustomQueueAnalysis]];
+//        
+////        [task5 addAnalysis:@"result" value:[UserData class]];
+//        
+//        [task5 executeGet:@"http://app.ohwit.com/i/app/category" finishedBlock:^(AFNetworkMsg *msg, id originalObj, NSDictionary *jsonBody) {
+////            NSLog(@"finish .........%@",originalObj);
+//        }];
+//    }
+//    {
+//        AFNetworkTask *task5 =[[AFNetworkTask alloc] initWithTask: [AFNetworkAnalysis defaultCustomQueueAnalysis]];
+//        
+////        [task5 addAnalysis:@"result" value:[UserData class]];
+//        
+//        [task5 executeGet:@"http://app.ohwit.com/i/app/category" finishedBlock:^(AFNetworkMsg *msg, id originalObj, NSDictionary *jsonBody) {
+////            NSLog(@"finish .........%@",originalObj);
+//        }];
+//    }
+//    {
+//        AFNetworkTask *task5 =[[AFNetworkTask alloc] initWithTask: [AFNetworkAnalysis defaultCustomQueueAnalysis]];
+//        
+////        [task5 addAnalysis:@"result" value:[UserData class]];
+//        
+//        [task5 executeGet:@"http://app.ohwit.com/i/app/category" finishedBlock:^(AFNetworkMsg *msg, id originalObj, NSDictionary *jsonBody) {
+////            NSLog(@"finish .........%@",originalObj);
+//        }];
+//    }
+//    {
+//        AFNetworkTask *task5 =[[AFNetworkTask alloc] initWithTask: [AFNetworkAnalysis defaultCustomQueueAnalysis]];
+//        
+////        [task5 addAnalysis:@"result" value:[UserData class]];
+//        
+//        [task5 executeGet:@"http://app.ohwit.com/i/app/category" finishedBlock:^(AFNetworkMsg *msg, id originalObj, NSDictionary *jsonBody) {
+////            NSLog(@"finish .........%@",originalObj);
+//        }];
+//    }
     
     return YES;
 }

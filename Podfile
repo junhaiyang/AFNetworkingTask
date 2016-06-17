@@ -4,9 +4,7 @@ inhibit_all_warnings!
 target "AFNetworkingTask" do
     
     xcodeproj 'AFNetworkingTask.xcodeproj'
-    
-    
-    pod 'MJExtension', '~> 3.0.10'
+     
 
   
     
