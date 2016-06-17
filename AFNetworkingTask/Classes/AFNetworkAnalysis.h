@@ -32,6 +32,8 @@
 @property (nonatomic,assign) AFNetworkResponseProtocolType responseType NS_AVAILABLE_IOS(7_0);  //响应协议类型
 @property (nonatomic,assign) AFNetworkRequestProtocolType  requestType NS_AVAILABLE_IOS(7_0);  //请求协议类型
 
+@property (nonatomic,strong) NSMutableDictionary *requestHeaders NS_AVAILABLE_IOS(7_0);
+
 
 +(instancetype)defaultAnalysis NS_AVAILABLE_IOS(7_0);
 +(instancetype)defaultCustomQueueAnalysis NS_AVAILABLE_IOS(7_0);
@@ -60,9 +62,6 @@
  **/
 @property (nonatomic,strong) id originalBody NS_AVAILABLE_IOS(7_0);
 
--(void)addAnalysis:(NSString *)key structure:(id)value;
-
-
--(NSDictionary *)buildCommonHeader NS_AVAILABLE_IOS(7_0);
+-(void)addAnalysis:(NSString *)key structure:(id)value; 
 
 @end 

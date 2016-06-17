@@ -119,7 +119,7 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 -(void)buildCommonHeader:(AFHTTPRequestSerializer *)requestSerializer{
     
 //    NSLog(@"%@",self.analysis);
-    NSDictionary *headers =[self.analysis buildCommonHeader];
+    NSDictionary *headers =self.analysis.requestHeaders;
     for (NSString *key in headers.allKeys) {
         [requestSerializer setValue:[headers objectForKey:key] forHTTPHeaderField:key];
     }

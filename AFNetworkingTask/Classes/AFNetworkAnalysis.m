@@ -58,11 +58,5 @@
 -(void)addAnalysis:(NSString *)key structure:(id)value{
     [(NSMutableDictionary *)self.analysises setObject:value forKey:key];
 
-}
--(NSDictionary *)buildCommonHeader{
-    
-    
-    return nil;
-    
-}
+} 
 @end
