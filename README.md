@@ -8,8 +8,14 @@ AFNetworking  OC   Sample
 
 
 ####使用方法
+* 引用
 
-* 引用头文件
+		source 'https://github.com/CocoaPods/Specs.git'
+		source 'https://github.com/junhaiyang/Specs.git'
+
+		pod 'AFNetworkingTask', '~> 1.1'
+
+* 引用头文件 
 
 	
 		#import "AFNetworkTask.h"
