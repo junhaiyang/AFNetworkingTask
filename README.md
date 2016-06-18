@@ -77,10 +77,7 @@ AFNetworking  OC   Sample
    		//例如： {"code":200,"message":"no error","result":{"name":"12444","title":"12444"}}
    		// 即为将其中的 code、message 解析到对象中
    		//analysis.msg = [AFNetworkMsg new];  
-   		 
-    	
-    	//上面方法等同于 
-    	[task addAnalysis:@"result" structure:[UserData class]];
+   		  
    		
    		//注意： 如果 {"msg":{"code":200,"message":"no error","result":{"name":"12444","title":"12444"}}} 将无法解析上面的 msg 和自定义数据结构，当前方法只能解析根结构上的数据
    		 
