@@ -68,24 +68,42 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 
 @end
 
+@interface AFNetworkAnalysis(Ext)
+@property (nonatomic,strong,readwrite) NSDictionary *analysises NS_AVAILABLE_IOS(7_0);
+@property (nonatomic,strong,readwrite) id originalBody NS_AVAILABLE_IOS(7_0);
+
+-(void)addAnalysis:(NSString *)key structure:(Class)clazz;
+-(void)addAnalysis:(NSString *)key structureArray:(Class)clazz;
+
+@end
+
 @implementation AFNetworkTask
 @synthesize analysis;
 //
-//@synthesize requestSerializer = _requestSerializer;
-//@synthesize responseSerializer = _responseSerializer;
+@synthesize requestSerializer = _requestSerializer;
+@synthesize responseSerializer = _responseSerializer;
 
 @synthesize networkingTaskFinishedBlock;
 
+static Class networkAnalysis;
+
++(void)load{
+    networkAnalysis = [AFNetworkAnalysis class];
+}
++(void)defaultAnalysis:(Class)clazz{
+    networkAnalysis = clazz;
+}
+
 - (instancetype)init
 {
-    return [self initWithTask:[AFNetworkAnalysis defaultAnalysis]];
+    return [self initWithTask:[[networkAnalysis alloc] init]];
 } 
 - (instancetype)initWithTask:(AFNetworkAnalysis *)_analysis
 {
     self = [super init];
     if (self) {
         if(_analysis==nil){
-            analysis = [AFNetworkAnalysis defaultAnalysis];
+            analysis = [[networkAnalysis alloc] init];
         }else{
             analysis = _analysis;
         }
@@ -93,12 +111,12 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
     }
     return self;
 }
--(void)addAnalysis:(NSString *)key structure:(id)value{
-    [analysis addAnalysis:key structure:value];
+-(void)addAnalysis:(NSString *)key structure:(Class)clazz{
+    [analysis addAnalysis:key structure:clazz];
 }
-//-(NSDictionary *)responseHeaders{
-//    return analysis.msg.responseHeaders;
-//}
+-(void)addAnalysis:(NSString *)key structureArray:(Class)clazz{
+    [analysis addAnalysis:key structureArray:clazz];
+}
 -(AFNetworkResponseProtocolType)responseType{
     return analysis.responseType;
 }
@@ -112,10 +130,6 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 -(void)setRequestType:(AFNetworkRequestProtocolType)requestType{
     analysis.requestType =requestType;
 }
-//-(void)setResponseHeaders:(NSDictionary *)responseHeaders{
-//
-//}
-
 -(void)buildCommonHeader:(AFHTTPRequestSerializer *)requestSerializer{
     
 //    NSLog(@"%@",self.analysis);
@@ -177,6 +191,7 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
         }
         @finally {
             [weakSelf processResponseErrorCode:errorCode httpStatusCode:httpStatusCode];
+            [weakSelf processResponse:responseObject];
             
             @try {
                 if(weakSelf.networkingTaskFinishedBlock){
@@ -215,6 +230,7 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
         }
         @finally {
             [weakSelf processResponseErrorCode:errorCode httpStatusCode:httpStatusCode];
+            [weakSelf processResponse:responseObject];
             
             @try {
                 if(weakSelf.networkingTaskFinishedBlock){
@@ -245,6 +261,7 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
     } finish:^(NSURLSessionTask *task, id responseObject, id target, AFNetworkStatusCode errorCode, NSInteger httpStatusCode) {
         @try {
             [weakSelf processResponseErrorCode:errorCode httpStatusCode:httpStatusCode];
+            [weakSelf processResponse:responseObject];
             
             if(weakSelf.networkingTaskFinishedBlock){
                 weakSelf.networkingTaskFinishedBlock(weakSelf.analysis.msg,weakSelf.analysis.originalBody,weakSelf.analysis.body);
@@ -279,6 +296,7 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
     } finish:^(NSURLSessionTask *task, id responseObject, id target, AFNetworkStatusCode errorCode, NSInteger httpStatusCode) {
         @try {
             [weakSelf processResponseErrorCode:errorCode httpStatusCode:httpStatusCode];
+            [weakSelf processResponse:responseObject];
             
             if(weakSelf.networkingTaskFinishedBlock){
                 weakSelf.networkingTaskFinishedBlock(analysis.msg,analysis.originalBody,analysis.body);
@@ -308,6 +326,7 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
         @try {
             
             [weakSelf processResponseErrorCode:errorCode httpStatusCode:httpStatusCode];
+            [weakSelf processResponse:responseObject];
             
             if(weakSelf.networkingTaskFinishedBlock){
                 weakSelf.networkingTaskFinishedBlock(weakSelf.analysis.msg,weakSelf.analysis.originalBody,weakSelf.analysis.body);
@@ -325,13 +344,6 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 }
 
 -(void)recyle{
-    analysis.msg.responseHeaders = nil;
-    analysis.msg = nil;
-    
-    
-    analysis.analysises = nil;
-    analysis.body = nil;
-    analysis.originalBody = nil;
     
     self.networkingTaskFinishedBlock = NULL;
     sessionTask = nil;
@@ -344,8 +356,8 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
     self.completionGroup = nil;
     [self.operationQueue cancelAllOperations];
     self.operationQueue = nil;
-//    _responseSerializer = nil;
-//    _requestSerializer = nil;
+    _responseSerializer = nil;
+    _requestSerializer = nil;
     self.lock = nil;
     [self.session finishTasksAndInvalidate];
     self.session = nil;
@@ -369,7 +381,7 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
     self.downloadTaskDidWriteData = nil;
     self.downloadTaskDidResume = nil;
      
-    
+    [analysis recyle];
     analysis = nil;
      
       
@@ -377,63 +389,25 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 
 -(void)processResponse:(id)responseObject{
     
-    if([responseObject isKindOfClass:[NSDictionary class]]){
-        NSDictionary *dic = responseObject;
-        [analysis.msg mj_setKeyValues:dic];
+    @try {
         
+        analysis.originalBody = responseObject;
+        [analysis analysisBody];
         
-        NSMutableDictionary *body =[NSMutableDictionary new];
+    } @catch (NSException *exception) {
+        NSLog(@"%@",exception);
+    } @finally {
         
-        
-        for (NSString *key in analysis.analysises) {
-            NSObject *obj = [analysis.analysises objectForKey:key];
-            NSObject *value = [dic objectForKey:key];
-            
-            if([obj isKindOfClass:[NSArray class]]){
-                NSArray *array = obj;
-                
-                if(array.count==1){
-                    Class clazz = [array objectAtIndex:0];
-                    NSObject *object =  [clazz mj_objectWithKeyValues:value];
-                    [body setObject:object forKey:key];
-                }else if(array.count==2){
-                    Class clazz = [array objectAtIndex:0];
-                    Class type = [array objectAtIndex:1];
-                    if(![type isSubclassOfClass:[NSArray class]]){
-                        NSObject *object =  [clazz mj_objectWithKeyValues:value];
-                        [body setObject:object forKey:key];
-                    }else{
-                        NSArray *object =  [clazz mj_objectArrayWithKeyValuesArray:value];
-                        [body setObject:object forKey:key];
-                    }
-                }else{
-                    NSException *exction =[[NSException alloc] initWithName:@"解析方法构造错误" reason:key userInfo:nil];
-                    @throw exction;
-                }
-            }else{
-                
-                Class clazz = obj;
-                NSObject *object =  [clazz mj_objectWithKeyValues:value];
-                [body setObject:object forKey:key];
-                
-//                NSException *exction =[[NSException alloc] initWithName:@"解析方法构造错误" reason:key userInfo:nil];
-//                @throw exction;
-            }
-        }
-        analysis.body = body;
-        
+        analysis.msg.responseHeaders =self.responseHeaders;
     }
     
-    analysis.msg.responseHeaders =self.responseHeaders;
-    
-    analysis.originalBody = responseObject;
     
 }
 
 -(void)processResponseErrorCode:(AFNetworkStatusCode)errorCode  httpStatusCode:(NSInteger)httpStatusCode{
     
     analysis.msg.errorCode =errorCode;
-    analysis.msg.errorCode =httpStatusCode;
+    analysis.msg.httpStatusCode =httpStatusCode;
      
 }
 
@@ -445,7 +419,6 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 //    @throw exction;
 }
 -(void)processDictionary:(id)dictionary{
-    [self processResponse:dictionary];
     
 //    NSException *exction =[[NSException alloc] initWithName:@"需要实现方法" reason:@"----processDictionary:----" userInfo:nil];
 //    @throw exction;
@@ -482,6 +455,7 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
     } finish:^(NSURLSessionTask *task, id responseObject, id target, AFNetworkStatusCode errorCode, NSInteger httpStatusCode) {
         @try {
             [weakSelf processResponseErrorCode:errorCode httpStatusCode:httpStatusCode];
+            [weakSelf processResponse:responseObject];
             
             if(weakSelf.networkingTaskFinishedBlock){
                 weakSelf.networkingTaskFinishedBlock(weakSelf.analysis.msg,weakSelf.analysis.originalBody,weakSelf.analysis.body);
@@ -511,6 +485,7 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
     } finish:^(NSURLSessionTask *task, id responseObject, id target, AFNetworkStatusCode errorCode, NSInteger httpStatusCode) {
         @try {
             [weakSelf processResponseErrorCode:errorCode httpStatusCode:httpStatusCode];
+            [weakSelf processResponse:responseObject];
             
             if(weakSelf.networkingTaskFinishedBlock){
                 weakSelf.networkingTaskFinishedBlock(weakSelf.analysis.msg,weakSelf.analysis.originalBody,weakSelf.analysis.body);
@@ -548,6 +523,7 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
         }
         @finally {
             [weakSelf processResponseErrorCode:errorCode httpStatusCode:httpStatusCode];
+            [weakSelf processResponse:responseObject];
             
             @try {
                 if(weakSelf.networkingTaskFinishedBlock){
@@ -580,6 +556,7 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
     } finish:^(NSURLSessionTask *task, id responseObject, id target, AFNetworkStatusCode errorCode, NSInteger httpStatusCode) {
         @try {
             [weakSelf processResponseErrorCode:errorCode httpStatusCode:httpStatusCode];
+            [weakSelf processResponse:responseObject];
             
             if(weakSelf.networkingTaskFinishedBlock){
                 weakSelf.networkingTaskFinishedBlock(weakSelf.analysis.msg,weakSelf.analysis.originalBody,weakSelf.analysis.body);
@@ -596,7 +573,7 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 
 -(void)dealloc{
 #if DEBUG
-    NSLog(@"---开发测试阶段，打印网络协议对象回收日志----");
+//    NSLog(@"---开发测试阶段，打印网络协议对象回收日志----");
 #endif
 }
 
@@ -616,6 +593,7 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
     } finish:^(NSURLSessionTask *task, id responseObject, id target, AFNetworkStatusCode errorCode, NSInteger httpStatusCode) {
         @try {
             [weakSelf processResponseErrorCode:errorCode httpStatusCode:httpStatusCode];
+            [weakSelf processResponse:responseObject];
             
             if(weakSelf.networkingTaskFinishedBlock){
                 weakSelf.networkingTaskFinishedBlock(weakSelf.analysis.msg,weakSelf.analysis.originalBody,weakSelf.analysis.body);

@@ -36,9 +36,13 @@ typedef void(^AFNetworkingTaskFinishedBlock)(AFNetworkMsg *msg,id originalObj,NS
 -(BOOL)requestSuccess NS_DEPRECATED_IOS(7_0,7_0);
 
 #pragma mark - new method
+
++(void)defaultAnalysis:(Class)clazz;
+
 -(instancetype)initWithTask:(AFNetworkAnalysis *)analysis  NS_AVAILABLE_IOS(7_0);
 
--(void)addAnalysis:(NSString *)key structure:(id)value;
+-(void)addAnalysis:(NSString *)key structure:(Class)clazz;
+-(void)addAnalysis:(NSString *)key structureArray:(Class)clazz;
 
 //执行操作
 -(void)executeGet:(NSString *)url  finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock NS_AVAILABLE_IOS(7_0);

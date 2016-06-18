@@ -22,7 +22,8 @@ typedef NS_ENUM(NSInteger, AFNetworkStatusCode) {
     AFNetworkStatusCodeHttpError   = -200,    //http未知错误
     AFNetworkStatusCodeDataError   = -300,    //数据解析错误
     AFNetworkStatusCodeProcessError   = -400,    //处理错误
-    AFNetworkStatusCodeUnknownError   = -500    //未知错误
+    AFNetworkStatusCodeUnknownError   = -500,    //未知错误
+    AFNetworkStatusCodeAuthFail   = -600    //本地判断无权限
 };
 
 
