@@ -1,6 +1,7 @@
 
 
 #import "AFNetworkTaskManager.h"
+#import "MJExtension.h"
  
 
 @interface AFNetworkMsg: NSObject

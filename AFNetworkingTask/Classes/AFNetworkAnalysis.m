@@ -1,7 +1,6 @@
  
 
-#import "AFNetworkAnalysis.h"
-#import "MJExtension.h"
+#import "AFNetworkAnalysis.h" 
 
 @implementation AFNetworkMsg
 
