@@ -80,8 +80,8 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 @implementation AFNetworkTask
 @synthesize analysis;
 //
-@synthesize requestSerializer = _requestSerializer;
-@synthesize responseSerializer = _responseSerializer;
+//@synthesize requestSerializer = _requestSerializer;
+//@synthesize responseSerializer = _responseSerializer;
 
 @synthesize networkingTaskFinishedBlock;
 
@@ -356,8 +356,8 @@ static Class networkAnalysis;
     self.completionGroup = nil;
     [self.operationQueue cancelAllOperations];
     self.operationQueue = nil;
-    _responseSerializer = nil;
-    _requestSerializer = nil;
+//    _responseSerializer = nil;
+//    _requestSerializer = nil;
     self.lock = nil;
     [self.session finishTasksAndInvalidate];
     self.session = nil;
