@@ -156,7 +156,8 @@ AFNetworking  OC   Sample
     		
     		
    		
-   	   // 声明 列表对象解析
+* 声明 列表对象解析
+
        [task addAnalysis:@"result" structureArray:[UserData class]];
        //最终返回 UserData 的实例化列表对象   
        NSArray<UserData *> *value = [jsonBody objectForKey:@"result"];
