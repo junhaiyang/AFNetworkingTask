@@ -223,8 +223,13 @@ AFNetworking  OC   Sample
 		
 ###### 直接对象请求模式
 
-		NSObject<AFNetworkRequestData> *data = [NSObject new]; 
+		
 		//自己继承实现该协议就行，对象只能继承自 NSObject
+		@interface MyData : NSObject<AFNetworkRequestData>
+
+		@end
+
+		MyData *data = [MyData new]; 
 
 		
         AFNetworkTask *task1 =[[AFNetworkTask alloc] init];
