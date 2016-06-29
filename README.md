@@ -13,7 +13,7 @@ AFNetworking  OC   Sample
 		source 'https://github.com/CocoaPods/Specs.git'
 		source 'https://github.com/junhaiyang/Specs.git'
 
-		pod 'AFNetworkingTask', '~> 1.1'
+		pod 'AFNetworkingTask', '~> 1.2'
  
 
 	
