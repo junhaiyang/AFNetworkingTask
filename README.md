@@ -219,4 +219,33 @@ AFNetworking  OC   Sample
 
 		//取消请求
 		-(void)cancel NS_AVAILABLE_IOS(7_0);
+		
+		
+###### 直接对象请求模式
+
+		NSObject<AFNetworkRequestData> *data = [NSObject new]; 
+		//自己继承实现该协议就行，对象只能继承自 NSObject
+
+		
+        AFNetworkTask *task1 =[[AFNetworkTask alloc] init];
+    	[task1 addAnalysis:@"result" structure:[UserData class]];
+    	 
+    	[task1 executePOST:@"http://xxxxxx" data:data finishedBlock:^(AFNetworkMsg *msg, id originalObj, NSDictionary *jsonBody) {
+  			UserData *userData = [jsonBody objectForKey:@"result"];
+  			//对象
+  			
+  			NSDictionary *resultDictionary = [originalObj objectForKey:@"result"];
+  			//原始json 字典
+            
+            NSLog(@"finish .........%@",jsonBody);
+        }];
+
+	
+		-(void)executeGet:(NSString *)url data:(id<AFNetworkRequestData>)data finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock NS_AVAILABLE_IOS(7_0);
+		-(void)executePUT:(NSString *)url data:(id<AFNetworkRequestData>)data finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock NS_AVAILABLE_IOS(7_0);
+		-(void)executePATCH:(NSString *)url data:(id<AFNetworkRequestData>)data finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock NS_AVAILABLE_IOS(7_0);
+		-(void)executePOST:(NSString *)url data:(id<AFNetworkRequestData>)data finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock NS_AVAILABLE_IOS(7_0);
+		-(void)executePostFile:(NSString *)url data:(id<AFNetworkRequestData>)data  files:(NSDictionary *)files finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock NS_AVAILABLE_IOS(7_0);
+		-(void)executeDelete:(NSString *)url data:(id<AFNetworkRequestData>)data finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock NS_AVAILABLE_IOS(7_0);
+		-(void)executeGetFile:(NSString *)url data:(id<AFNetworkRequestData>)data  finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock NS_AVAILABLE_IOS(7_0);
  

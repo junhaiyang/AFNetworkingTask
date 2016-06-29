@@ -5,6 +5,12 @@
 
 
 static NSString *const kAllBodyObjectInfo = @"kAllBodyObjectInfo"; //整个返回字典的数据
+
+@protocol AFNetworkRequestData <NSObject>
+
+
+
+@end
  
 
 @interface AFNetworkMsg: NSObject

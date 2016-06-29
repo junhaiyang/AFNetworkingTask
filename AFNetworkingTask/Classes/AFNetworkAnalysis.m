@@ -95,6 +95,8 @@
                     Class clazz = [array objectAtIndex:0];
                     Class type = [array objectAtIndex:1];
                     if(![type isSubclassOfClass:[NSArray class]]){
+                        
+                        
                         NSObject *object =  [clazz mj_objectWithKeyValues:value];
                         [body setObject:object forKey:key];
                     }else{

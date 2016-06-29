@@ -670,4 +670,41 @@ static Class networkAnalysis;
     }];
     
 }
+-(void)executeGet:(NSString *)url data:(NSObject<AFNetworkRequestData> *)data finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
+    NSDictionary *from  =[data mj_keyValues];
+    
+    [self executeGet:url form:from finishedBlock:finishedBlock];
+    
+}
+-(void)executePUT:(NSString *)url data:(NSObject<AFNetworkRequestData> *)data finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
+    NSDictionary *from  =[data mj_keyValues];
+    
+    [self executePUT:url form:from finishedBlock:finishedBlock];
+}
+-(void)executePATCH:(NSString *)url data:(NSObject<AFNetworkRequestData> *)data finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
+    NSDictionary *from  =[data mj_keyValues];
+    
+    [self executePATCH:url form:from finishedBlock:finishedBlock];
+}
+-(void)executePOST:(NSString *)url data:(NSObject<AFNetworkRequestData> *)data finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
+    NSDictionary *from  =[data mj_keyValues];
+    
+    [self executePOST:url form:from finishedBlock:finishedBlock];
+}
+-(void)executePostFile:(NSString *)url data:(NSObject<AFNetworkRequestData> *)data  files:(NSDictionary *)files finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
+    
+    NSDictionary *from  =[data mj_keyValues];
+    
+    [self executePostFile:url form:from files:files finishedBlock:finishedBlock];
+}
+-(void)executeDelete:(NSString *)url data:(NSObject<AFNetworkRequestData> *)data finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
+    NSDictionary *from  =[data mj_keyValues];
+    
+    [self executeDelete:url form:from finishedBlock:finishedBlock];
+}
+-(void)executeGetFile:(NSString *)url data:(NSObject<AFNetworkRequestData> *)data  finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
+    NSDictionary *from  =[data mj_keyValues];
+    
+    [self executeGetFile:url form:from finishedBlock:finishedBlock];
+}
 @end
