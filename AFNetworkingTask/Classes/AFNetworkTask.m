@@ -116,6 +116,12 @@ static Class networkAnalysis;
 -(void)addAnalysis:(NSString *)key structureArray:(Class)clazz{
     [analysis addAnalysis:key structureArray:clazz];
 }
+-(void)addStructure:(Class)clazz{
+    [analysis addAnalysis:kAllBodyObjectInfo structure:clazz];
+}
+-(void)addStructureArray:(Class)clazz{
+    [analysis addAnalysis:kAllBodyObjectInfo structureArray:clazz];
+}
 -(AFNetworkResponseProtocolType)responseType{
     return analysis.responseType;
 }
@@ -469,6 +475,64 @@ static Class networkAnalysis;
     }];
     
 }
+-(void)executePUT:(NSString *)url form:(NSDictionary *)form finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
+    self.networkingTaskFinishedBlock = finishedBlock;
+    
+    if(analysis.completionCustomQueue){
+        [self serializeFinishedInCustomQueue];
+    }else{
+        self.completionQueue = NULL;
+    }
+    
+    __weak AFNetworkTask *weakSelf = self;
+    sessionTask =[self PUT:url parameters:form processResult:^(id responseObject) {
+        [weakSelf processDictionary:responseObject];
+    } finish:^(NSURLSessionTask *task, id responseObject, id target, AFNetworkStatusCode errorCode, NSInteger httpStatusCode) {
+        @try {
+            [weakSelf processResponseErrorCode:errorCode httpStatusCode:httpStatusCode];
+            [weakSelf processResponse:responseObject];
+            
+            if(weakSelf.networkingTaskFinishedBlock){
+                weakSelf.networkingTaskFinishedBlock(weakSelf.analysis.msg,weakSelf.analysis.originalBody,weakSelf.analysis.body);
+            }
+        }
+        @catch (NSException *exception) {
+            NSLog(@"buildPostRequest:%@",exception);
+        }@finally{
+            [weakSelf recyle];
+        }
+    }];
+    
+}
+-(void)executePATCH:(NSString *)url form:(NSDictionary *)form finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
+    self.networkingTaskFinishedBlock = finishedBlock;
+    
+    if(analysis.completionCustomQueue){
+        [self serializeFinishedInCustomQueue];
+    }else{
+        self.completionQueue = NULL;
+    }
+    
+    __weak AFNetworkTask *weakSelf = self;
+    sessionTask =[self PATCH:url parameters:form processResult:^(id responseObject) {
+        [weakSelf processDictionary:responseObject];
+    } finish:^(NSURLSessionTask *task, id responseObject, id target, AFNetworkStatusCode errorCode, NSInteger httpStatusCode) {
+        @try {
+            [weakSelf processResponseErrorCode:errorCode httpStatusCode:httpStatusCode];
+            [weakSelf processResponse:responseObject];
+            
+            if(weakSelf.networkingTaskFinishedBlock){
+                weakSelf.networkingTaskFinishedBlock(weakSelf.analysis.msg,weakSelf.analysis.originalBody,weakSelf.analysis.body);
+            }
+        }
+        @catch (NSException *exception) {
+            NSLog(@"buildPostRequest:%@",exception);
+        }@finally{
+            [weakSelf recyle];
+        }
+    }];
+    
+}
 -(void)executePOST:(NSString *)url form:(NSDictionary *)form finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
     self.networkingTaskFinishedBlock = finishedBlock;
     
@@ -540,7 +604,7 @@ static Class networkAnalysis;
     }];
     
 }
--(void)executeDelete:(NSString *)url form:(NSDictionary *)form finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
+-(void)executeDELETE:(NSString *)url form:(NSDictionary *)form finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
     self.networkingTaskFinishedBlock = finishedBlock;
     
     if(analysis.completionCustomQueue){

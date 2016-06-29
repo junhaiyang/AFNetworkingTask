@@ -75,7 +75,14 @@
         
         for (NSString *key in self.analysises) {
             NSObject *obj = [self.analysises objectForKey:key];
-            NSObject *value = [dic objectForKey:key];
+            
+            NSObject *value = nil;
+            if([key isEqualToString:kAllBodyObjectInfo]){
+                value = dic;
+            }else{
+                value = [dic objectForKey:key];
+            }
+            
             
             if([obj isKindOfClass:[NSArray class]]){
                 NSArray *array = obj;

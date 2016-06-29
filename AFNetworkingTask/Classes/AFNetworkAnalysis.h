@@ -2,6 +2,9 @@
 
 #import "AFNetworkTaskManager.h"
 #import "MJExtension.h"
+
+
+static NSString *const kAllBodyObjectInfo = @"kAllBodyObjectInfo"; //整个返回字典的数据
  
 
 @interface AFNetworkMsg: NSObject

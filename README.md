@@ -141,7 +141,7 @@ AFNetworking  OC   Sample
 
 * jsonBody：解析出来的json 实例化对象，可能为空，前提是得自行去配置 addAnalysis:structure: 方法
 	
-###### addAnalysis:structure: 方法说明
+###### addAnalysis:structure:  和 addAnalysis:structureArray: 方法说明
 * 可以在两个地方调用添加方法： AFNetworkTask 和 AFNetworkAnalysis 均可以
 * 第一个参数 是字符串，key，对应json 数据中的key值，返回的 jsonBody 中也是使用此key来保存解析实例化数据
 * 第二个参数 为 class 声明，为单个实例化对象的解析，例如：[UserData class] 
@@ -156,11 +156,32 @@ AFNetworking  OC   Sample
     		
     		
    		
-* 声明 列表对象解析
+  	  //声明 列表对象解析
 
        [task addAnalysis:@"result" structureArray:[UserData class]];
        //最终返回 UserData 的实例化列表对象   
        NSArray<UserData *> *value = [jsonBody objectForKey:@"result"];
+      
+###### addStructure:  和 addStructureArray: 方法说明  
+* 解析整个返回的数据，获取值时使用 [jsonBody objectForKey:kAllBodyObjectInfo]
+
+		
+   	  // 声明 单个对象解析
+      [task addStructure:[UserData class]];
+    		 
+    		 
+       最终返回 UserData 的实例化对象   
+       UserData *value = [jsonBody objectForKey:kAllBodyObjectInfo];
+    		
+    		
+   		
+ 	  //声明 列表对象解析
+
+       [task addStructureArray:[UserData class]];
+       //最终返回 UserData 的实例化列表对象   
+       NSArray<UserData *> *value = [jsonBody objectForKey:kAllBodyObjectInfo];
+ 
+
 			
 			 
 ###### 具体实例化对象与 json 的解析映射规则
@@ -178,6 +199,12 @@ AFNetworking  OC   Sample
 		
 		//post 请求
 		-(void)executePOST:(NSString *)url form:(NSDictionary *)form finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock NS_AVAILABLE_IOS(7_0);
+		
+		//put 请求
+		-(void)executePUT:(NSString *)url form:(NSDictionary *)form finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock NS_AVAILABLE_IOS(7_0);
+		
+		//patch 请求
+		-(void)executePATCH:(NSString *)url form:(NSDictionary *)form finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock NS_AVAILABLE_IOS(7_0);
 		
 		//文件上传
 		-(void)executePostFile:(NSString *)url files:(NSDictionary *)files finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock NS_AVAILABLE_IOS(7_0);

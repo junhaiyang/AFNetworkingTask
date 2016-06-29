@@ -105,6 +105,45 @@
     
 }
 
+- (NSURLSessionTask *)PUT:(NSString *)URLString
+                parameters:(id)parameters
+             processResult:(AFNetworkTaskProcessResultBlock)processResult
+                    finish:(AFNetworkTaskFinishedBlock)finish{
+    
+    NSURLSessionTask *dataTask = [self PUT:URLString parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+        
+        NSHTTPURLResponse  *response = (NSHTTPURLResponse  *)task.response;
+        
+        [self processResult:responseObject task:task processResult:processResult finish:finish statusCode:response.statusCode];
+    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+        if(finish){
+            finish(task,nil,nil,AFNetworkStatusCodeProcessError,AFNetworkStatusCodeHttpError);
+        }
+    }];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidRequestNotification object:dataTask];
+    return dataTask;
+}
+ 
+- (NSURLSessionTask *)PATCH:(NSString *)URLString
+                 parameters:(id)parameters
+              processResult:(AFNetworkTaskProcessResultBlock)processResult
+                     finish:(AFNetworkTaskFinishedBlock)finish{
+    
+    NSURLSessionTask *dataTask = [self PATCH:URLString parameters:parameters success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+        
+        NSHTTPURLResponse  *response = (NSHTTPURLResponse  *)task.response;
+        
+        [self processResult:responseObject task:task processResult:processResult finish:finish statusCode:response.statusCode];
+    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+        if(finish){
+            finish(task,nil,nil,AFNetworkStatusCodeProcessError,AFNetworkStatusCodeHttpError);
+        }
+    }];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidRequestNotification object:dataTask];
+    return dataTask;
+}
 - (NSURLSessionTask *)POST:(NSString *)URLString
              parameters:(id)parameters
           processResult:(AFNetworkTaskProcessResultBlock)processResult
