@@ -253,6 +253,34 @@ static Class networkAnalysis;
     }];
     
 }
+
+-(void)buildPutRequest:(NSString *)url form:(NSDictionary *)form{
+    if(analysis.completionCustomQueue){
+        [self serializeFinishedInCustomQueue];
+    }else{
+        self.completionQueue = NULL;
+    }
+    __weak AFNetworkTask *weakSelf = self;
+    
+    sessionTask =[self PUT:url parameters:form processResult:^(id responseObject) {
+        [weakSelf processDictionary:responseObject];
+    } finish:^(NSURLSessionTask *task, id responseObject, id target, AFNetworkStatusCode errorCode, NSInteger httpStatusCode) {
+        @try {
+            [weakSelf processResponseErrorCode:errorCode httpStatusCode:httpStatusCode];
+            [weakSelf processResponse:responseObject];
+            
+            if(weakSelf.networkingTaskFinishedBlock){
+                weakSelf.networkingTaskFinishedBlock(weakSelf.analysis.msg,weakSelf.analysis.originalBody,weakSelf.analysis.body);
+            }
+        }
+        @catch (NSException *exception) {
+            NSLog(@"buildPostRequest:%@",exception);
+        }@finally{
+            [weakSelf recyle];
+        }
+    }];
+    
+}
 -(void)buildPostRequest:(NSString *)url form:(NSDictionary *)form{
     if(analysis.completionCustomQueue){
         [self serializeFinishedInCustomQueue];

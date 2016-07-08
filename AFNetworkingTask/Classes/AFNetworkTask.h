@@ -23,6 +23,8 @@ typedef void(^AFNetworkingTaskFinishedBlock)(AFNetworkMsg *msg,id originalObj,NS
 
 -(void)buildPostRequest:(NSString *)url form:(NSDictionary *)form NS_DEPRECATED_IOS(7_0,7_0);
 
+-(void)buildPutRequest:(NSString *)url form:(NSDictionary *)form NS_DEPRECATED_IOS(7_0,7_0);
+
 -(void)buildGetRequest:(NSString *)url NS_DEPRECATED_IOS(7_0,7_0);
 
 -(void)buildGetRequest:(NSString *)url form:(NSDictionary *)form NS_DEPRECATED_IOS(7_0,7_0);
