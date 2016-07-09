@@ -5,7 +5,7 @@
 
 @class AFNetworkTask;
 
-typedef void(^AFNetworkingFinishedBlock)(AFNetworkTask *request, AFNetworkStatusCode errorCode, NSInteger httpStatusCode)  NS_DEPRECATED_IOS(7_0,7_0);  //请求协议类型
+typedef void(^AFNetworkingFinishedBlock)(AFNetworkTask *request, AFNetworkStatusCode errorCode, NSInteger httpStatusCode);  //请求协议类型
 
 typedef void(^AFNetworkingTaskFinishedBlock)(AFNetworkMsg *msg,id originalObj,NSDictionary *jsonBody)  NS_AVAILABLE_IOS(7_0);  //请求协议类型
 
@@ -13,29 +13,29 @@ typedef void(^AFNetworkingTaskFinishedBlock)(AFNetworkMsg *msg,id originalObj,NS
     
 }
 
--(void)finishedWithMainQueue:(AFNetworkingFinishedBlock)finishedBlock  NS_DEPRECATED_IOS(7_0,7_0);
+-(void)finishedWithMainQueue:(AFNetworkingFinishedBlock)finishedBlock;
 
--(void)finishedWithCustomQueue:(AFNetworkingFinishedBlock)finishedBlock  NS_DEPRECATED_IOS(7_0,7_0);
+-(void)finishedWithCustomQueue:(AFNetworkingFinishedBlock)finishedBlock;
 
--(void)buildPostFileRequest:(NSString *)url files:(NSDictionary *)files NS_DEPRECATED_IOS(7_0,7_0);
+-(void)buildPostFileRequest:(NSString *)url files:(NSDictionary *)files;
 
--(void)buildPostFileRequest:(NSString *)url form:(NSDictionary *)form files:(NSDictionary *)files NS_DEPRECATED_IOS(7_0,7_0);
+-(void)buildPostFileRequest:(NSString *)url form:(NSDictionary *)form files:(NSDictionary *)files;
 
--(void)buildPostRequest:(NSString *)url form:(NSDictionary *)form NS_DEPRECATED_IOS(7_0,7_0);
+-(void)buildPostRequest:(NSString *)url form:(NSDictionary *)form;
 
--(void)buildPutRequest:(NSString *)url form:(NSDictionary *)form NS_DEPRECATED_IOS(7_0,7_0);
+-(void)buildPutRequest:(NSString *)url form:(NSDictionary *)form;
 
--(void)buildGetRequest:(NSString *)url NS_DEPRECATED_IOS(7_0,7_0);
+-(void)buildGetRequest:(NSString *)url;
 
--(void)buildGetRequest:(NSString *)url form:(NSDictionary *)form NS_DEPRECATED_IOS(7_0,7_0);
+-(void)buildGetRequest:(NSString *)url form:(NSDictionary *)form;
 
--(void)buildDeleteRequest:(NSString *)url NS_DEPRECATED_IOS(7_0,7_0);
+-(void)buildDeleteRequest:(NSString *)url;
 
--(void)prepareRequest NS_DEPRECATED_IOS(7_0,7_0);
+-(void)prepareRequest;
 
--(void)processDictionary:(id)dictionary NS_DEPRECATED_IOS(7_0,7_0);
+-(void)processDictionary:(id)dictionary;
 
--(BOOL)requestSuccess NS_DEPRECATED_IOS(7_0,7_0);
+-(BOOL)requestSuccess;
 
 #pragma mark - new method
 
