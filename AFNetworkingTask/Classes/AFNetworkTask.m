@@ -107,6 +107,11 @@ static Class networkAnalysis;
             analysis = _analysis;
         }
         
+        __weak AFNetworkTask *weakSelf = self;
+        [self setTaskDidComplete:^(NSURLSession *session, NSURLSessionTask *task, NSError *error) {
+            [weakSelf recyle];
+        }];
+        
     }
     return self;
 }
@@ -206,7 +211,7 @@ static Class networkAnalysis;
             @catch (NSException *exception) {
                 NSLog(@"buildPostFileRequest:%@",exception);
             }@finally{
-                [weakSelf recyle];
+//                [weakSelf recyle];
             }
         }
         
@@ -245,7 +250,7 @@ static Class networkAnalysis;
             @catch (NSException *exception) {
                 NSLog(@"buildPostFileRequest:%@",exception);
             }@finally{
-                [weakSelf recyle];
+//                [weakSelf recyle];
             }
         }
         
@@ -276,7 +281,7 @@ static Class networkAnalysis;
         @catch (NSException *exception) {
             NSLog(@"buildPostRequest:%@",exception);
         }@finally{
-            [weakSelf recyle];
+//            [weakSelf recyle];
         }
     }];
     
@@ -303,7 +308,7 @@ static Class networkAnalysis;
         @catch (NSException *exception) {
             NSLog(@"buildPostRequest:%@",exception);
         }@finally{
-            [weakSelf recyle];
+//            [weakSelf recyle];
         }
     }];
     
@@ -339,7 +344,7 @@ static Class networkAnalysis;
         @catch (NSException *exception) {
             NSLog(@"buildGetRequest:%@",exception);
         }@finally{
-            [weakSelf recyle];
+//            [weakSelf recyle];
         }
     }];
 }
@@ -368,7 +373,7 @@ static Class networkAnalysis;
         @catch (NSException *exception) {
             NSLog(@"buildDeleteRequest:%@",exception);
         }@finally{
-            [weakSelf recyle];
+//            [weakSelf recyle];
         }
     }];
 }
@@ -498,7 +503,7 @@ static Class networkAnalysis;
         @catch (NSException *exception) {
             NSLog(@"buildGetRequest:%@",exception);
         }@finally{
-            [weakSelf recyle];
+//            [weakSelf recyle];
         }
     }];
     
@@ -556,7 +561,7 @@ static Class networkAnalysis;
         @catch (NSException *exception) {
             NSLog(@"buildPostRequest:%@",exception);
         }@finally{
-            [weakSelf recyle];
+//            [weakSelf recyle];
         }
     }];
     
@@ -585,7 +590,7 @@ static Class networkAnalysis;
         @catch (NSException *exception) {
             NSLog(@"buildPostRequest:%@",exception);
         }@finally{
-            [weakSelf recyle];
+//            [weakSelf recyle];
         }
     }];
     
@@ -624,7 +629,7 @@ static Class networkAnalysis;
             @catch (NSException *exception) {
                 NSLog(@"buildPostFileRequest:%@",exception);
             }@finally{
-                [weakSelf recyle];
+//                [weakSelf recyle];
             }
         }
         
@@ -656,7 +661,7 @@ static Class networkAnalysis;
         @catch (NSException *exception) {
             NSLog(@"buildDeleteRequest:%@",exception);
         }@finally{
-            [weakSelf recyle];
+//            [weakSelf recyle];
         }
     }];
 
@@ -693,7 +698,7 @@ static Class networkAnalysis;
         @catch (NSException *exception) {
             NSLog(@"buildDeleteRequest:%@",exception);
         }@finally{
-            [weakSelf recyle];
+//            [weakSelf recyle];
         }
     }];
     
