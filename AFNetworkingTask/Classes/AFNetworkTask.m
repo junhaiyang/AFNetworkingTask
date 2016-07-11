@@ -95,14 +95,14 @@ static Class networkAnalysis;
 
 - (instancetype)init
 {
-    return [self initWithTask:[[networkAnalysis alloc] init]];
+    return [self initWithTask:[[AFNetworkAnalysis alloc] init]];
 } 
 - (instancetype)initWithTask:(AFNetworkAnalysis *)_analysis
 {
     self = [super init];
     if (self) {
         if(_analysis==nil){
-            analysis = [[networkAnalysis alloc] init];
+            analysis = [[AFNetworkAnalysis alloc] init];
         }else{
             analysis = _analysis;
         }
@@ -383,7 +383,7 @@ static Class networkAnalysis;
 
 -(void)recyle{
     
-    self.networkingTaskFinishedBlock = NULL;
+//    self.networkingTaskFinishedBlock = NULL;
     sessionTask = nil;
     self.responseHeaders = nil;
     
@@ -418,9 +418,7 @@ static Class networkAnalysis;
     self.downloadTaskDidFinishDownloading = nil;
     self.downloadTaskDidWriteData = nil;
     self.downloadTaskDidResume = nil;
-     
-    [analysis recyle];
-    analysis = nil;
+    
      
       
 }
@@ -668,6 +666,10 @@ static Class networkAnalysis;
 }
 
 -(void)dealloc{
+    
+    self.networkingTaskFinishedBlock = NULL;
+    [analysis recyle];
+    analysis = nil;
 #if DEBUG
 //    NSLog(@"---开发测试阶段，打印网络协议对象回收日志----");
 #endif
