@@ -26,7 +26,7 @@ AFNetworking  OC   Sample
 * json 映射 使用的 MJExtension 框架，具体规则 参考 [MJExtension](https://github.com/CoderMJLee/MJExtension)
 		
 ###### 基本代码编写
-* [一个协议独立文件方式(无JSON映射解析支持，需自行处理)](./README-INNER.md)
+* [单个协议独立文件方式(无JSON映射解析支持，需自行处理)](./README-INNER.md)
 * [协议不用独立文件方式(内置JSON映射解析支持)](./README-SIG.md)
  
  
