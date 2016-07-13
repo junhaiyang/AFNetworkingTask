@@ -2,6 +2,7 @@
 
 #import "AFAutoPurgingGifImageCache.h"
 #import "YLGIFImage.h"
+#import "UIImage+YKWebPImage.h"
 
 static UIImage * AFImageWithDataAtScale(NSData *data, CGFloat scale) {
     return [[YLGIFImage alloc] initWithData:data scale:scale];
@@ -38,6 +39,11 @@ static inline NSString * AFGIFCacheKeyFromURLRequest(NSURLRequest *request) {
 
 - (nullable UIImage *)imageforObj:(NSObject *)cachedData {
     UIImage *cachedImage = nil;
+    
+    if([cachedData isKindOfClass:[NSData class]]){
+        cachedImage = [[UIImage alloc] initWithData:(NSData *)cachedData];
+    }
+     
     if([cachedData isKindOfClass:[UIImage class]]){
         cachedImage = (UIImage *)cachedData;
     }else if([cachedData isKindOfClass:[NSData class]]){
