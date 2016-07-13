@@ -64,7 +64,7 @@ Pod::Spec.new do |s|
   s.dependency 'YLGIFImage'  , '~> 0.11'
   s.dependency 'TMCache' , '~> 2.1.0'
   s.dependency 'MJExtension' , '~> 3.0.10' 
-  s.dependency 'YKWebPImage', '1.0'
+  s.dependency 'YKWebPImage', '~> 1.0'
    
  
 end
