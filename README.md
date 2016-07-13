@@ -5,6 +5,7 @@ AFNetworking  OC   Sample
 ####基本需求
 * 简化网络处理和返回JSON 结果处理
 * 根据用户提前制定的json映射规则，直接解析出对应的对象返回
+* 支持图片格式： JPEG、PNG、GIF、WEBP、BMP
 
 
 ####使用方法
