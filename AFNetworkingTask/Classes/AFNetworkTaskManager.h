@@ -83,6 +83,12 @@ typedef void(^AFNetworkTaskProgressBlock)(CGFloat progress);
               processResult:(AFNetworkTaskProcessResultBlock)processResult
                      finish:(AFNetworkTaskFinishedBlock)finish;
 
+- (NSURLSessionTask *)PUT:(NSString *)URLString
+               parameters:(id)parameters
+                    files:(id)files
+                 progress:(AFNetworkTaskProgressBlock)progress
+                   finish:(AFNetworkTaskFinishedBlock)finish;
+
 - (NSURLSessionTask *)PATCH:(NSString *)URLString
                  parameters:(id)parameters
               processResult:(AFNetworkTaskProcessResultBlock)processResult

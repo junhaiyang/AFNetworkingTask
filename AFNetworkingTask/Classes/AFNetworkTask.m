@@ -635,6 +635,48 @@ static Class networkAnalysis;
     }];
     
 }
+-(void)executePutFile:(NSString *)url files:(NSDictionary *)files finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
+    [self executePutFile:url form:nil files:files finishedBlock:finishedBlock];
+}
+-(void)executePutFile:(NSString *)url form:(NSDictionary *)form  files:(NSDictionary *)files finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
+    self.networkingTaskFinishedBlock = finishedBlock;
+    
+    if(analysis.completionCustomQueue){
+        [self serializeFinishedInCustomQueue];
+    }else{
+        self.completionQueue = NULL;
+    }
+    
+    __weak AFNetworkTask *weakSelf = self;
+    sessionTask =[self PUT:url parameters:form files:files progress:^(CGFloat progress) {
+        
+    } finish:^(NSURLSessionTask *task, id responseObject, id target, AFNetworkStatusCode errorCode, NSInteger httpStatusCode) {
+        @try {
+            [self processDictionary:responseObject];
+        }
+        @catch (NSException *exception) {
+            NSLog(@"buildPostFileRequest:%@",exception);
+        }
+        @finally {
+            [weakSelf processResponseErrorCode:errorCode httpStatusCode:httpStatusCode];
+            [weakSelf processResponse:responseObject];
+            
+            @try {
+                if(weakSelf.networkingTaskFinishedBlock){
+                    weakSelf.networkingTaskFinishedBlock(weakSelf.analysis.msg,weakSelf.analysis.originalBody,weakSelf.analysis.body);
+                }
+            }
+            @catch (NSException *exception) {
+                NSLog(@"buildPostFileRequest:%@",exception);
+            }@finally{
+                //                [weakSelf recyle];
+            }
+        }
+        
+        
+    }];
+    
+}
 -(void)executeDELETE:(NSString *)url form:(NSDictionary *)form finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
     self.networkingTaskFinishedBlock = finishedBlock;
     
@@ -731,6 +773,12 @@ static Class networkAnalysis;
     NSDictionary *from  =[data mj_keyValues];
     
     [self executePostFile:url form:from files:files finishedBlock:finishedBlock];
+}
+-(void)executePutFile:(NSString *)url data:(NSObject<AFNetworkRequestData> *)data  files:(NSDictionary *)files finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
+    
+    NSDictionary *from  =[data mj_keyValues];
+    
+    [self executePutFile:url form:from files:files finishedBlock:finishedBlock];
 }
 -(void)executeDelete:(NSString *)url data:(NSObject<AFNetworkRequestData> *)data finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
     NSDictionary *from  =[data mj_keyValues];

@@ -124,7 +124,42 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidRequestNotification object:dataTask];
     return dataTask;
 }
- 
+- (NSURLSessionTask *)PUT:(NSString *)URLString
+               parameters:(id)parameters
+                    files:(id)files
+                 progress:(AFNetworkTaskProgressBlock)progress
+                   finish:(AFNetworkTaskFinishedBlock)finish{
+    
+    
+    self.progressBlock = progress;
+    
+    
+    return [self uploadTaskWithHTTPMethod:@"PUT" URLString:URLString parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+        
+        for (NSString *key  in files) {
+            NSObject *fileObj =[files objectForKey:key];
+            
+            if([fileObj isKindOfClass:[NSString class]]){
+                [formData appendPartWithFileURL:[NSURL fileURLWithPath:(NSString *)fileObj] name:key error:NULL];
+            }else  if([fileObj isKindOfClass:[NSData class]]){
+                [formData appendPartWithFormData:(NSData *)fileObj name:key];
+            }
+            
+        }
+        
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+        NSHTTPURLResponse  *response = (NSHTTPURLResponse  *)task.response;
+        
+        [self processResult:responseObject task:task processResult:NULL finish:finish statusCode:response.statusCode];
+        
+    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+        if(finish){
+            finish(task,nil,nil,AFNetworkStatusCodeProcessError,AFNetworkStatusCodeHttpError);
+        }
+    }];
+}
+
 - (NSURLSessionTask *)PATCH:(NSString *)URLString
                  parameters:(id)parameters
               processResult:(AFNetworkTaskProcessResultBlock)processResult
