@@ -677,7 +677,7 @@ static Class networkAnalysis;
     }];
     
 }
--(void)executeDELETE:(NSString *)url form:(NSDictionary *)form finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
+-(void)executeDelete:(NSString *)url form:(NSDictionary *)form finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
     self.networkingTaskFinishedBlock = finishedBlock;
     
     if(analysis.completionCustomQueue){
