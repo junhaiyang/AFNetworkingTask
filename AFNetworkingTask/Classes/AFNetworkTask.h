@@ -80,7 +80,6 @@ typedef void(^AFNetworkingTaskFinishedBlock)(AFNetworkMsg *msg,id originalObj,NS
 
 -(void)cancel NS_AVAILABLE_IOS(7_0);
 -(void)recyle NS_AVAILABLE_IOS(7_0);
-
-
+ 
 
 @end
