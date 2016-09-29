@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
  
 
   s.name         = "AFNetworkingTask"
-  s.version      = "1.2.4"
+  s.version      = "2.0"
   s.summary      = "AFNetworking Sample Task....."
  
 
@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
 
   s.ios.framework = 'UIKit'
  
-  s.source = { :git => 'https://github.com/junhaiyang/AFNetworkingTask.git' , :tag => '1.2.4'} 
+  s.source = { :git => 'https://github.com/junhaiyang/AFNetworkingTask.git' , :tag => '2.0'} 
  
   s.requires_arc = true
 
@@ -29,9 +29,9 @@ Pod::Spec.new do |s|
          
   end 
 
-  s.subspec 'oc' do |ks| 
+  s.subspec 'static' do |ks| 
        
-      ks.source_files = 'AFNetworkingTask/Classes/oc/*.{h,m,mm}' 
+      ks.source_files = 'AFNetworkingTask/Classes/static/*.{h,m,mm}' 
          
          
   end 

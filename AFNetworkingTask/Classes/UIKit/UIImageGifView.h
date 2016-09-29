@@ -1,7 +1,7 @@
 
-#import "AFNetworkSwiftDefine.h"
+#import "AFNetworkLibDefine.h"
 
-#ifdef AF_NETWORK_SWIFT
+#ifdef AF_NETWORK_DYLIB
     #import <YLGIFImage/YLImageView.h>
 #else
     #import "YLImageView.h"

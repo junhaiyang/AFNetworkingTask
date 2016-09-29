@@ -1,8 +1,8 @@
 
-#import "AFNetworkSwiftDefine.h"
+#import "AFNetworkLibDefine.h"
 
 
-#ifdef AF_NETWORK_SWIFT
+#ifdef AF_NETWORK_DYLIB
     #import <AFNetworking/AFImageDownloader.h>
 #else
     #import "AFImageDownloader.h"
