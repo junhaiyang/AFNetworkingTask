@@ -10,7 +10,7 @@
 }
 -(void)response:(NSHTTPURLResponse *)response msg:(AFNetworkMsg *)msg{ 
     msg.httpStatusCode =response.statusCode;
-    msg.responseHeaders = response.allHeaderFields;
+    msg.responseHeaders = [[NSDictionary alloc] initWithDictionary:[response allHeaderFields]];
 }
 
 @end
