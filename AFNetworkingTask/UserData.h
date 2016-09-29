@@ -7,19 +7,23 @@
 //
 
 #import <Foundation/Foundation.h>
-
-
-@interface UserData : NSObject
+@interface ResultData : NSObject
 
 
 @property (nonatomic,strong) NSArray *category1;
 @property (nonatomic,strong) NSArray *category2;
 
 
-@property (nonatomic,strong) NSString *name;
+
+@end
+
+@interface UserData : NSObject
 
 
--(void)processResult:(id)responseObject;
+@property (nonatomic,strong) ResultData *result;
+@property (nonatomic,assign) int code;
+
+
  
 
 @end

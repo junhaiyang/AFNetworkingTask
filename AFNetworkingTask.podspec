@@ -21,6 +21,13 @@ Pod::Spec.new do |s|
   s.requires_arc = true
 
   s.source_files = 'AFNetworkingTask/Classes/*.{h,m,mm}'  
+  
+  s.subspec 'Adapter' do |ks| 
+       
+      ks.source_files = 'AFNetworkingTask/Classes/Adapter/*.{h,m,mm}' 
+         
+         
+  end 
 
 
   s.subspec 'AFTextResponseSerializer' do |ds|

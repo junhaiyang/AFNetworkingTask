@@ -8,6 +8,11 @@
 
 #import "UserData.h"
 
+@implementation ResultData
+
+
+@end
+
 @implementation UserData
 - (instancetype)init
 {
@@ -18,8 +23,6 @@
     return self;
 }
 
--(void)processResult:(id)responseObject{
-    NSLog(@"------");
-}
+ 
 
 @end

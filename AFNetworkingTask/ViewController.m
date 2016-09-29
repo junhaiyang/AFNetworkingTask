@@ -6,8 +6,7 @@
 //  Copyright © 2015年 junhai. All rights reserved.
 //
 
-#import "ViewController.h"
-#import "UserRequest.h"
+#import "ViewController.h" 
 #import "AFNetworkTask.h"
 
 @interface ViewController ()
@@ -40,11 +39,11 @@
     
     
     AFNetworkTask *task =[AFNetworkTask init];
-    [task executeGet:@"http://www.baidu.com" finishedBlock:^(AFNetworkMsg *msg, id originalObj, NSDictionary *jsonBody) {
+    [task GET:@"http://www.baidu.com" finishedBlock:^(AFNetworkMsg *msg, id originalObj, NSDictionary *jsonBody) {
          NSLog(@"finish .........");
     }];
     
-    UserRequest  *request =[UserRequest new];
+//    UserRequest  *request =[UserRequest new];
 //    [request requestBaidu:savedImagePath finish:^(id responseObject, AFNetworkStatusCode errorCode, NSInteger httpStatusCode) {
 //         
 //        NSLog(@"finish .........");

@@ -1,85 +1,71 @@
  
 
-#import "AFNetworkTaskManager.h"
-#import "AFNetworkAnalysis.h"
+#import <Foundation/Foundation.h>
+#import "AFNetworkTaskPatch.h"
 
-@class AFNetworkTask;
-
-typedef void(^AFNetworkingFinishedBlock)(AFNetworkTask *request, AFNetworkStatusCode errorCode, NSInteger httpStatusCode);  //请求协议类型
-
-typedef void(^AFNetworkingTaskFinishedBlock)(AFNetworkMsg *msg,id originalObj,NSDictionary *jsonBody)  NS_AVAILABLE_IOS(7_0);  //请求协议类型
-
-@interface AFNetworkTask : AFNetworkTaskManager{
-    
-}
-
--(void)finishedWithMainQueue:(AFNetworkingFinishedBlock)finishedBlock;
-
--(void)finishedWithCustomQueue:(AFNetworkingFinishedBlock)finishedBlock;
-
--(void)buildPostFileRequest:(NSString *)url files:(NSDictionary *)files;
-
--(void)buildPostFileRequest:(NSString *)url form:(NSDictionary *)form files:(NSDictionary *)files;
-
--(void)buildPostRequest:(NSString *)url form:(NSDictionary *)form;
-
--(void)buildPutRequest:(NSString *)url form:(NSDictionary *)form;
-
--(void)buildGetRequest:(NSString *)url;
-
--(void)buildGetRequest:(NSString *)url form:(NSDictionary *)form;
-
--(void)buildDeleteRequest:(NSString *)url;
-
--(void)prepareRequest;
-
--(void)processDictionary:(id)dictionary;
-
--(BOOL)requestSuccess;
-
-#pragma mark - new method
-
-+(void)defaultAnalysis:(Class)clazz;
-
--(instancetype)initWithTask:(AFNetworkAnalysis *)analysis  NS_AVAILABLE_IOS(7_0);
-
--(void)addAnalysis:(NSString *)key structure:(Class)clazz;
--(void)addAnalysis:(NSString *)key structureArray:(Class)clazz;
+@interface AFNetworkTask : AFNetworkTaskPatch
 
 
-//解析整个返回的数据，获取值时使用 [jsonBody objectForKey:kAllBodyObjectInfo]
--(void)addStructure:(Class)clazz;
--(void)addStructureArray:(Class)clazz;
+- (instancetype)initWithContainer:(AFNetworkContainer *)container;
 
-//执行操作
--(void)executeGet:(NSString *)url  finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock NS_AVAILABLE_IOS(7_0);
--(void)executeDelete:(NSString *)url  finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock NS_AVAILABLE_IOS(7_0);
+#pragma mark - GET
 
--(void)executeGet:(NSString *)url form:(NSDictionary *)form finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock NS_AVAILABLE_IOS(7_0);
--(void)executePUT:(NSString *)url form:(NSDictionary *)form finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock NS_AVAILABLE_IOS(7_0);
--(void)executePATCH:(NSString *)url form:(NSDictionary *)form finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock NS_AVAILABLE_IOS(7_0);
--(void)executePOST:(NSString *)url form:(NSDictionary *)form finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock NS_AVAILABLE_IOS(7_0);
--(void)executePostFile:(NSString *)url files:(NSDictionary *)files finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock NS_AVAILABLE_IOS(7_0);
--(void)executePostFile:(NSString *)url form:(NSDictionary *)form  files:(NSDictionary *)files finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock NS_AVAILABLE_IOS(7_0);
--(void)executePutFile:(NSString *)url files:(NSDictionary *)files finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock NS_AVAILABLE_IOS(7_0);
--(void)executePutFile:(NSString *)url form:(NSDictionary *)form  files:(NSDictionary *)files finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock NS_AVAILABLE_IOS(7_0);
--(void)executeDelete:(NSString *)url form:(NSDictionary *)form finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock NS_AVAILABLE_IOS(7_0);
--(void)executeGetFile:(NSString *)url form:(NSDictionary *)form  finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock NS_AVAILABLE_IOS(7_0);
+-(void)GET:(NSString *)url  finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock;
+
+-(void)GET:(NSString *)url data:(id<AFNetworkRequestData>)data finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock;
+
+-(void)GET:(NSString *)URLString form:(NSDictionary *)form finishedBlock:(AFNetworkingTaskFinishedBlock)finish;
+
+#pragma mark - POST
+
+-(void)POST:(NSString *)url data:(id<AFNetworkRequestData>)data finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock;
+
+-(void)POST:(NSString *)URLString form:(id)form finishedBlock:(AFNetworkingTaskFinishedBlock)finish;
+
+-(void)POST:(NSString *)URLString data:(id<AFNetworkRequestData>)data files:(NSDictionary *)files finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock;
+
+-(void)POST:(NSString *)URLString form:(NSDictionary *)form files:(NSDictionary *)files finishedBlock:(AFNetworkingTaskFinishedBlock)finish;
+
+#pragma mark - PUT
+
+-(void)PUT:(NSString *)url data:(id<AFNetworkRequestData>)data finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock;
+
+-(void)PUT:(NSString *)URLString form:(id)form finishedBlock:(AFNetworkingTaskFinishedBlock)finish;
+
+-(void)PUT:(NSString *)URLString data:(id<AFNetworkRequestData>)data files:(NSDictionary *)files finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock;
+
+-(void)PUT:(NSString *)URLString form:(NSDictionary *)form files:(NSDictionary *)files finishedBlock:(AFNetworkingTaskFinishedBlock)finish;
+
+#pragma mark - PATCH
+
+-(void)PATCH:(NSString *)url finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock;
+
+-(void)PATCH:(NSString *)url data:(id<AFNetworkRequestData>)data finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock;
+
+-(void)PATCH:(NSString *)URLString form:(NSDictionary *)form finishedBlock:(AFNetworkingTaskFinishedBlock)finish;
 
 
--(void)executeGet:(NSString *)url data:(id<AFNetworkRequestData>)data finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock NS_AVAILABLE_IOS(7_0);
--(void)executePUT:(NSString *)url data:(id<AFNetworkRequestData>)data finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock NS_AVAILABLE_IOS(7_0);
--(void)executePATCH:(NSString *)url data:(id<AFNetworkRequestData>)data finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock NS_AVAILABLE_IOS(7_0);
--(void)executePOST:(NSString *)url data:(id<AFNetworkRequestData>)data finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock NS_AVAILABLE_IOS(7_0);
--(void)executePostFile:(NSString *)url data:(id<AFNetworkRequestData>)data  files:(NSDictionary *)files finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock NS_AVAILABLE_IOS(7_0);
--(void)executeDelete:(NSString *)url data:(id<AFNetworkRequestData>)data finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock NS_AVAILABLE_IOS(7_0);
--(void)executeGetFile:(NSString *)url data:(id<AFNetworkRequestData>)data  finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock NS_AVAILABLE_IOS(7_0);
+#pragma mark - DELETE
 
--(void)executePutFile:(NSString *)url data:(id<AFNetworkRequestData>)data  files:(NSDictionary *)files finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock NS_AVAILABLE_IOS(7_0);
+-(void)DELETE:(NSString *)url finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock;
+
+-(void)DELETE:(NSString *)url data:(id<AFNetworkRequestData>)data finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock;
+
+-(void)DELETE:(NSString *)URLString form:(NSDictionary *)form finishedBlock:(AFNetworkingTaskFinishedBlock)finish;
 
 
--(void)cancel NS_AVAILABLE_IOS(7_0);
--(void)recyle NS_AVAILABLE_IOS(7_0);
- 
+#pragma mark - DOWNLOAD
+
+-(void)DOWNLOAD:(NSString *)url  finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock;
+
+-(void)DOWNLOAD:(NSString *)URLString data:(id<AFNetworkRequestData>)data finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock;
+
+-(void)DOWNLOAD:(NSString *)URLString form:(NSDictionary *)form finishedBlock:(AFNetworkingTaskFinishedBlock)finish;
+
+
+#pragma mark - process  Recyle
+-(void)cancel;
+
+-(void)recyle;
 
 @end

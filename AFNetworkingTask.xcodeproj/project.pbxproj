@@ -13,8 +13,6 @@
 		2C1F7B161BEC341C00EAEE6B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C1F7B141BEC341C00EAEE6B /* Main.storyboard */; };
 		2C1F7B181BEC341C00EAEE6B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2C1F7B171BEC341C00EAEE6B /* Assets.xcassets */; };
 		2C1F7B1B1BEC341C00EAEE6B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C1F7B191BEC341C00EAEE6B /* LaunchScreen.storyboard */; };
-		2CC45C311BEC4CDA00044EBF /* UserRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CC45C301BEC4CDA00044EBF /* UserRequest.m */; };
-		2CC45C3F1BEC757C00044EBF /* AFNetworkRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CC45C3C1BEC757C00044EBF /* AFNetworkRequest.m */; };
 		2CC45C401BEC757C00044EBF /* UserData.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CC45C3E1BEC757C00044EBF /* UserData.m */; };
 		4DF358E0D3B8EE714CA76822 /* libPods-AFNetworkingTask.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E785AB6C0B97179610EBA4DE /* libPods-AFNetworkingTask.a */; };
 /* End PBXBuildFile section */
@@ -30,10 +28,6 @@
 		2C1F7B171BEC341C00EAEE6B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2C1F7B1A1BEC341C00EAEE6B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2C1F7B1C1BEC341C00EAEE6B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		2CC45C2F1BEC4CDA00044EBF /* UserRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserRequest.h; sourceTree = "<group>"; };
-		2CC45C301BEC4CDA00044EBF /* UserRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserRequest.m; sourceTree = "<group>"; };
-		2CC45C3B1BEC757C00044EBF /* AFNetworkRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFNetworkRequest.h; sourceTree = "<group>"; };
-		2CC45C3C1BEC757C00044EBF /* AFNetworkRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFNetworkRequest.m; sourceTree = "<group>"; };
 		2CC45C3D1BEC757C00044EBF /* UserData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserData.h; sourceTree = "<group>"; };
 		2CC45C3E1BEC757C00044EBF /* UserData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserData.m; sourceTree = "<group>"; };
 		5509A9F2382DA3F8CDFA51B8 /* Pods-AFNetworkingTask.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AFNetworkingTask.release.xcconfig"; path = "Pods/Target Support Files/Pods-AFNetworkingTask/Pods-AFNetworkingTask.release.xcconfig"; sourceTree = "<group>"; };
@@ -74,8 +68,6 @@
 		2C1F7B0A1BEC341C00EAEE6B /* AFNetworkingTask */ = {
 			isa = PBXGroup;
 			children = (
-				2CC45C3B1BEC757C00044EBF /* AFNetworkRequest.h */,
-				2CC45C3C1BEC757C00044EBF /* AFNetworkRequest.m */,
 				2CC45C3D1BEC757C00044EBF /* UserData.h */,
 				2CC45C3E1BEC757C00044EBF /* UserData.m */,
 				2C1F7B0E1BEC341C00EAEE6B /* AppDelegate.h */,
@@ -87,8 +79,6 @@
 				2C1F7B191BEC341C00EAEE6B /* LaunchScreen.storyboard */,
 				2C1F7B1C1BEC341C00EAEE6B /* Info.plist */,
 				2C1F7B0B1BEC341C00EAEE6B /* Supporting Files */,
-				2CC45C2F1BEC4CDA00044EBF /* UserRequest.h */,
-				2CC45C301BEC4CDA00044EBF /* UserRequest.m */,
 			);
 			path = AFNetworkingTask;
 			sourceTree = "<group>";
@@ -230,7 +220,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -240,9 +230,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2CC45C3F1BEC757C00044EBF /* AFNetworkRequest.m in Sources */,
 				2C1F7B131BEC341C00EAEE6B /* ViewController.m in Sources */,
-				2CC45C311BEC4CDA00044EBF /* UserRequest.m in Sources */,
 				2C1F7B101BEC341C00EAEE6B /* AppDelegate.m in Sources */,
 				2C1F7B0D1BEC341C00EAEE6B /* main.m in Sources */,
 				2CC45C401BEC757C00044EBF /* UserData.m in Sources */,

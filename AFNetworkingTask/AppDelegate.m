@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import "AFNetworkTask.h"
+#import "AFNetworkDataCovertModelAdapter.h"
 #import "UserData.h"
 #import "AFNetworkActivityLogger.h"
 @interface AppDelegate (){
@@ -26,26 +27,34 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch. 
     
-//    [AFNetworkActivityLogger sharedLogger].level = AFLoggerLevelDebug;
-//    [[AFNetworkActivityLogger sharedLogger] startLogging];
+    [AFNetworkActivityLogger sharedLogger].level = AFLoggerLevelDebug;
+    [[AFNetworkActivityLogger sharedLogger] startLogging];
     
+    AFNetworkContainer *container =[AFNetworkContainer new];
+    AFNetworkDataCovertModelAdapter *dataAdapter =[AFNetworkDataCovertModelAdapter new];
+    
+    [dataAdapter addStructure:[UserData class]];
+    
+    [container addDataAdapter:dataAdapter];
     {
-        AFNetworkTask *task1 =[[AFNetworkTask alloc] init];
+        AFNetworkTask *task1 =[[AFNetworkTask alloc] initWithContainer:container];
         
-//        [task1 addAnalysis:@"result" structure:[UserData class]];
-        
-        NSDictionary *params =@{@"count":@(123),@"name":@"aaa"};
-        
-        [task1 executePOST:@"http://xxxxxx" form:params finishedBlock:^(AFNetworkMsg *msg, id originalObj, NSDictionary *jsonBody) {
+        [task1 GET:@"http://app.ohwit.com/i/app/category" finishedBlock:^(AFNetworkMsg *msg, id originalObj, id<AFNetworkResponseData> data) {
             
-            NSLog(@"finish .........%@",jsonBody);
-        }];
-        
-        AFNetworkTask *task2 =[[AFNetworkTask alloc] init];
-        [task2 executeGet:@"http://xxxxxx" finishedBlock:^(AFNetworkMsg *msg, id originalObj, NSDictionary *jsonBody) {
-            NSLog(@"finish .........%@",jsonBody);
+            {
+                AFNetworkTask *task2 =[[AFNetworkTask alloc] initWithContainer:container];
+                
+                [task2 GET:@"http://app.ohwit.com/i/app/category" finishedBlock:^(AFNetworkMsg *msg, id originalObj, id<AFNetworkResponseData> data) {
+                    
+                    //            NSLog(@"finish .........%@",data);
+                }];
+            }
+            
+//            NSLog(@"finish .........%@",data);
         }];
     }
+    
+    
  
     
     return YES;

@@ -25,8 +25,14 @@
 
 #import <objc/runtime.h>
 
-NSString * const AFNetworkingTaskDidRequestNotification = @"com.alamofire.networking.task.request";
-NSString * const AFNetworkingTaskDidResponseNotification = @"com.alamofire.networking.task.response";
+//NSString * const AFNetworkingTaskDidRequestNotification = @"com.alamofire.networking.task.request";
+//NSString * const AFNetworkingTaskDidResponseNotification = @"com.alamofire.networking.task.complete";
+
+
+
+//NSString * const AFNetworkingTaskDidResumeNotification = @"com.alamofire.networking.task.resume";
+//NSString * const AFNetworkingTaskDidCompleteNotification = @"com.alamofire.networking.task.complete";
+//NSString * const AFNetworkingTaskDidSuspendNotification = @"com.alamofire.networking.task.suspend";
 
 
 static NSURLRequest * AFNetworkRequestFromNotification(NSNotification *notification) {
@@ -83,8 +89,8 @@ static NSError * AFNetworkErrorFromNotification(NSNotification *notification) {
 - (void)startLogging {
     [self stopLogging];
  
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkRequestDidStart:) name:AFNetworkingTaskDidRequestNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkRequestDidFinish:) name:AFNetworkingTaskDidResponseNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkRequestDidStart:) name:AFNetworkingTaskDidResumeNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkRequestDidFinish:) name:AFNetworkingTaskDidCompleteNotification object:nil];
      
 }
 

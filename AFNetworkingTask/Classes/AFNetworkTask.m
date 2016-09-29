@@ -1,6 +1,9 @@
  
 
 #import "AFNetworkTask.h"
+#import "AFNetworkActivityLogger.h"
+#import "MJExtension.h"
+
 
 
 typedef void (^AFURLSessionDidBecomeInvalidBlock)(NSURLSession *session, NSError *error);
@@ -33,7 +36,7 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 @property (readwrite, nonatomic, strong) NSURLSessionConfiguration *sessionConfiguration;
 @property (readwrite, nonatomic, strong) NSLock *lock;
 
-@property (readonly, nonatomic, copy) NSString *taskDescriptionForSessionTasks; 
+@property (readonly, nonatomic, copy) NSString *taskDescriptionForSessionTasks;
 @property (readwrite, nonatomic, copy) AFURLSessionDidBecomeInvalidBlock sessionDidBecomeInvalid;
 @property (readwrite, nonatomic, copy) AFURLSessionDidReceiveAuthenticationChallengeBlock sessionDidReceiveAuthenticationChallenge;
 @property (readwrite, nonatomic, copy) AFURLSessionDidFinishEventsForBackgroundURLSessionBlock didFinishEventsForBackgroundURLSession;
@@ -52,340 +55,333 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 
 @end
 
-
 @interface AFNetworkTask(){
-     
-    NSURLSessionTask *sessionTask;
     
 }
 
-@property (nonatomic,strong) AFNetworkAnalysis *analysis;
- 
-@property (nonatomic,strong) AFNetworkingTaskFinishedBlock networkingTaskFinishedBlock;
+@property (nonatomic,strong) NSURLSessionTask *sessionTask;
 
-
-
-@end
-
-@interface AFNetworkAnalysis(Ext)
-@property (nonatomic,strong,readwrite) NSDictionary *analysises NS_AVAILABLE_IOS(7_0);
-@property (nonatomic,strong,readwrite) id originalBody NS_AVAILABLE_IOS(7_0);
-
--(void)addAnalysis:(NSString *)key structure:(Class)clazz;
--(void)addAnalysis:(NSString *)key structureArray:(Class)clazz;
+@property (nonatomic) BOOL finishedTag;
 
 @end
 
 @implementation AFNetworkTask
-@synthesize analysis;
-//
-//@synthesize requestSerializer = _requestSerializer;
-//@synthesize responseSerializer = _responseSerializer;
-
-@synthesize networkingTaskFinishedBlock;
-
-static Class networkAnalysis;
-
-+(void)load{
-    networkAnalysis = [AFNetworkAnalysis class];
-}
-+(void)defaultAnalysis:(Class)clazz{
-    networkAnalysis = clazz;
-}
-
-- (instancetype)init
-{
-    return [self initWithTask:[[AFNetworkAnalysis alloc] init]];
-} 
-- (instancetype)initWithTask:(AFNetworkAnalysis *)_analysis
+@synthesize container;
+@synthesize sessionTask;
+- (instancetype)initWithContainer:(AFNetworkContainer *)_container
 {
     self = [super init];
     if (self) {
-        if(_analysis==nil){
-            analysis = [[AFNetworkAnalysis alloc] init];
-        }else{
-            analysis = _analysis;
-        }
         
-        __weak AFNetworkTask *weakSelf = self;
+        container =  _container;
+        __block typeof(self) weakSelf = self;
         [self setTaskDidComplete:^(NSURLSession *session, NSURLSessionTask *task, NSError *error) {
-            [weakSelf recyle];
+            if(weakSelf.finishedTag)
+                [weakSelf recyle];
+            else{
+                weakSelf.finishedTag = YES;
+            }
         }];
         
     }
     return self;
 }
--(void)addAnalysis:(NSString *)key structure:(Class)clazz{
-    [analysis addAnalysis:key structure:clazz];
+
+-(AFHTTPResponseSerializer<AFURLResponseSerialization> *)responseSerializer{
+    
+    
+    return [container.serializerAdapter responseSerializer:container.responseType];
 }
--(void)addAnalysis:(NSString *)key structureArray:(Class)clazz{
-    [analysis addAnalysis:key structureArray:clazz];
+-(AFHTTPRequestSerializer<AFURLRequestSerialization> *)requestSerializer{
+    return [container.serializerAdapter requestSerializer:container.requestType];
 }
--(void)addStructure:(Class)clazz{
-    [analysis addAnalysis:kAllBodyObjectInfo structure:clazz];
+#pragma mark - GET
+
+-(void)GET:(NSString *)url  finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
+      [self GET:url form:nil finishedBlock:finishedBlock];
 }
--(void)addStructureArray:(Class)clazz{
-    [analysis addAnalysis:kAllBodyObjectInfo structureArray:clazz];
-}
--(AFNetworkResponseProtocolType)responseType{
-    return analysis.responseType;
-}
--(AFNetworkRequestProtocolType)requestType{
-    return analysis.requestType;
+-(void)GET:(NSString *)url data:(id<AFNetworkRequestData>)data finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
+    NSDictionary *from  =[(Class)data mj_keyValues];
+    
+      [self GET:url form:from finishedBlock:finishedBlock];
 }
 
--(void)setResponseType:(AFNetworkResponseProtocolType)responseType{
-    analysis.responseType =responseType;
-}
--(void)setRequestType:(AFNetworkRequestProtocolType)requestType{
-    analysis.requestType =requestType;
-}
--(void)buildCommonHeader:(AFHTTPRequestSerializer *)requestSerializer{
+-(void)GET:(NSString *)URLString
+               form:(NSDictionary *)form
+                   finishedBlock:(AFNetworkingTaskFinishedBlock)finish{
     
-//    NSLog(@"%@",self.analysis);
-    NSDictionary *headers =self.analysis.requestHeaders;
-    for (NSString *key in headers.allKeys) {
-        [requestSerializer setValue:[headers objectForKey:key] forHTTPHeaderField:key];
-    }
+    __block AFNetworkTask *weakSelf = self;
     
+    [self serializeFinishedInCustomQueue];
+    
+    sessionTask =   [self GET:URLString parameters:form success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+        
+        [weakSelf processSuccessResult:responseObject task:task  finish:finish];
+        
+    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+        
+        [weakSelf processErrorResult:task error:error finish:finish];
+        
+    }];
+    
+    
+}
+#pragma mark - POST
+
+-(void)POST:(NSString *)url data:(id<AFNetworkRequestData>)data finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
+    NSDictionary *from  =[(Class)data mj_keyValues];
+    
+    return [self POST:url form:from finishedBlock:finishedBlock];
 }
 
--(void)finishedWithMainQueue:(AFNetworkingFinishedBlock)finishedBlock{
+- (void)POST:(NSString *)URLString
+                      form:(id)form
+             finishedBlock:(AFNetworkingTaskFinishedBlock)finish{
     
-    analysis.completionCustomQueue =NO;
-    __weak AFNetworkTask *weakSelf = self;
+    __block typeof(self) weakSelf = self;
     
-    [self finishedTaskWithQueue:^(AFNetworkMsg *msg, id originalObj, NSDictionary *jsonBody) {
-        if(finishedBlock){
-            finishedBlock(weakSelf,msg.errorCode,msg.httpStatusCode);
-        }
+    [self serializeFinishedInCustomQueue];
+    
+    sessionTask =   [self POST:URLString parameters:form success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+        
+        [weakSelf processSuccessResult:responseObject task:task  finish:finish];
+    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+        
+        [weakSelf processErrorResult:task error:error finish:finish];
     }];
     
 }
--(void)finishedWithCustomQueue:(AFNetworkingFinishedBlock)finishedBlock{
+
+
+- (void)POST:(NSString *)URLString
+                      data:(id<AFNetworkRequestData>)data
+                      files:(NSDictionary *)files 
+             finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
     
-    analysis.completionCustomQueue =YES;
-    __weak AFNetworkTask *weakSelf = self;
+    NSDictionary *from  =[(Class)data mj_keyValues];
     
-    [self finishedTaskWithQueue:^(AFNetworkMsg *msg, id originalObj, NSDictionary *jsonBody) {
-        if(finishedBlock){
-            finishedBlock(weakSelf,msg.errorCode,msg.httpStatusCode);
-        }
+      [self POST:URLString form:from files:files finishedBlock:finishedBlock];
+}
+
+- (void)POST:(NSString *)URLString
+                      form:(NSDictionary *)form
+                     files:(NSDictionary *)files
+             finishedBlock:(AFNetworkingTaskFinishedBlock)finish{
+    
+    __block typeof(self) weakSelf = self;
+    
+    [self serializeFinishedInCustomQueue];
+    
+    sessionTask =    [self uploadTaskWithHTTPMethod:@"POST" URLString:URLString parameters:form files:files success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+        [weakSelf processSuccessResult:responseObject task:task  finish:finish];
+    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+        [weakSelf processErrorResult:task error:error finish:finish];
     }];
-}
-
--(void)finishedTaskWithQueue:(AFNetworkingTaskFinishedBlock)finishedBlock{
     
-    self.networkingTaskFinishedBlock =finishedBlock;
-    [self prepareRequest];
+}
+#pragma mark - PUT
+
+-(void)PUT:(NSString *)url data:(id<AFNetworkRequestData>)data finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
+    NSDictionary *from  =[(Class)data mj_keyValues];
+    
+      [self PUT:url form:from finishedBlock:finishedBlock];
+}
+
+- (void)PUT:(NSString *)URLString
+                      form:(id)form
+             finishedBlock:(AFNetworkingTaskFinishedBlock)finish{
+    
+    __block typeof(self) weakSelf = self;
+    
+    [self serializeFinishedInCustomQueue];
+    
+    sessionTask =   [self PUT:URLString parameters:form success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+        
+        [weakSelf processSuccessResult:responseObject task:task  finish:finish];
+    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+        
+        [weakSelf processErrorResult:task error:error finish:finish];
+    }];
+    
 }
 
 
+- (void)PUT:(NSString *)URLString
+                      data:(id<AFNetworkRequestData>)data
+                     files:(NSDictionary *)files
+             finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
+    
+    NSDictionary *from  =[(Class)data mj_keyValues];
+    
+      [self PUT:URLString form:from files:files finishedBlock:finishedBlock];
+}
 
--(void)buildPostFileRequest:(NSString *)url files:(NSDictionary *)files{
-    if(analysis.completionCustomQueue){
-        [self serializeFinishedInCustomQueue];
+- (void)PUT:(NSString *)URLString
+                      form:(NSDictionary *)form
+                     files:(NSDictionary *)files
+             finishedBlock:(AFNetworkingTaskFinishedBlock)finish{
+    
+    __block typeof(self) weakSelf = self;
+    
+    [self serializeFinishedInCustomQueue];
+    
+    sessionTask =    [self uploadTaskWithHTTPMethod:@"PUT" URLString:URLString parameters:form files:files success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+        [weakSelf processSuccessResult:responseObject task:task  finish:finish];
+    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+        [weakSelf processErrorResult:task error:error finish:finish];
+    }];
+    
+}
+#pragma mark - PATCH
+
+-(void)PATCH:(NSString *)url finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
+    
+      [self PATCH:url form:nil finishedBlock:finishedBlock];
+}
+-(void)PATCH:(NSString *)url data:(id<AFNetworkRequestData>)data finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
+    NSDictionary *from  =[(Class)data mj_keyValues];
+    
+      [self PATCH:url form:from finishedBlock:finishedBlock];
+}
+
+-(void)PATCH:(NSString *)URLString
+                    form:(NSDictionary *)form
+           finishedBlock:(AFNetworkingTaskFinishedBlock)finish{
+    
+    __block typeof(self) weakSelf = self;
+    
+    [self serializeFinishedInCustomQueue];
+    
+    sessionTask =   [self PATCH:URLString parameters:form success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+        
+        [weakSelf processSuccessResult:responseObject task:task  finish:finish];
+        
+    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+        
+        [weakSelf processErrorResult:task error:error finish:finish];
+        
+    }];
+    
+    
+}
+#pragma mark - DELETE
+
+-(void)DELETE:(NSString *)url finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
+    
+    return [self DELETE:url form:nil finishedBlock:finishedBlock];
+}
+-(void)DELETE:(NSString *)url data:(id<AFNetworkRequestData>)data finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
+    NSDictionary *from  =[(Class)data mj_keyValues];
+    
+      [self DELETE:url form:from finishedBlock:finishedBlock];
+}
+
+-(void)DELETE:(NSString *)URLString
+                      form:(NSDictionary *)form
+             finishedBlock:(AFNetworkingTaskFinishedBlock)finish{
+    
+    __block typeof(self) weakSelf = self;
+    
+    [self serializeFinishedInCustomQueue];
+    
+    sessionTask =   [self DELETE:URLString parameters:form success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+        
+        [weakSelf processSuccessResult:responseObject task:task  finish:finish];
+        
+    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+        
+        [weakSelf processErrorResult:task error:error finish:finish];
+        
+    }];
+    
+    
+}
+#pragma mark - DOWNLOAD
+
+-(void)DOWNLOAD:(NSString *)url  finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
+    
+      [self DOWNLOAD:url form:nil finishedBlock:finishedBlock];
+}
+
+
+- (void)DOWNLOAD:(NSString *)URLString
+                      data:(id<AFNetworkRequestData>)data
+             finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
+    
+    NSDictionary *from  =[(Class)data mj_keyValues];
+    
+      [self DOWNLOAD:URLString form:from  finishedBlock:finishedBlock];
+}
+
+- (void)DOWNLOAD:(NSString *)URLString
+                      form:(NSDictionary *)form
+             finishedBlock:(AFNetworkingTaskFinishedBlock)finish{
+    
+    __block typeof(self) weakSelf = self;
+    
+    [self serializeFinishedInCustomQueue];
+    
+    self.completionQueue = [[self class] afnet_shared_afnetworkCompletionQueue];
+    
+    sessionTask =  [self downloadTaskWithHTTPMethod:@"GET" URLString:URLString parameters:form success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+        [weakSelf processSuccessResult:responseObject task:task  finish:finish];
+    } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
+        [weakSelf processErrorResult:task error:error finish:finish];
+    }];
+    
+}
+//切换到主线程
+-(void)serializeFinishedInCustomQueue{
+    if(container.completionCustomQueue){
+        self.completionQueue = [[self class] afnet_shared_afnetworkCompletionQueue];
     }else{
         self.completionQueue = NULL;
     }
-    
-    __weak AFNetworkTask *weakSelf = self;
-    sessionTask =[self UPLOAD:url parameters:nil files:files progress:^(CGFloat progress) {
-        
-    } finish:^(NSURLSessionTask *task, id responseObject, id target, AFNetworkStatusCode errorCode, NSInteger httpStatusCode) {
-        @try {
-            [weakSelf processDictionary:responseObject];
-        }
-        @catch (NSException *exception) {
-            NSLog(@"buildPostFileRequest:%@",exception);
-        }
-        @finally {
-            [weakSelf processResponseErrorCode:errorCode httpStatusCode:httpStatusCode];
-            [weakSelf processResponse:responseObject];
-            
-            @try {
-                if(weakSelf.networkingTaskFinishedBlock){
-                    weakSelf.networkingTaskFinishedBlock(weakSelf.analysis.msg,weakSelf.analysis.originalBody,weakSelf.analysis.body);
-                }
-            }
-            @catch (NSException *exception) {
-                NSLog(@"buildPostFileRequest:%@",exception);
-            }@finally{
-//                [weakSelf recyle];
-            }
-        }
-        
-        
-    }];
-    
-}
-
--(void)buildPostFileRequest:(NSString *)url form:(NSDictionary *)form files:(NSDictionary *)files{
-    if(analysis.completionCustomQueue){
-        [self serializeFinishedInCustomQueue];
-    }else{
-        self.completionQueue = NULL;
-    }
-    
-    __weak AFNetworkTask *weakSelf = self;
-    
-    sessionTask =[self UPLOAD:url parameters:form files:files progress:^(CGFloat progress) {
-        
-    } finish:^(NSURLSessionTask *task, id responseObject, id target, AFNetworkStatusCode errorCode, NSInteger httpStatusCode) {
-        @try {
-            [weakSelf processDictionary:responseObject];
-        }
-        @catch (NSException *exception) {
-            NSLog(@"buildPostFileRequest:%@",exception);
-        }
-        @finally {
-            [weakSelf processResponseErrorCode:errorCode httpStatusCode:httpStatusCode];
-            [weakSelf processResponse:responseObject];
-            
-            @try {
-                if(weakSelf.networkingTaskFinishedBlock){
-                    weakSelf.networkingTaskFinishedBlock(weakSelf.analysis.msg,weakSelf.analysis.originalBody,weakSelf.analysis.body);
-                }
-            }
-            @catch (NSException *exception) {
-                NSLog(@"buildPostFileRequest:%@",exception);
-            }@finally{
-//                [weakSelf recyle];
-            }
-        }
-        
-        
-    }];
-    
-}
-
--(void)buildPutRequest:(NSString *)url form:(NSDictionary *)form{
-    if(analysis.completionCustomQueue){
-        [self serializeFinishedInCustomQueue];
-    }else{
-        self.completionQueue = NULL;
-    }
-    __weak AFNetworkTask *weakSelf = self;
-    
-    sessionTask =[self PUT:url parameters:form processResult:^(id responseObject) {
-        [weakSelf processDictionary:responseObject];
-    } finish:^(NSURLSessionTask *task, id responseObject, id target, AFNetworkStatusCode errorCode, NSInteger httpStatusCode) {
-        @try {
-            [weakSelf processResponseErrorCode:errorCode httpStatusCode:httpStatusCode];
-            [weakSelf processResponse:responseObject];
-            
-            if(weakSelf.networkingTaskFinishedBlock){
-                weakSelf.networkingTaskFinishedBlock(weakSelf.analysis.msg,weakSelf.analysis.originalBody,weakSelf.analysis.body);
-            }
-        }
-        @catch (NSException *exception) {
-            NSLog(@"buildPostRequest:%@",exception);
-        }@finally{
-//            [weakSelf recyle];
-        }
-    }];
-    
-}
--(void)buildPostRequest:(NSString *)url form:(NSDictionary *)form{
-    if(analysis.completionCustomQueue){
-        [self serializeFinishedInCustomQueue];
-    }else{
-        self.completionQueue = NULL;
-    }
-    __weak AFNetworkTask *weakSelf = self;
-    
-    sessionTask =[self POST:url parameters:form processResult:^(id responseObject) {
-        [weakSelf processDictionary:responseObject];
-    } finish:^(NSURLSessionTask *task, id responseObject, id target, AFNetworkStatusCode errorCode, NSInteger httpStatusCode) {
-        @try {
-            [weakSelf processResponseErrorCode:errorCode httpStatusCode:httpStatusCode];
-            [weakSelf processResponse:responseObject];
-            
-            if(weakSelf.networkingTaskFinishedBlock){
-                weakSelf.networkingTaskFinishedBlock(weakSelf.analysis.msg,weakSelf.analysis.originalBody,weakSelf.analysis.body);
-            }
-        }
-        @catch (NSException *exception) {
-            NSLog(@"buildPostRequest:%@",exception);
-        }@finally{
-//            [weakSelf recyle];
-        }
-    }];
-    
-}
--(void)buildGetRequest:(NSString *)url{
-    
-    [self buildGetRequest:url form:nil];
-    
-}
-
--(void)buildGetRequest:(NSString *)url form:(NSDictionary *)form{
-    if(analysis.completionCustomQueue){
-        [self serializeFinishedInCustomQueue];
-    }else{
-        self.completionQueue = NULL;
-    }
-    
-    __weak AFNetworkTask *weakSelf = self;
-    
-    sessionTask =[self GET:url parameters:form processResult:^(id responseObject) {
-        [weakSelf processDictionary:responseObject];
-        
-    } finish:^(NSURLSessionTask *task, id responseObject, id target, AFNetworkStatusCode errorCode, NSInteger httpStatusCode) {
-        @try {
-            [weakSelf processResponseErrorCode:errorCode httpStatusCode:httpStatusCode];
-            [weakSelf processResponse:responseObject];
-            
-            if(weakSelf.networkingTaskFinishedBlock){
-                weakSelf.networkingTaskFinishedBlock(analysis.msg,analysis.originalBody,analysis.body);
-            }
-            
-        }
-        @catch (NSException *exception) {
-            NSLog(@"buildGetRequest:%@",exception);
-        }@finally{
-//            [weakSelf recyle];
-        }
-    }];
 }
 
 
--(void)buildDeleteRequest:(NSString *)url {
-    if(analysis.completionCustomQueue){
-        [self serializeFinishedInCustomQueue];
-    }else{
-        self.completionQueue = NULL;
+
+
+#pragma mark - process  Result
+-(void)processSuccessResult:(id)responseObject task:(NSURLSessionDataTask * _Nonnull)task   finish:(AFNetworkingTaskFinishedBlock)finish{
+    NSHTTPURLResponse  *response = (NSHTTPURLResponse  *)task.response;
+    
+    [container sessionResponseAdapter:response];
+    
+    id body = [container processSuccessWithTask:task response:response originalObj:responseObject];
+    if(finish){
+        finish(container.msg,responseObject,body);
+    }
+    if(self.finishedTag)
+        [self recyle];
+    else{
+        self.finishedTag = YES;
     }
     
-    __weak AFNetworkTask *weakSelf = self;
-    sessionTask =[self DELETE:url parameters:nil processResult:^(id responseObject) {
-        [weakSelf processDictionary:responseObject];
-    } finish:^(NSURLSessionTask *task, id responseObject, id target, AFNetworkStatusCode errorCode, NSInteger httpStatusCode) {
-        @try {
-            
-            [weakSelf processResponseErrorCode:errorCode httpStatusCode:httpStatusCode];
-            [weakSelf processResponse:responseObject];
-            
-            if(weakSelf.networkingTaskFinishedBlock){
-                weakSelf.networkingTaskFinishedBlock(weakSelf.analysis.msg,weakSelf.analysis.originalBody,weakSelf.analysis.body);
-            }
-        }
-        @catch (NSException *exception) {
-            NSLog(@"buildDeleteRequest:%@",exception);
-        }@finally{
-//            [weakSelf recyle];
-        }
-    }];
 }
+-(void)processErrorResult:(NSURLSessionDataTask * _Nonnull)task error:(NSError *)error finish:(AFNetworkingTaskFinishedBlock)finish{
+    [container processFailWithTask:task error:error];
+    if(finish){
+        finish(container.msg,nil,nil);
+    }
+    if(self.finishedTag)
+        [self recyle];
+    else{
+        self.finishedTag = YES;
+    }
+}
+
+#pragma mark - process  Recyle
 -(void)cancel{
     [sessionTask cancel];
 }
 
 -(void)recyle{
     
-//    self.networkingTaskFinishedBlock = NULL;
     sessionTask = nil;
-    self.responseHeaders = nil;
+    
+    [container recyle];
+    container = nil;
     
     self.securityPolicy = nil;
     self.reachabilityManager = nil;
@@ -394,8 +390,6 @@ static Class networkAnalysis;
     self.completionGroup = nil;
     [self.operationQueue cancelAllOperations];
     self.operationQueue = nil;
-//    _responseSerializer = nil;
-//    _requestSerializer = nil;
     self.lock = nil;
     [self.session finishTasksAndInvalidate];
     self.session = nil;
@@ -418,376 +412,11 @@ static Class networkAnalysis;
     self.downloadTaskDidFinishDownloading = nil;
     self.downloadTaskDidWriteData = nil;
     self.downloadTaskDidResume = nil;
-    
      
-      
-}
-
--(void)processResponse:(id)responseObject{
-    
-    @try {
-        
-        analysis.originalBody = responseObject;
-        [analysis analysisBody];
-        
-    } @catch (NSException *exception) {
-        NSLog(@"%@",exception);
-    } @finally {
-        
-        analysis.msg.responseHeaders =self.responseHeaders;
-    }
-    
-    
-}
-
--(void)processResponseErrorCode:(AFNetworkStatusCode)errorCode  httpStatusCode:(NSInteger)httpStatusCode{
-    
-    analysis.msg.errorCode =errorCode;
-    analysis.msg.httpStatusCode =httpStatusCode;
-     
-}
-
--(BOOL)requestSuccess{
-    return [analysis.msg isSuccess];
-}
--(void)prepareRequest{
-//    NSException *exction =[[NSException alloc] initWithName:@"需要实现方法" reason:@"----prepareRequest----" userInfo:nil];
-//    @throw exction;
-}
--(void)processDictionary:(id)dictionary{
-    
-//    NSException *exction =[[NSException alloc] initWithName:@"需要实现方法" reason:@"----processDictionary:----" userInfo:nil];
-//    @throw exction;
-}
-
-//切换到主线程
--(void)serializeFinishedInCustomQueue{
-    self.completionQueue = [[self class] afnet_sharedafnetworkCompletionQueue];
-}
-
-//执行操作
--(void)executeGet:(NSString *)url  finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
-    [self executeGet:url form:nil finishedBlock:finishedBlock];
-}
--(void)executeDelete:(NSString *)url  finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
-    [self executeDelete:url form:nil finishedBlock:finishedBlock];
-    
-}
-
--(void)executeGet:(NSString *)url form:(NSDictionary *)form finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
-    self.networkingTaskFinishedBlock = finishedBlock;
-    
-    if(analysis.completionCustomQueue){
-        [self serializeFinishedInCustomQueue];
-    }else{
-        self.completionQueue = NULL;
-    }
-    
-    __weak AFNetworkTask *weakSelf = self;
-    
-    sessionTask =[self GET:url parameters:form processResult:^(id responseObject) {
-        [weakSelf processDictionary:responseObject];
-        
-    } finish:^(NSURLSessionTask *task, id responseObject, id target, AFNetworkStatusCode errorCode, NSInteger httpStatusCode) {
-        @try {
-            [weakSelf processResponseErrorCode:errorCode httpStatusCode:httpStatusCode];
-            [weakSelf processResponse:responseObject];
-            
-            if(weakSelf.networkingTaskFinishedBlock){
-                weakSelf.networkingTaskFinishedBlock(weakSelf.analysis.msg,weakSelf.analysis.originalBody,weakSelf.analysis.body);
-            }
-            
-        }
-        @catch (NSException *exception) {
-            NSLog(@"buildGetRequest:%@",exception);
-        }@finally{
-//            [weakSelf recyle];
-        }
-    }];
-    
-}
--(void)executePUT:(NSString *)url form:(NSDictionary *)form finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
-    self.networkingTaskFinishedBlock = finishedBlock;
-    
-    if(analysis.completionCustomQueue){
-        [self serializeFinishedInCustomQueue];
-    }else{
-        self.completionQueue = NULL;
-    }
-    
-    __weak AFNetworkTask *weakSelf = self;
-    sessionTask =[self PUT:url parameters:form processResult:^(id responseObject) {
-        [weakSelf processDictionary:responseObject];
-    } finish:^(NSURLSessionTask *task, id responseObject, id target, AFNetworkStatusCode errorCode, NSInteger httpStatusCode) {
-        @try {
-            [weakSelf processResponseErrorCode:errorCode httpStatusCode:httpStatusCode];
-            [weakSelf processResponse:responseObject];
-            
-            if(weakSelf.networkingTaskFinishedBlock){
-                weakSelf.networkingTaskFinishedBlock(weakSelf.analysis.msg,weakSelf.analysis.originalBody,weakSelf.analysis.body);
-            }
-        }
-        @catch (NSException *exception) {
-            NSLog(@"buildPostRequest:%@",exception);
-        }@finally{
-            [weakSelf recyle];
-        }
-    }];
-    
-}
--(void)executePATCH:(NSString *)url form:(NSDictionary *)form finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
-    self.networkingTaskFinishedBlock = finishedBlock;
-    
-    if(analysis.completionCustomQueue){
-        [self serializeFinishedInCustomQueue];
-    }else{
-        self.completionQueue = NULL;
-    }
-    
-    __weak AFNetworkTask *weakSelf = self;
-    sessionTask =[self PATCH:url parameters:form processResult:^(id responseObject) {
-        [weakSelf processDictionary:responseObject];
-    } finish:^(NSURLSessionTask *task, id responseObject, id target, AFNetworkStatusCode errorCode, NSInteger httpStatusCode) {
-        @try {
-            [weakSelf processResponseErrorCode:errorCode httpStatusCode:httpStatusCode];
-            [weakSelf processResponse:responseObject];
-            
-            if(weakSelf.networkingTaskFinishedBlock){
-                weakSelf.networkingTaskFinishedBlock(weakSelf.analysis.msg,weakSelf.analysis.originalBody,weakSelf.analysis.body);
-            }
-        }
-        @catch (NSException *exception) {
-            NSLog(@"buildPostRequest:%@",exception);
-        }@finally{
-//            [weakSelf recyle];
-        }
-    }];
-    
-}
--(void)executePOST:(NSString *)url form:(NSDictionary *)form finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
-    self.networkingTaskFinishedBlock = finishedBlock;
-    
-    if(analysis.completionCustomQueue){
-        [self serializeFinishedInCustomQueue];
-    }else{
-        self.completionQueue = NULL;
-    }
-    
-    __weak AFNetworkTask *weakSelf = self;
-    sessionTask =[self POST:url parameters:form processResult:^(id responseObject) {
-        [weakSelf processDictionary:responseObject];
-    } finish:^(NSURLSessionTask *task, id responseObject, id target, AFNetworkStatusCode errorCode, NSInteger httpStatusCode) {
-        @try {
-            [weakSelf processResponseErrorCode:errorCode httpStatusCode:httpStatusCode];
-            [weakSelf processResponse:responseObject];
-            
-            if(weakSelf.networkingTaskFinishedBlock){
-                weakSelf.networkingTaskFinishedBlock(weakSelf.analysis.msg,weakSelf.analysis.originalBody,weakSelf.analysis.body);
-            }
-        }
-        @catch (NSException *exception) {
-            NSLog(@"buildPostRequest:%@",exception);
-        }@finally{
-//            [weakSelf recyle];
-        }
-    }];
-    
-}
--(void)executePostFile:(NSString *)url files:(NSDictionary *)files finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
-    [self executePostFile:url form:nil files:files finishedBlock:finishedBlock];
-}
--(void)executePostFile:(NSString *)url form:(NSDictionary *)form  files:(NSDictionary *)files finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
-    self.networkingTaskFinishedBlock = finishedBlock;
-    
-    if(analysis.completionCustomQueue){
-        [self serializeFinishedInCustomQueue];
-    }else{
-        self.completionQueue = NULL;
-    }
-    
-    __weak AFNetworkTask *weakSelf = self;
-    sessionTask =[self UPLOAD:url parameters:form files:files progress:^(CGFloat progress) {
-        
-    } finish:^(NSURLSessionTask *task, id responseObject, id target, AFNetworkStatusCode errorCode, NSInteger httpStatusCode) {
-        @try {
-            [self processDictionary:responseObject];
-        }
-        @catch (NSException *exception) {
-            NSLog(@"buildPostFileRequest:%@",exception);
-        }
-        @finally {
-            [weakSelf processResponseErrorCode:errorCode httpStatusCode:httpStatusCode];
-            [weakSelf processResponse:responseObject];
-            
-            @try {
-                if(weakSelf.networkingTaskFinishedBlock){
-                    weakSelf.networkingTaskFinishedBlock(weakSelf.analysis.msg,weakSelf.analysis.originalBody,weakSelf.analysis.body);
-                }
-            }
-            @catch (NSException *exception) {
-                NSLog(@"buildPostFileRequest:%@",exception);
-            }@finally{
-//                [weakSelf recyle];
-            }
-        }
-        
-        
-    }];
-    
-}
--(void)executePutFile:(NSString *)url files:(NSDictionary *)files finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
-    [self executePutFile:url form:nil files:files finishedBlock:finishedBlock];
-}
--(void)executePutFile:(NSString *)url form:(NSDictionary *)form  files:(NSDictionary *)files finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
-    self.networkingTaskFinishedBlock = finishedBlock;
-    
-    if(analysis.completionCustomQueue){
-        [self serializeFinishedInCustomQueue];
-    }else{
-        self.completionQueue = NULL;
-    }
-    
-    __weak AFNetworkTask *weakSelf = self;
-    sessionTask =[self PUT:url parameters:form files:files progress:^(CGFloat progress) {
-        
-    } finish:^(NSURLSessionTask *task, id responseObject, id target, AFNetworkStatusCode errorCode, NSInteger httpStatusCode) {
-        @try {
-            [self processDictionary:responseObject];
-        }
-        @catch (NSException *exception) {
-            NSLog(@"buildPostFileRequest:%@",exception);
-        }
-        @finally {
-            [weakSelf processResponseErrorCode:errorCode httpStatusCode:httpStatusCode];
-            [weakSelf processResponse:responseObject];
-            
-            @try {
-                if(weakSelf.networkingTaskFinishedBlock){
-                    weakSelf.networkingTaskFinishedBlock(weakSelf.analysis.msg,weakSelf.analysis.originalBody,weakSelf.analysis.body);
-                }
-            }
-            @catch (NSException *exception) {
-                NSLog(@"buildPostFileRequest:%@",exception);
-            }@finally{
-                //                [weakSelf recyle];
-            }
-        }
-        
-        
-    }];
-    
-}
--(void)executeDelete:(NSString *)url form:(NSDictionary *)form finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
-    self.networkingTaskFinishedBlock = finishedBlock;
-    
-    if(analysis.completionCustomQueue){
-        [self serializeFinishedInCustomQueue];
-    }else{
-        self.completionQueue = NULL;
-    }
-    
-    __weak AFNetworkTask *weakSelf = self;
-    sessionTask =[self DELETE:url parameters:form processResult:^(id responseObject) {
-        [weakSelf processDictionary:responseObject];
-    } finish:^(NSURLSessionTask *task, id responseObject, id target, AFNetworkStatusCode errorCode, NSInteger httpStatusCode) {
-        @try {
-            [weakSelf processResponseErrorCode:errorCode httpStatusCode:httpStatusCode];
-            [weakSelf processResponse:responseObject];
-            
-            if(weakSelf.networkingTaskFinishedBlock){
-                weakSelf.networkingTaskFinishedBlock(weakSelf.analysis.msg,weakSelf.analysis.originalBody,weakSelf.analysis.body);
-            }
-        }
-        @catch (NSException *exception) {
-            NSLog(@"buildDeleteRequest:%@",exception);
-        }@finally{
-//            [weakSelf recyle];
-        }
-    }];
-
 }
 
 -(void)dealloc{
-    
-    self.networkingTaskFinishedBlock = NULL;
-    [analysis recyle];
-    analysis = nil;
-#if DEBUG
-//    NSLog(@"---开发测试阶段，打印网络协议对象回收日志----");
-#endif
+//    NSLog(@"------%@ dealloc",self.class);
 }
 
--(void)executeGetFile:(NSString *)url form:(NSDictionary *)form  finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
-    self.networkingTaskFinishedBlock = finishedBlock;
-    
-    if(analysis.completionCustomQueue){
-        [self serializeFinishedInCustomQueue];
-    }else{
-        self.completionQueue = NULL;
-    }
-    
-    
-    __weak AFNetworkTask *weakSelf = self;
-    [self DOWNLOAD:url parameters:form progress:^(CGFloat progress) {
-        
-    } finish:^(NSURLSessionTask *task, id responseObject, id target, AFNetworkStatusCode errorCode, NSInteger httpStatusCode) {
-        @try {
-            [weakSelf processResponseErrorCode:errorCode httpStatusCode:httpStatusCode];
-            [weakSelf processResponse:responseObject];
-            
-            if(weakSelf.networkingTaskFinishedBlock){
-                weakSelf.networkingTaskFinishedBlock(weakSelf.analysis.msg,weakSelf.analysis.originalBody,weakSelf.analysis.body);
-            }
-        }
-        @catch (NSException *exception) {
-            NSLog(@"buildDeleteRequest:%@",exception);
-        }@finally{
-//            [weakSelf recyle];
-        }
-    }];
-    
-}
--(void)executeGet:(NSString *)url data:(NSObject<AFNetworkRequestData> *)data finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
-    NSDictionary *from  =[data mj_keyValues];
-    
-    [self executeGet:url form:from finishedBlock:finishedBlock];
-    
-}
--(void)executePUT:(NSString *)url data:(NSObject<AFNetworkRequestData> *)data finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
-    NSDictionary *from  =[data mj_keyValues];
-    
-    [self executePUT:url form:from finishedBlock:finishedBlock];
-}
--(void)executePATCH:(NSString *)url data:(NSObject<AFNetworkRequestData> *)data finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
-    NSDictionary *from  =[data mj_keyValues];
-    
-    [self executePATCH:url form:from finishedBlock:finishedBlock];
-}
--(void)executePOST:(NSString *)url data:(NSObject<AFNetworkRequestData> *)data finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
-    NSDictionary *from  =[data mj_keyValues];
-    
-    [self executePOST:url form:from finishedBlock:finishedBlock];
-}
--(void)executePostFile:(NSString *)url data:(NSObject<AFNetworkRequestData> *)data  files:(NSDictionary *)files finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
-    
-    NSDictionary *from  =[data mj_keyValues];
-    
-    [self executePostFile:url form:from files:files finishedBlock:finishedBlock];
-}
--(void)executePutFile:(NSString *)url data:(NSObject<AFNetworkRequestData> *)data  files:(NSDictionary *)files finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
-    
-    NSDictionary *from  =[data mj_keyValues];
-    
-    [self executePutFile:url form:from files:files finishedBlock:finishedBlock];
-}
--(void)executeDelete:(NSString *)url data:(NSObject<AFNetworkRequestData> *)data finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
-    NSDictionary *from  =[data mj_keyValues];
-    
-    [self executeDelete:url form:from finishedBlock:finishedBlock];
-}
--(void)executeGetFile:(NSString *)url data:(NSObject<AFNetworkRequestData> *)data  finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
-    NSDictionary *from  =[data mj_keyValues];
-    
-    [self executeGetFile:url form:from finishedBlock:finishedBlock];
-}
 @end
