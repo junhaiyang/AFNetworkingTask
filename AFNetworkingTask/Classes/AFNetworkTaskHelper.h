@@ -1,10 +1,4 @@
-//
-//  AFNetworkTaskHelper.h
-//  Pods
-//
-//  Created by junhai on 16/9/29.
-//
-//
+ 
 
 #import <Foundation/Foundation.h>
 
@@ -42,7 +36,4 @@ typedef NS_ENUM(NSInteger, AFNetworkRequestProtocolType) {
     AFNetworkRequestProtocolTypeJSON,              //请求协议类型，发JSON格式提交
 };
 
-
-@interface AFNetworkTaskHelper : NSObject
-
-@end
+ 

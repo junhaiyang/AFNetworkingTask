@@ -14,7 +14,7 @@
 		2C1F7B181BEC341C00EAEE6B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2C1F7B171BEC341C00EAEE6B /* Assets.xcassets */; };
 		2C1F7B1B1BEC341C00EAEE6B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C1F7B191BEC341C00EAEE6B /* LaunchScreen.storyboard */; };
 		2CC45C401BEC757C00044EBF /* UserData.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CC45C3E1BEC757C00044EBF /* UserData.m */; };
-		4DF358E0D3B8EE714CA76822 /* libPods-AFNetworkingTask.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E785AB6C0B97179610EBA4DE /* libPods-AFNetworkingTask.a */; };
+		81E99BAE9A85798E9768F673 /* libPods-AFNetworkingTask.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 92BEDB04469AE31B2A702584 /* libPods-AFNetworkingTask.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,7 +31,7 @@
 		2CC45C3D1BEC757C00044EBF /* UserData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserData.h; sourceTree = "<group>"; };
 		2CC45C3E1BEC757C00044EBF /* UserData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserData.m; sourceTree = "<group>"; };
 		5509A9F2382DA3F8CDFA51B8 /* Pods-AFNetworkingTask.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AFNetworkingTask.release.xcconfig"; path = "Pods/Target Support Files/Pods-AFNetworkingTask/Pods-AFNetworkingTask.release.xcconfig"; sourceTree = "<group>"; };
-		E785AB6C0B97179610EBA4DE /* libPods-AFNetworkingTask.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AFNetworkingTask.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		92BEDB04469AE31B2A702584 /* libPods-AFNetworkingTask.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AFNetworkingTask.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E81474BCA9FEC61C90C4CD3F /* Pods-AFNetworkingTask.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AFNetworkingTask.debug.xcconfig"; path = "Pods/Target Support Files/Pods-AFNetworkingTask/Pods-AFNetworkingTask.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -40,7 +40,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4DF358E0D3B8EE714CA76822 /* libPods-AFNetworkingTask.a in Frameworks */,
+				81E99BAE9A85798E9768F673 /* libPods-AFNetworkingTask.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -103,7 +103,7 @@
 		F8E6BA5DB6BB08E94EBD1675 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				E785AB6C0B97179610EBA4DE /* libPods-AFNetworkingTask.a */,
+				92BEDB04469AE31B2A702584 /* libPods-AFNetworkingTask.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

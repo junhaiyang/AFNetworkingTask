@@ -1,10 +1,4 @@
-//
-//  AFGIFResponseSerializer.m
-//  Pods
-//
-//  Created by junhai on 15/11/12.
-//
-//
+ 
 
 #import "AFGIFResponseSerializer.h"
 #import "YLGIFImage.h"

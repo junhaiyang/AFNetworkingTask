@@ -3,6 +3,7 @@
 #import "AFNetworkTask.h"
 #import "AFNetworkActivityLogger.h"
 #import "MJExtension.h"
+#import "AFNetworkAdapter.h"
 
 
 
@@ -68,7 +69,7 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 @implementation AFNetworkTask
 @synthesize container;
 @synthesize sessionTask;
-- (instancetype)initWithContainer:(AFNetworkContainer *)_container
+- (instancetype)initWithContainer:(AFNetworkContainer * _Nonnull)_container
 {
     self = [super init];
     if (self) {
@@ -87,28 +88,28 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
     return self;
 }
 
--(AFHTTPResponseSerializer<AFURLResponseSerialization> *)responseSerializer{
+-(AFHTTPResponseSerializer<AFURLResponseSerialization> * _Nonnull)responseSerializer{
     
     
     return [container.serializerAdapter responseSerializer:container.responseType];
 }
--(AFHTTPRequestSerializer<AFURLRequestSerialization> *)requestSerializer{
+-(AFHTTPRequestSerializer<AFURLRequestSerialization> * _Nonnull)requestSerializer{
     return [container.serializerAdapter requestSerializer:container.requestType];
 }
 #pragma mark - GET
 
--(void)GET:(NSString *)url  finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
+-(void)GET:(NSString * _Nonnull)url  finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finishedBlock{
       [self GET:url form:nil finishedBlock:finishedBlock];
 }
--(void)GET:(NSString *)url data:(id<AFNetworkRequestData>)data finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
+-(void)GET:(NSString * _Nonnull)url data:(id<AFNetworkRequestData> _Nullable)data finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finishedBlock{
     NSDictionary *from  =[(Class)data mj_keyValues];
     
       [self GET:url form:from finishedBlock:finishedBlock];
 }
 
--(void)GET:(NSString *)URLString
-               form:(NSDictionary *)form
-                   finishedBlock:(AFNetworkingTaskFinishedBlock)finish{
+-(void)GET:(NSString * _Nonnull)URLString
+               form:(NSDictionary * _Nullable)form
+                   finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finish{
     
     __block AFNetworkTask *weakSelf = self;
     
@@ -128,15 +129,15 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 }
 #pragma mark - POST
 
--(void)POST:(NSString *)url data:(id<AFNetworkRequestData>)data finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
+-(void)POST:(NSString * _Nonnull)url data:(id<AFNetworkRequestData> _Nullable)data finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finishedBlock{
     NSDictionary *from  =[(Class)data mj_keyValues];
     
     return [self POST:url form:from finishedBlock:finishedBlock];
 }
 
-- (void)POST:(NSString *)URLString
-                      form:(id)form
-             finishedBlock:(AFNetworkingTaskFinishedBlock)finish{
+- (void)POST:(NSString * _Nonnull)URLString
+            form:(NSDictionary * _Nullable)form
+             finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finish{
     
     __block typeof(self) weakSelf = self;
     
@@ -153,20 +154,20 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 }
 
 
-- (void)POST:(NSString *)URLString
-                      data:(id<AFNetworkRequestData>)data
-                      files:(NSDictionary *)files 
-             finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
+- (void)POST:(NSString * _Nonnull)URLString
+                      data:(id<AFNetworkRequestData> _Nullable)data
+                      files:(NSDictionary * _Nullable)files
+             finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finishedBlock{
     
     NSDictionary *from  =[(Class)data mj_keyValues];
     
       [self POST:URLString form:from files:files finishedBlock:finishedBlock];
 }
 
-- (void)POST:(NSString *)URLString
-                      form:(NSDictionary *)form
-                     files:(NSDictionary *)files
-             finishedBlock:(AFNetworkingTaskFinishedBlock)finish{
+- (void)POST:(NSString * _Nonnull)URLString
+                      form:(NSDictionary * _Nullable)form
+                     files:(NSDictionary * _Nullable)files
+             finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finish{
     
     __block typeof(self) weakSelf = self;
     
@@ -181,15 +182,15 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 }
 #pragma mark - PUT
 
--(void)PUT:(NSString *)url data:(id<AFNetworkRequestData>)data finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
+-(void)PUT:(NSString * _Nonnull)url data:(id<AFNetworkRequestData> _Nullable)data finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finishedBlock{
     NSDictionary *from  =[(Class)data mj_keyValues];
     
       [self PUT:url form:from finishedBlock:finishedBlock];
 }
 
-- (void)PUT:(NSString *)URLString
-                      form:(id)form
-             finishedBlock:(AFNetworkingTaskFinishedBlock)finish{
+- (void)PUT:(NSString * _Nonnull)URLString
+                form:(NSDictionary * _Nullable)form
+             finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finish{
     
     __block typeof(self) weakSelf = self;
     
@@ -206,20 +207,20 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 }
 
 
-- (void)PUT:(NSString *)URLString
-                      data:(id<AFNetworkRequestData>)data
-                     files:(NSDictionary *)files
-             finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
+- (void)PUT:(NSString * _Nonnull)URLString
+                      data:(id<AFNetworkRequestData> _Nullable)data
+                     files:(NSDictionary * _Nullable)files
+             finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finishedBlock{
     
     NSDictionary *from  =[(Class)data mj_keyValues];
     
       [self PUT:URLString form:from files:files finishedBlock:finishedBlock];
 }
 
-- (void)PUT:(NSString *)URLString
-                      form:(NSDictionary *)form
-                     files:(NSDictionary *)files
-             finishedBlock:(AFNetworkingTaskFinishedBlock)finish{
+- (void)PUT:(NSString * _Nonnull)URLString
+                      form:(NSDictionary * _Nullable)form
+                     files:(NSDictionary * _Nullable)files
+             finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finish{
     
     __block typeof(self) weakSelf = self;
     
@@ -234,19 +235,19 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 }
 #pragma mark - PATCH
 
--(void)PATCH:(NSString *)url finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
+-(void)PATCH:(NSString * _Nonnull)url finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finishedBlock{
     
       [self PATCH:url form:nil finishedBlock:finishedBlock];
 }
--(void)PATCH:(NSString *)url data:(id<AFNetworkRequestData>)data finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
+-(void)PATCH:(NSString * _Nonnull)url data:(id<AFNetworkRequestData> _Nullable)data finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finishedBlock{
     NSDictionary *from  =[(Class)data mj_keyValues];
     
       [self PATCH:url form:from finishedBlock:finishedBlock];
 }
 
--(void)PATCH:(NSString *)URLString
-                    form:(NSDictionary *)form
-           finishedBlock:(AFNetworkingTaskFinishedBlock)finish{
+-(void)PATCH:(NSString * _Nonnull)URLString
+                    form:(NSDictionary * _Nullable)form
+           finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finish{
     
     __block typeof(self) weakSelf = self;
     
@@ -266,19 +267,19 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 }
 #pragma mark - DELETE
 
--(void)DELETE:(NSString *)url finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
+-(void)DELETE:(NSString * _Nonnull)url finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finishedBlock{
     
     return [self DELETE:url form:nil finishedBlock:finishedBlock];
 }
--(void)DELETE:(NSString *)url data:(id<AFNetworkRequestData>)data finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
+-(void)DELETE:(NSString * _Nonnull)url data:(id<AFNetworkRequestData> _Nullable)data finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finishedBlock{
     NSDictionary *from  =[(Class)data mj_keyValues];
     
       [self DELETE:url form:from finishedBlock:finishedBlock];
 }
 
--(void)DELETE:(NSString *)URLString
-                      form:(NSDictionary *)form
-             finishedBlock:(AFNetworkingTaskFinishedBlock)finish{
+-(void)DELETE:(NSString * _Nonnull)URLString
+                      form:(NSDictionary * _Nullable)form
+             finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finish{
     
     __block typeof(self) weakSelf = self;
     
@@ -298,24 +299,24 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 }
 #pragma mark - DOWNLOAD
 
--(void)DOWNLOAD:(NSString *)url  finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
+-(void)DOWNLOAD:(NSString * _Nonnull)url  finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finishedBlock{
     
       [self DOWNLOAD:url form:nil finishedBlock:finishedBlock];
 }
 
 
-- (void)DOWNLOAD:(NSString *)URLString
-                      data:(id<AFNetworkRequestData>)data
-             finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock{
+- (void)DOWNLOAD:(NSString * _Nonnull)URLString
+                      data:(id<AFNetworkRequestData> _Nullable)data
+             finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finishedBlock{
     
     NSDictionary *from  =[(Class)data mj_keyValues];
     
       [self DOWNLOAD:URLString form:from  finishedBlock:finishedBlock];
 }
 
-- (void)DOWNLOAD:(NSString *)URLString
-                      form:(NSDictionary *)form
-             finishedBlock:(AFNetworkingTaskFinishedBlock)finish{
+- (void)DOWNLOAD:(NSString * _Nonnull)URLString
+                      form:(NSDictionary * _Nullable)form
+             finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finish{
     
     __block typeof(self) weakSelf = self;
     
@@ -343,7 +344,7 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 
 
 #pragma mark - process  Result
--(void)processSuccessResult:(id)responseObject task:(NSURLSessionDataTask * _Nonnull)task   finish:(AFNetworkingTaskFinishedBlock)finish{
+-(void)processSuccessResult:(id _Nullable)responseObject task:(NSURLSessionDataTask * _Nonnull)task   finish:(AFNetworkingTaskFinishedBlock _Nullable)finish{
     NSHTTPURLResponse  *response = (NSHTTPURLResponse  *)task.response;
     
     [container sessionResponseAdapter:response];
@@ -359,7 +360,7 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
     }
     
 }
--(void)processErrorResult:(NSURLSessionDataTask * _Nonnull)task error:(NSError *)error finish:(AFNetworkingTaskFinishedBlock)finish{
+-(void)processErrorResult:(NSURLSessionDataTask * _Nonnull)task error:(NSError * _Nullable)error finish:(AFNetworkingTaskFinishedBlock _Nullable)finish{
     [container processFailWithTask:task error:error];
     if(finish){
         finish(container.msg,nil,nil);

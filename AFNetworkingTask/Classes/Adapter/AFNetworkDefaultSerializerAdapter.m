@@ -7,8 +7,8 @@
 @implementation AFNetworkDefaultSerializerAdapter
  
 
--(AFHTTPResponseSerializer<AFURLResponseSerialization> *)responseSerializer:(AFNetworkResponseProtocolType)responseType{
-    AFHTTPResponseSerializer *responseSerializer;
+-(AFHTTPResponseSerializer<AFURLResponseSerialization> * _Nonnull)responseSerializer:(AFNetworkResponseProtocolType)responseType{
+    AFHTTPResponseSerializer * _Nonnull responseSerializer;
     if(responseType==AFNetworkResponseProtocolTypeNormal){
         responseSerializer= [AFTextResponseSerializer serializer];
         responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"text/html",@"text/xml", @"text/asa" ,@"text/asp",@"text/scriptlet",@"text/vnd.wap.wml",@"text/plain",@"text/webviewhtml",@"text/x-ms-odc",@"text/css",@"text/vnd.rn-realtext3d",@"text/vnd.rn-realtext",@"text/iuls",@"text/x-vcard",@"application/json",nil];
@@ -22,8 +22,8 @@
     
     return responseSerializer;
 }
--(AFHTTPRequestSerializer<AFURLRequestSerialization> *)requestSerializer:(AFNetworkRequestProtocolType)requestType{
-    AFHTTPRequestSerializer *requestSerializer;
+-(AFHTTPRequestSerializer<AFURLRequestSerialization> * _Nonnull)requestSerializer:(AFNetworkRequestProtocolType)requestType{
+    AFHTTPRequestSerializer * _Nonnull requestSerializer;
     if(requestType==AFNetworkRequestProtocolTypeJSON){
         requestSerializer= [AFJSONRequestSerializer serializer];
         //去掉所有限制

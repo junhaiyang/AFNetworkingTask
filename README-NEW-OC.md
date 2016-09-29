@@ -1,7 +1,8 @@
-# 新版本接口(2.0)
+# AFNetworkingTask(2.0) for OC
  
 ####基本请求
  
+		#import "AFNetworkTask.h"
  		//声明构造
  		
     	AFNetworkContainer *container =[AFNetworkContainer new];

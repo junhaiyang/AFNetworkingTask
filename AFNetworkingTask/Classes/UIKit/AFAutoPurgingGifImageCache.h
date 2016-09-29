@@ -1,6 +1,13 @@
  
 
-#import "TMCache.h"
+#import "AFNetworkSwiftDefine.h"
+
+#ifdef AF_NETWORK_SWIFT
+    #import <TMCache/TMCache.h>
+#else
+    #import "TMCache.h"
+#endif
+
 #import "UIImageView+GIF+AFNetworking.h"
 
 @interface AFAutoPurgingGifImageCache : TMCache<AFGIFCache>

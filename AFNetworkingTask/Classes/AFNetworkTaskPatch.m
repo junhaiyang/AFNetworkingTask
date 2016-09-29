@@ -1,6 +1,6 @@
  
 
-#import "AFNetworkTaskPatch.h"
+#import "AFNetworkTaskPatch.h" 
 
 #import "AFTextResponseSerializer.h"
 #import "AFNetworkActivityLogger.h"
@@ -36,7 +36,7 @@
     self.myprogressBlock = NULL;
 }
 
-- (NSURLSessionDataTask *)dataTaskWithHTTPMethod:(NSString *)method
+- (nullable NSURLSessionDataTask *)dataTaskWithHTTPMethod:(NSString *)method
                                        URLString:(NSString *)URLString
                                       parameters:(id)parameters
                                   uploadProgress:(nullable void (^)(NSProgress *uploadProgress)) uploadProgress
@@ -79,11 +79,11 @@
     return dataTask;
 }
 
-- (NSURLSessionUploadTask *)downloadTaskWithHTTPMethod:(NSString *)method
+- (nullable NSURLSessionUploadTask *)downloadTaskWithHTTPMethod:(NSString *)method
                                              URLString:(NSString *)URLString
                                             parameters:(id)parameters
-                                               success:(void (^)(NSURLSessionDataTask *, id))success
-                                               failure:(void (^)(NSURLSessionDataTask *, NSError *))failure
+                                               success:(void (^)(NSURLSessionDataTask *_Nonnull task, id  _Nonnull responseObject))success
+                                               failure:(void (^)(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error))failure
 {
     NSError *serializationError = nil;
     NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:method URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:parameters error:&serializationError];
@@ -146,12 +146,12 @@
     return dataTask;
 }
 
-- (NSURLSessionUploadTask *)uploadTaskWithHTTPMethod:(NSString *)method
+- (nullable NSURLSessionUploadTask *)uploadTaskWithHTTPMethod:(NSString *)method
                                            URLString:(NSString *)URLString
                                           parameters:(id)parameters
                                                files:(id)files
-                                             success:(void (^)(NSURLSessionDataTask *, id))success
-                                             failure:(void (^)(NSURLSessionDataTask *, NSError *))failure
+                                             success:(void (^)(NSURLSessionDataTask *_Nonnull task, id  _Nonnull responseObject))success
+                                             failure:(void (^)(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error))failure
 {
     
     NSError *serializationError = nil;
@@ -245,7 +245,7 @@
             r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9], r[10], r[11], r[12], r[13], r[14], r[15]];
 }
 
-+(NSURL *)pathWithURL:(NSString *)URLString{
++(NSURL * _Nonnull)pathWithURL:(NSString * _Nonnull)URLString{
     
     
     NSString * temp = NSTemporaryDirectory();

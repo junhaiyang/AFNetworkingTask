@@ -4,6 +4,6 @@
 
 @interface AFNetworkDataCovertModelAdapter : AFNetworkDataAdapter
 
--(void)addStructure:(Class)clazz; 
+-(void)addStructure:(Class _Nonnull)clazz;
  
 @end

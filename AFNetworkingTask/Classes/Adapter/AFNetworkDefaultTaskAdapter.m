@@ -5,10 +5,10 @@
 @implementation AFNetworkDefaultTaskAdapter
 
 
--(void)request:(NSMutableURLRequest *)request{
+-(void)request:(NSMutableURLRequest * _Nonnull)request{
 
 }
--(void)response:(NSHTTPURLResponse *)response msg:(AFNetworkMsg *)msg{ 
+-(void)response:(NSHTTPURLResponse * _Nonnull)response msg:(AFNetworkMsg * _Nullable)msg{ 
     msg.httpStatusCode =response.statusCode;
     msg.responseHeaders = [[NSDictionary alloc] initWithDictionary:[response allHeaderFields]];
 }

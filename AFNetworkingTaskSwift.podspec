@@ -2,7 +2,7 @@
 Pod::Spec.new do |s|
  
 
-  s.name         = "AFNetworkingTask"
+  s.name         = "AFNetworkingTaskSwift"
   s.version      = "1.2.4"
   s.summary      = "AFNetworking Sample Task....."
  
@@ -29,9 +29,9 @@ Pod::Spec.new do |s|
          
   end 
 
-  s.subspec 'oc' do |ks| 
+  s.subspec 'swift' do |ks| 
        
-      ks.source_files = 'AFNetworkingTask/Classes/oc/*.{h,m,mm}' 
+      ks.source_files = 'AFNetworkingTask/Classes/swift/*.{h,m,mm}' 
          
          
   end 
@@ -54,11 +54,11 @@ Pod::Spec.new do |s|
     ds.source_files = 'AFNetworkingTask/Classes/AFNetworkActivityLogger/*.{h,m,mm}' 
           
   end
-  s.subspec 'AFgzipRequestSerializer' do |ds|
-    
-    ds.source_files = 'AFNetworkingTask/Classes/AFgzipRequestSerializer/*.{h,m,mm}' 
-          
-  end
+ # s.subspec 'AFgzipRequestSerializer' do |ds|
+ #   
+ #   ds.source_files = 'AFNetworkingTask/Classes/AFgzipRequestSerializer/*.{h,m,mm}' 
+ #         
+ # end
   s.subspec 'NSObjectKeyValueOption' do |ds|
     
     ds.source_files = 'AFNetworkingTask/Classes/NSObjectKeyValueOption/*.{h,m,mm}' 
@@ -74,7 +74,7 @@ Pod::Spec.new do |s|
   end 
 
   s.dependency 'AFNetworking' , '~> 3.1.0'
-  s.dependency 'Godzippa' , '~> 1.1.0'
+  #s.dependency 'Godzippa' , '~> 1.1.0'
   s.dependency 'YLGIFImage'  , '~> 0.11'
   s.dependency 'TMCache' , '~> 2.1.0'
   s.dependency 'MJExtension' , '~> 3.0.10' 

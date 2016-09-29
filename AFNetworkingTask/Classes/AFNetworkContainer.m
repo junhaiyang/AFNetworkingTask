@@ -4,6 +4,7 @@
 #import "AFNetworkDefaultSerializerAdapter.h"
 #import "AFNetworkDefaultTaskAdapter.h" 
 #import "AFNetworkDataCovertModelAdapter.h"
+#import "AFNetworkAdapter.h"
 
 @implementation AFNetworkMsg
 
@@ -48,27 +49,27 @@
 }
 
 -(void)addDefaultStructure:(Class)clazz{
-    AFNetworkDataCovertModelAdapter *dataAdapter =[AFNetworkDataCovertModelAdapter new];
+    AFNetworkDataCovertModelAdapter * _Nonnull dataAdapter =[AFNetworkDataCovertModelAdapter new];
     [dataAdapter addStructure:clazz]; 
     [self addDataAdapter:dataAdapter];
 
 }
 
--(void)addSessionAdapter:(AFNetworkTaskAdapter *)adapter{
+-(void)addSessionAdapter:(AFNetworkTaskAdapter * _Nonnull)adapter{
     [sessionAdapters addObject:adapter];
 }
--(void)addDataAdapter:(AFNetworkDataAdapter *)adapter{
+-(void)addDataAdapter:(AFNetworkDataAdapter * _Nonnull)adapter{
     [dataAdapters addObject:adapter];
 }
 
--(AFNetworkSerializerAdapter *)serializerAdapter{
+-(AFNetworkSerializerAdapter * _Nonnull)serializerAdapter{
     if(serializerAdapter==nil){
         return [AFNetworkDefaultSerializerAdapter new];
     }
     
     return serializerAdapter;
 }
--(NSArray<AFNetworkTaskAdapter *> *)sessionAdapters{
+-(NSArray<AFNetworkTaskAdapter *> * _Nonnull)sessionAdapters{
     if(sessionAdapters.count==0){
         return @[[AFNetworkDefaultTaskAdapter new]];
     }
@@ -79,38 +80,46 @@
 
 
 
--(void)sessionRequestAdapter:(NSMutableURLRequest *)request{
+-(void)sessionRequestAdapter:(NSMutableURLRequest * _Nonnull)request{
     for (AFNetworkTaskAdapter *adapter in self.sessionAdapters) {
         [adapter request:request];
     }
 }
--(void)sessionResponseAdapter:(NSHTTPURLResponse *)response{
+-(void)sessionResponseAdapter:(NSHTTPURLResponse * _Nonnull)response{
     for (AFNetworkTaskAdapter *adapter in self.sessionAdapters) {
         [adapter response:response msg:self.msg];
     }
 }
 
 
--(id)processSuccessWithTask:(NSURLSessionTask *)task response:(NSHTTPURLResponse *)response  originalObj:(id)originalObj{
+-(id)processSuccessWithTask:(NSURLSessionTask * _Nonnull)task response:(NSHTTPURLResponse * _Nonnull)response  originalObj:(id _Nullable)originalObj{
     id resultObj = originalObj;
-    for (AFNetworkDataAdapter *adapter in self.dataAdapters) {
-       resultObj =  [adapter processSuccessWithTask:task response:response originalObj:originalObj parentObj:resultObj];
-    }
+    
+    @try {
+        for (AFNetworkDataAdapter * _Nonnull adapter in self.dataAdapters) {
+            resultObj =  [adapter processSuccessWithTask:task response:response originalObj:originalObj parentObj:resultObj];
+        }
+        self.msg.errorCode = AFNetworkStatusCodeSuccess;
+    } @catch (NSException *exception) {
+        self.msg.errorCode = AFNetworkStatusCodeDataError;
+    } 
+    
     
     return resultObj;
 }
--(void)processFailWithTask:(NSURLSessionTask *)task error:(NSError *)error{
-    for (AFNetworkDataAdapter *adapter in self.dataAdapters) {
+-(void)processFailWithTask:(NSURLSessionTask * _Nonnull)task error:(NSError * _Nullable)error{
+    for (AFNetworkDataAdapter * _Nonnull adapter in self.dataAdapters) {
          [adapter processFailWithTask:task error:error];
     }
+    self.msg.errorCode = AFNetworkStatusCodeHttpError;
 }
 
 -(void)recyle{
     [self.serializerAdapter recyle];
-    for (AFNetworkTaskAdapter *adapter in self.sessionAdapters) {
+    for (AFNetworkTaskAdapter * _Nonnull adapter in self.sessionAdapters) {
         [adapter recyle];
     }
-    for (AFNetworkDataAdapter *adapter in self.dataAdapters) {
+    for (AFNetworkDataAdapter * _Nonnull adapter in self.dataAdapters) {
         [adapter recyle];
     }
     

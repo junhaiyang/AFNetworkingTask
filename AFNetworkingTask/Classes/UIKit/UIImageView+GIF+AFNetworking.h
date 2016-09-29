@@ -1,8 +1,15 @@
 
 
-#import "AFAutoPurgingImageCache.h"
+#import "AFNetworkSwiftDefine.h"
 
+#ifdef AF_NETWORK_SWIFT
+#import <AFNetworking/AFAutoPurgingImageCache.h>
+#import <TMCache/TMCache.h>
+#else
+#import "AFAutoPurgingImageCache.h"
 #import "TMCache.h"
+#endif
+
 @class AFImageDownloadReceipt;
 
 @protocol AFGIFCache;
