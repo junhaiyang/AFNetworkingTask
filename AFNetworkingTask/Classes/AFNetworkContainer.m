@@ -30,9 +30,11 @@
 - (instancetype)init
 {
     self = [super init];
-    if (self) {
+    if (self) { 
         sessionAdapters= [[NSMutableArray alloc] initWithCapacity:0];
-        sessionAdapters= [[NSMutableArray alloc] initWithCapacity:0];
+        
+        [sessionAdapters addObject:[AFNetworkDefaultTaskAdapter new]];
+        
         dataAdapters= [[NSMutableArray alloc] initWithCapacity:0];
         
         self.msg =  [AFNetworkMsg new];
