@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 #import "AFNetworkTask.h"
 #import "AFNetworkDataCovertModelAdapter.h"
+#import "AFNetworkDefaultSerializerAdapter.h"
 #import "UserData.h"
 #import "AFNetworkActivityLogger.h"
 @interface AppDelegate (){
@@ -56,12 +57,12 @@
     {
         AFNetworkTask *task1 =[[AFNetworkTask alloc] initWithContainer:container];
         
-        [task1 GET:@"http://app.ohwit.com/i/app/category" finishedBlock:^(AFNetworkMsg *msg, id originalObj, id<AFNetworkResponseData> data) {
+        [task1 GET:@"http://xxxxx" finishedBlock:^(AFNetworkMsg *msg, id originalObj, id<AFNetworkResponseData> data) {
             
             {
                 AFNetworkTask *task2 =[[AFNetworkTask alloc] initWithContainer:container];
                 
-                [task2 GET:@"http://app.ohwit.com/i/app/category" finishedBlock:^(AFNetworkMsg *msg, id originalObj, id<AFNetworkResponseData> data) {
+                [task2 GET:@"http://xxxxxxx" finishedBlock:^(AFNetworkMsg *msg, id originalObj, id<AFNetworkResponseData> data) {
                     
                     //            NSLog(@"finish .........%@",data);
                 }];

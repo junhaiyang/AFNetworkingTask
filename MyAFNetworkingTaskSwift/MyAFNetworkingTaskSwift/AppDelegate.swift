@@ -77,7 +77,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let  task1:AFNetworkTask = AFNetworkTask(container:container);
          
-        task1.get("http://app.ohwit.com/i/app/category") { (msg:AFNetworkMsg, originalObj:Any? , data:AFNetworkResponseData? ) in
+        task1.get("http:/xxxxxxxx") { (msg:AFNetworkMsg, originalObj:Any? , data:AFNetworkResponseData? ) in
             let userData:UserData = data as! UserData;
             
             //            print("finish .........%@", data)
