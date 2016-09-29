@@ -1,5 +1,5 @@
 # AFNetworkingTask
-AFNetworking  OC   Sample 
+AFNetworking  OC & Swift  Sample 
 
 
 ####基本需求
