@@ -81,7 +81,48 @@
 * json 映射 使用的 MJExtension 框架，具体规则 参考 [MJExtension](https://github.com/CoderMJLee/MJExtension)
 	
 ###### 请求时添加新的header问题
-* 看 【自定义返回对象】 的 【自定义说明】 
+* 方法1：自定义 AFNetworkTaskAdapter   
+
+			class MyAFNetworkTaskAdapter: AFNetworkTaskAdapter {
+    
+    			open override func request(_ request: NSMutableURLRequest){
+           			//TODO add header 
+        			request.addValue("", forHTTPHeaderField: ""); 
+    			}
+    
+   				open override func response(_ response: HTTPURLResponse, msg: AFNetworkMsg?){
+    
+    			} 
+    			
+			}
+
+			let sessionAdapter:MyAFNetworkTaskAdapter = MyAFNetworkTaskAdapter();
+			
+			container.addSessionAdapter(sessionAdapter);
+ 
+    		
+    		
+* 方法2：继承 AFNetworkDefaultSerializerAdapter   
+
+			class MyAFNetworkSerializerAdapter: AFNetworkDefaultSerializerAdapter {
+    
+    			open override func requestSerializer(_ requestType: AFNetworkRequestProtocolType) -> AFHTTPRequestSerializer {
+        			let  requestSerializer:AFHTTPRequestSerializer = super.requestSerializer(requestType);
+        
+        			requestSerializer.setValue("", forHTTPHeaderField: "");
+        
+        			return requestSerializer;
+    			}
+    
+			}
+
+			let serializerAdapter:MyAFNetworkSerializerAdapter = MyAFNetworkSerializerAdapter();
+			
+			container.serializerAdapter = serializerAdapter;;
+ 
+	
+	 
+		
 	
 	 
 		
@@ -89,7 +130,7 @@
 ###### 直接对象请求模式
 
 		
-		//自己继承实现该协议就行，对象只能继承自 NSObject
+		//自己继承实现该协议就行，对象只能继承自 AFNetworkRequestData
 		class  MyData:AFNetworkRequestData {
 		
 		}

@@ -21,6 +21,23 @@
 
 @end
 
+@interface MyAFNetworkSerializerAdapter : AFNetworkDefaultSerializerAdapter
+
+@end
+@implementation MyAFNetworkSerializerAdapter
+
+
+-(AFHTTPRequestSerializer<AFURLRequestSerialization> * _Nonnull)requestSerializer:(AFNetworkRequestProtocolType)requestType{
+    AFHTTPRequestSerializer * _Nonnull requestSerializer =[super requestSerializer:requestType];
+     
+    [requestSerializer setValue:@"" forHTTPHeaderField:@""];
+    
+    
+    return requestSerializer;
+}
+
+@end
+
 @implementation AppDelegate
 
 

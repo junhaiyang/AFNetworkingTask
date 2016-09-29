@@ -84,7 +84,52 @@
 * json 映射 使用的 MJExtension 框架，具体规则 参考 [MJExtension](https://github.com/CoderMJLee/MJExtension)
 	
 ###### 请求时添加新的header问题
-* 看 【自定义返回对象】 的 【自定义说明】 
+* 方法1：自定义 AFNetworkTaskAdapter   
+
+			@interface MyAFNetworkTaskAdapter : AFNetworkTaskAdapter
+
+			@end
+			@implementation MyAFNetworkTaskAdapter
+ 
+			-(void)request:(NSMutableURLRequest * _Nonnull)request{
+    			//TODO add header 
+    			[request addValue:@"" forHTTPHeaderField:@""]; 
+    
+			}
+			-(void)response:(NSHTTPURLResponse * _Nonnull)response msg:(AFNetworkMsg * _Nullable)msg{
+    
+			} 
+
+			@end
+
+
+			MyAFNetworkTaskAdapter *sessionAdapter =[MyAFNetworkTaskAdapter new]; 
+
+ 
+    		[container addSessionAdapter:sessionAdapter];
+    		
+    		
+* 方法2：继承 AFNetworkDefaultSerializerAdapter   
+
+			@interface MyAFNetworkSerializerAdapter : AFNetworkDefaultSerializerAdapter
+
+			@end
+			@implementation MyAFNetworkSerializerAdapter
+ 
+			-(AFHTTPRequestSerializer<AFURLRequestSerialization> * _Nonnull)requestSerializer:(AFNetworkRequestProtocolType)requestType{
+    			AFHTTPRequestSerializer * _Nonnull requestSerializer =[super requestSerializer:requestType];
+     
+    			[requestSerializer setValue:@"" forHTTPHeaderField:@""];
+    
+    
+    			return requestSerializer;
+			}
+
+			@end
+
+
+			MyAFNetworkSerializerAdapter *serializerAdapter =[MyAFNetworkSerializerAdapter new]; 
+			container.serializerAdapter = serializerAdapter; 
 	
 	 
 		

@@ -21,6 +21,34 @@ class UserData: NSObject {
     var code:Int  = 0;
 }
 
+class MyAFNetworkTaskAdapter: AFNetworkTaskAdapter {
+    
+    open override func request(_ request: NSMutableURLRequest){
+        //    //TODO add header
+        
+        request.addValue("", forHTTPHeaderField: "");
+    
+    }
+    
+    open override func response(_ response: HTTPURLResponse, msg: AFNetworkMsg?){
+    
+    }
+    
+}
+
+class MyAFNetworkSerializerAdapter: AFNetworkDefaultSerializerAdapter {
+    
+    open override func requestSerializer(_ requestType: AFNetworkRequestProtocolType) -> AFHTTPRequestSerializer {
+        let  requestSerializer:AFHTTPRequestSerializer = super.requestSerializer(requestType);
+        
+        requestSerializer.setValue("", forHTTPHeaderField: "");
+        
+        return requestSerializer;
+    }
+    
+}
+
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -42,12 +70,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         container.completionCustomQueue = true;
         
         
+        let serializerAdapter:MyAFNetworkSerializerAdapter = MyAFNetworkSerializerAdapter();
+        
+        container.serializerAdapter = serializerAdapter;
+        
+        
         let  task1:AFNetworkTask = AFNetworkTask(container:container);
-        
-        task1.get("http://app.ohwit.com/i/app/category", data: nil) { (<#AFNetworkMsg#>, <#Any?#>, <#AFNetworkResponseData?#>) in
-            <#code#>
-        }
-        
+         
         task1.get("http://app.ohwit.com/i/app/category") { (msg:AFNetworkMsg, originalObj:Any? , data:AFNetworkResponseData? ) in
             let userData:UserData = data as! UserData;
             
