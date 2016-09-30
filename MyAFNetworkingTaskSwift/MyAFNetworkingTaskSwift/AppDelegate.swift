@@ -61,11 +61,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         AFNetworkActivityLogger.shared().level = AFHTTPRequestLoggerLevel.AFLoggerLevelDebug;
         AFNetworkActivityLogger.shared().startLogging();
         
-        let  container:AFNetworkContainer = AFNetworkContainer();
-        let  dataAdapter:AFNetworkDataCovertModelAdapter = AFNetworkDataCovertModelAdapter();
-        container.addDefaultStructure(UserData.classForCoder());
+        let  container:AFNetworkContainer = AFNetworkContainer(); 
         
-        container.addDataAdapter(dataAdapter);
+        container.addDefaultStructure(UserData.classForCoder());
         
         container.completionCustomQueue = true;
         
