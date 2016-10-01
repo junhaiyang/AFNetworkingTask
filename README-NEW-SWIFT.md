@@ -17,7 +17,11 @@
     	// originalObj 为原始数据对象
     	// data 为解析出来的返回对象
     	task1.get("http://xxxxxxxx") { (msg:AFNetworkMsg, originalObj:Any? , data:AFNetworkResponseData? ) in
-  			 let userData:UserData = data as! UserData; 
+  			 
+  			 if let userData:UserData = data as? UserData {
+                print("UserData   .........", userData)
+             }
+  			  
          	 print("finish .........");
              
         }; 
@@ -120,7 +124,11 @@
     	// originalObj 为原始数据对象
     	// data 为解析出来的返回对象
     	task1.post("http://xxxxxx", data: myData) { (msg:AFNetworkMsg, originalObj:Any? , data:AFNetworkResponseData? ) in
-  			 let userData:UserData = data as! UserData; 
+    	
+  			 if let userData:UserData = data as? UserData {
+                print("UserData   .........", userData)
+             }
+             
          	 print("finish .........");
              
         };   
