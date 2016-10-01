@@ -1,8 +1,9 @@
-//
+
  
 
 #import <Foundation/Foundation.h> 
 #import "AFNetworkContainer.h"
+#import "AFNetworkTaskHelper.h"
 
 #import <AFNetworking/AFHTTPSessionManager.h>
 
@@ -18,24 +19,24 @@ typedef void(^AFNetworkTaskProgressBlock)(CGFloat progress);
 
 @property (nonatomic,strong) AFNetworkContainer * _Nonnull container;
 
-+ (dispatch_queue_t)afnet_shared_afnetworkCompletionQueue;
++ (dispatch_queue_t _Nonnull)afnet_shared_afnetworkCompletionQueue;
 
 + (NSURL * _Nonnull)pathWithURL:(NSString * _Nonnull)URLString;
  
-- (void)progressBlock:(AFNetworkTaskProgressBlock)progressBlock;
+- (void)progressBlock:(AFNetworkTaskProgressBlock _Nullable)progressBlock;
 
 - (nullable NSURLSessionUploadTask *)downloadTaskWithHTTPMethod:(NSString * _Nonnull)method
                                              URLString:(NSString * _Nonnull)URLString
                                             parameters:(id _Nullable)parameters
-                                               success:(void (^)(NSURLSessionDataTask *_Nonnull task, id  _Nonnull responseObject))success
-                                               failure:(void (^)(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error))failure;
+                                               success:(void (^ _Nonnull)(NSURLSessionDataTask *_Nonnull task, id  _Nonnull responseObject))success
+                                               failure:(void (^ _Nonnull)(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error))failure;
 
 - (nullable NSURLSessionUploadTask *)uploadTaskWithHTTPMethod:(NSString * _Nonnull)method
                                            URLString:(NSString * _Nonnull)URLString
                                           parameters:(id _Nullable)parameters
-                                               files:(id)files
-                                             success:(void (^)(NSURLSessionDataTask *_Nonnull task, id  _Nonnull responseObject))success
-                                             failure:(void (^)(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error))failure;
+                                               files:(id _Nullable)files
+                                             success:(void (^ _Nonnull)(NSURLSessionDataTask *_Nonnull task, id  _Nonnull responseObject))success
+                                             failure:(void (^ _Nonnull)(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error))failure;
 
 
 

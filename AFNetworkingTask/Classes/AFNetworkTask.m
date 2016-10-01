@@ -347,7 +347,7 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 -(void)processSuccessResult:(id _Nullable)responseObject task:(NSURLSessionDataTask * _Nonnull)task   finish:(AFNetworkingTaskFinishedBlock _Nullable)finish{
     NSHTTPURLResponse  *response = (NSHTTPURLResponse  *)task.response;
     
-    [container sessionResponseAdapter:response];
+    [container taskResponseAdapter:response];
     
     id body = [container processSuccessWithTask:task response:response originalObj:responseObject];
     if(finish){

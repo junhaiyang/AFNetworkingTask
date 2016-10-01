@@ -25,16 +25,16 @@
 
 @implementation AFNetworkContainer
 @synthesize serializerAdapter;
-@synthesize sessionAdapters;
+@synthesize taskAdapters;
 @synthesize dataAdapters;
 
 - (instancetype)init
 {
     self = [super init];
     if (self) { 
-        sessionAdapters= [[NSMutableArray alloc] initWithCapacity:0];
+        taskAdapters= [[NSMutableArray alloc] initWithCapacity:0];
         
-        [sessionAdapters addObject:[AFNetworkDefaultTaskAdapter new]];
+        [taskAdapters addObject:[AFNetworkDefaultTaskAdapter new]];
         
         dataAdapters= [[NSMutableArray alloc] initWithCapacity:0];
         
@@ -55,8 +55,8 @@
 
 }
 
--(void)addSessionAdapter:(AFNetworkTaskAdapter * _Nonnull)adapter{
-    [sessionAdapters addObject:adapter];
+-(void)addTaskAdapter:(AFNetworkTaskAdapter * _Nonnull)adapter{
+    [taskAdapters addObject:adapter];
 }
 -(void)addDataAdapter:(AFNetworkDataAdapter * _Nonnull)adapter{
     [dataAdapters addObject:adapter];
@@ -69,24 +69,24 @@
     
     return serializerAdapter;
 }
--(NSArray<AFNetworkTaskAdapter *> * _Nonnull)sessionAdapters{
-    if(sessionAdapters.count==0){
+-(NSMutableArray<AFNetworkTaskAdapter *> *_Nonnull)taskAdapters{
+    if(taskAdapters.count==0){
         return @[[AFNetworkDefaultTaskAdapter new]];
     }
     
-    return sessionAdapters;
+    return taskAdapters;
 
 }
 
 
 
--(void)sessionRequestAdapter:(NSMutableURLRequest * _Nonnull)request{
-    for (AFNetworkTaskAdapter *adapter in self.sessionAdapters) {
+-(void)taskRequestAdapter:(NSMutableURLRequest * _Nonnull)request{
+    for (AFNetworkTaskAdapter *adapter in self.taskAdapters) {
         [adapter request:request];
     }
 }
--(void)sessionResponseAdapter:(NSHTTPURLResponse * _Nonnull)response{
-    for (AFNetworkTaskAdapter *adapter in self.sessionAdapters) {
+-(void)taskResponseAdapter:(NSHTTPURLResponse * _Nonnull)response{
+    for (AFNetworkTaskAdapter *adapter in self.taskAdapters) {
         [adapter response:response msg:self.msg];
     }
 }
@@ -112,11 +112,12 @@
          [adapter processFailWithTask:task error:error];
     }
     self.msg.errorCode = AFNetworkStatusCodeHttpError;
+    self.msg.httpStatusCode = error.code;
 }
 
 -(void)recyle{
     [self.serializerAdapter recyle];
-    for (AFNetworkTaskAdapter * _Nonnull adapter in self.sessionAdapters) {
+    for (AFNetworkTaskAdapter * _Nonnull adapter in self.taskAdapters) {
         [adapter recyle];
     }
     for (AFNetworkDataAdapter * _Nonnull adapter in self.dataAdapters) {
@@ -125,8 +126,8 @@
     
     serializerAdapter = nil;
     
-    [sessionAdapters removeAllObjects];
-    sessionAdapters = nil;
+    [taskAdapters removeAllObjects];
+    taskAdapters = nil;
     
     [dataAdapters removeAllObjects];
     dataAdapters = nil;

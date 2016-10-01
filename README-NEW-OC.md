@@ -103,10 +103,10 @@
 			@end
 
 
-			MyAFNetworkTaskAdapter *sessionAdapter =[MyAFNetworkTaskAdapter new]; 
+			MyAFNetworkTaskAdapter *taskAdapter =[MyAFNetworkTaskAdapter new]; 
 
  
-    		[container addSessionAdapter:sessionAdapter];
+    		[container addTaskAdapter:taskAdapter];
     		
     		
 * 方法2：继承 AFNetworkDefaultSerializerAdapter   

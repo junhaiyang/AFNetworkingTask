@@ -13,13 +13,13 @@
 @interface AFAutoPurgingGifImageCache : TMCache<AFGIFCache>
 
 
--(void)cleanCache:(AFGIFCacheType)cacheType finish:(TMCacheBlock)block;
+-(void)cleanCache:(AFGIFCacheType)cacheType finish:(TMCacheBlock _Nullable)block;
 
--(NSString*)descriptionOfByteCount;
+-(NSString* _Nonnull)descriptionOfByteCount;
 
--(NSString*)descriptionOfByteCountWithEmptyString:(NSString*)emptyString;
+-(NSString* _Nonnull)descriptionOfByteCountWithEmptyString:(NSString* _Nonnull)emptyString;
 
 
-- (nullable UIImage *)imageforObj:(NSObject *)cachedData;
+- (nullable UIImage *)imageforObj:(NSObject *_Nullable)cachedData;
 
 @end

@@ -17,15 +17,15 @@
 @interface UIImageView (AFNetworkGIFTask)
 
 
-@property (readwrite, nonatomic, strong, setter = af_setActiveImageDownloadReceipt:) AFImageDownloadReceipt *af_activeImageDownloadReceipt;
+@property (readwrite, nonatomic, strong, setter = af_setActiveImageDownloadReceipt:) AFImageDownloadReceipt * _Nonnull af_activeImageDownloadReceipt;
 
 + (_Nonnull id <AFGIFCache>)sharedImageCache;
 
 
-- (void)setImageWithURL:(NSURL *)url;
+- (void)setImageWithURL:(NSURL * _Nullable)url;
 
-- (void)setImageWithURL:(NSURL *)url
-       placeholderImage:(UIImage *)placeholderImage;
+- (void)setImageWithURL:(NSURL * _Nullable)url
+       placeholderImage:(UIImage * _Nullable)placeholderImage;
 - (void)setImageWithURL:(NSURL * _Nonnull )url
        placeholderImage:(nullable UIImage *)placeholderImage
                 success:(nullable void (^)(NSURLRequest * __nullable request, NSHTTPURLResponse * __nullable response, UIImage * __nullable image))success
@@ -34,7 +34,7 @@
 
 - (void)clearActiveDownloadInformation;
 
-- (BOOL)isActiveTaskURLEqualToURLRequest:(NSURLRequest *)urlRequest;
+- (BOOL)isActiveTaskURLEqualToURLRequest:(NSURLRequest * _Nonnull)urlRequest;
 
 @end
 

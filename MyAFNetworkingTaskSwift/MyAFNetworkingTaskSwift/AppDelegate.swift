@@ -61,7 +61,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         AFNetworkActivityLogger.shared().level = AFHTTPRequestLoggerLevel.AFLoggerLevelDebug;
         AFNetworkActivityLogger.shared().startLogging();
         
-        let  container:AFNetworkContainer = AFNetworkContainer(); 
+        let  container:AFNetworkContainer = AFNetworkContainer();
         
         container.addDefaultStructure(UserData.classForCoder());
         
@@ -75,11 +75,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let  task1:AFNetworkTask = AFNetworkTask(container:container);
          
-        task1.get("http:/xxxxxxxx") { (msg:AFNetworkMsg, originalObj:Any? , data:AFNetworkResponseData? ) in
-            let userData:UserData = data as! UserData;
+        task1.get("http://xxxxxx") { (msg:AFNetworkMsg, originalObj:Any? , data:AFNetworkResponseData? ) in
+           
+            if let userData:UserData = data as? UserData {
+                print("UserData code .........", userData.code)
+            }
             
-            //            print("finish .........%@", data)
-             
+            
+            print("finish .........", msg.httpStatusCode,msg.errorCode.rawValue)
+            
         };
         
         

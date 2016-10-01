@@ -7,7 +7,7 @@
 @end
 
 
-@protocol AFNetworkResponsetData <NSObject>
+@protocol AFNetworkResponseData <NSObject>
 
 
 

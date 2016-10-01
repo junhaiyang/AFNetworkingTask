@@ -6,7 +6,7 @@
 @interface AFNetworkTask : AFNetworkTaskPatch
 
 
-- (instancetype)initWithContainer:(AFNetworkContainer * _Nonnull)container;
+- (instancetype _Nonnull)initWithContainer:(AFNetworkContainer * _Nonnull)container;
 
 #pragma mark - GET
 
@@ -58,7 +58,7 @@
 
 -(void)DOWNLOAD:(NSString * _Nonnull)url  finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finishedBlock;
 
--(void)DOWNLOAD:(NSString * _Nonnull)URLString data:(id<AFNetworkRequestData> _Nullable)data finishedBlock:(AFNetworkingTaskFinishedBlock)finishedBlock;
+-(void)DOWNLOAD:(NSString * _Nonnull)URLString data:(id<AFNetworkRequestData> _Nullable)data finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finishedBlock;
 
 -(void)DOWNLOAD:(NSString * _Nonnull)URLString form:(NSDictionary * _Nullable)form finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finish;
 

@@ -58,7 +58,7 @@
         
         return nil;
     }
-    [container sessionRequestAdapter:request];
+    [container taskRequestAdapter:request];
     
     __block NSURLSessionDataTask *dataTask = nil;
     dataTask = [self dataTaskWithRequest:request
@@ -99,7 +99,7 @@
         
         return nil;
     }
-    [container sessionRequestAdapter:request];
+    [container taskRequestAdapter:request];
     
     __block NSURLSessionDataTask *dataTask = nil;
     
@@ -171,7 +171,7 @@
         
     } error:nil];
     
-    [container sessionRequestAdapter:request];
+    [container taskRequestAdapter:request];
      
     if (serializationError) {
         if (failure) {

@@ -96,9 +96,9 @@
     			
 			}
 
-			let sessionAdapter:MyAFNetworkTaskAdapter = MyAFNetworkTaskAdapter();
+			let taskAdapter:MyAFNetworkTaskAdapter = MyAFNetworkTaskAdapter();
 			
-			container.addSessionAdapter(sessionAdapter);
+			container.addTaskAdapter(taskAdapter);
  
     		
     		
