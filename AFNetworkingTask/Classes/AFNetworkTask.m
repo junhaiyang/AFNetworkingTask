@@ -56,6 +56,20 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 
 @end
 
+
+@interface AFNetworkContainer(Task)
+     
+    
+    //执行适配器操作
+-(void)sessionRequestAdapter:(NSMutableURLRequest * _Nonnull)request;
+-(void)sessionResponseAdapter:(NSHTTPURLResponse * _Nonnull)response;
+    
+    //返回处理结果
+-(id _Nullable)processSuccessWithTask:(NSURLSessionTask * _Nonnull)task response:(NSHTTPURLResponse * _Nonnull)response  originalObj:(id _Nullable)originalObj;
+-(void)processFailWithTask:(NSURLSessionTask * _Nonnull)task error:(NSError *_Nullable)error;
+    
+@end
+
 @interface AFNetworkTask(){
     
 }
@@ -347,7 +361,7 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 -(void)processSuccessResult:(id _Nullable)responseObject task:(NSURLSessionDataTask * _Nonnull)task   finish:(AFNetworkingTaskFinishedBlock _Nullable)finish{
     NSHTTPURLResponse  *response = (NSHTTPURLResponse  *)task.response;
     
-    [container taskResponseAdapter:response];
+    [container sessionResponseAdapter:response];
     
     id body = [container processSuccessWithTask:task response:response originalObj:responseObject];
     if(finish){

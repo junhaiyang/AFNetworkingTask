@@ -18,7 +18,7 @@
     self.clazzInfo = clazz;
 }
 
--(id)processSuccessWithTask:(NSURLSessionTask * _Nonnull)task response:(NSHTTPURLResponse * _Nonnull)response  originalObj:(id _Nullable)originalObj parentObj:(id _Nullable)parentObj{
+-(id)processSuccessWithTask:(NSURLSessionTask * _Nonnull)task originalObj:(id _Nullable)originalObj parentObj:(id _Nullable)parentObj{
     
     if(self.clazzInfo==nil)
         return originalObj;

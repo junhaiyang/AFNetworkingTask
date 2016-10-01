@@ -21,16 +21,16 @@ class UserData: NSObject {
     var code:Int  = 0;
 }
 
-class MyAFNetworkTaskAdapter: AFNetworkTaskAdapter {
+class MyAFNetworkSessionAdapter: AFNetworkSessionAdapter {
     
-    open override func request(_ request: NSMutableURLRequest){
+    open override func sessionRequest(_ request: NSMutableURLRequest){
         //    //TODO add header
         
         request.addValue("", forHTTPHeaderField: "");
     
     }
     
-    open override func response(_ response: HTTPURLResponse, msg: AFNetworkMsg?){
+    open override func sessionResponse(_ response: HTTPURLResponse, msg: AFNetworkMsg?){
     
     }
     
@@ -38,7 +38,7 @@ class MyAFNetworkTaskAdapter: AFNetworkTaskAdapter {
 
 class MyAFNetworkSerializerAdapter: AFNetworkDefaultSerializerAdapter {
     
-    open override func requestSerializer(_ requestType: AFNetworkRequestProtocolType) -> AFHTTPRequestSerializer {
+    open override func requestSerializer(_ requestType: AFNetworkProtocolType) -> AFHTTPRequestSerializer {
         let  requestSerializer:AFHTTPRequestSerializer = super.requestSerializer(requestType);
         
         requestSerializer.setValue("", forHTTPHeaderField: "");

@@ -9,7 +9,7 @@
 }
 
 @end
-@implementation AFNetworkTaskAdapter
+@implementation AFNetworkSessionAdapter
 
 -(void)recyle{
     

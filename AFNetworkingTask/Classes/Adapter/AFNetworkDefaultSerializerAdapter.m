@@ -7,9 +7,9 @@
 @implementation AFNetworkDefaultSerializerAdapter
  
 
--(AFHTTPResponseSerializer<AFURLResponseSerialization> * _Nonnull)responseSerializer:(AFNetworkResponseProtocolType)responseType{
+-(AFHTTPResponseSerializer<AFURLResponseSerialization> * _Nonnull)responseSerializer:(AFNetworkProtocolType)responseType{
     AFHTTPResponseSerializer * _Nonnull responseSerializer;
-    if(responseType==AFNetworkResponseProtocolTypeNormal){
+    if(responseType==AFNetworkProtocolTypeNormal){
         responseSerializer= [AFTextResponseSerializer serializer];
         responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"text/html",@"text/xml", @"text/asa" ,@"text/asp",@"text/scriptlet",@"text/vnd.wap.wml",@"text/plain",@"text/webviewhtml",@"text/x-ms-odc",@"text/css",@"text/vnd.rn-realtext3d",@"text/vnd.rn-realtext",@"text/iuls",@"text/x-vcard",@"application/json",nil];
     }else{
@@ -22,9 +22,9 @@
     
     return responseSerializer;
 }
--(AFHTTPRequestSerializer<AFURLRequestSerialization> * _Nonnull)requestSerializer:(AFNetworkRequestProtocolType)requestType{
+-(AFHTTPRequestSerializer<AFURLRequestSerialization> * _Nonnull)requestSerializer:(AFNetworkProtocolType)requestType{
     AFHTTPRequestSerializer * _Nonnull requestSerializer;
-    if(requestType==AFNetworkRequestProtocolTypeJSON){
+    if(requestType==AFNetworkProtocolTypeJSON){
         requestSerializer= [AFJSONRequestSerializer serializer];
         //去掉所有限制
         //         requestSerializer.HTTPMethodsEncodingParametersInURI = [NSSet setWithObjects:nil, nil];

@@ -26,14 +26,9 @@ typedef NS_ENUM(NSInteger, AFNetworkStatusCode) {
 };
 
 
-typedef NS_ENUM(NSInteger, AFNetworkResponseProtocolType) {
-    AFNetworkResponseProtocolTypeNormal = 0,       //响应协议类型，发无任何格式的字符串流方式
-    AFNetworkResponseProtocolTypeJSON,              //响应协议类型，发JSON格式符串流方式
-    AFNetworkResponseProtocolTypeFile,              //响应协议类型，发文件流方式
-};
-typedef NS_ENUM(NSInteger, AFNetworkRequestProtocolType) {
-    AFNetworkRequestProtocolTypeNormal = 0,       //请求协议类型，标准提交
-    AFNetworkRequestProtocolTypeJSON,              //请求协议类型，发JSON格式提交
+typedef NS_ENUM(NSInteger, AFNetworkProtocolType) {
+    AFNetworkProtocolTypeNormal = 0,       //默认表单方式
+    AFNetworkProtocolTypeJSON,              //JSON格式符串流方式
 };
 
  

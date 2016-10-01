@@ -9,6 +9,20 @@
 #import <CommonCrypto/CommonDigest.h>
 
 
+
+@interface AFNetworkContainer(TaskPatch)
+    
+    
+    //执行适配器操作
+-(void)sessionRequestAdapter:(NSMutableURLRequest * _Nonnull)request;
+-(void)sessionResponseAdapter:(NSHTTPURLResponse * _Nonnull)response;
+    
+    //返回处理结果
+-(id _Nullable)processSuccessWithTask:(NSURLSessionTask * _Nonnull)task response:(NSHTTPURLResponse * _Nonnull)response  originalObj:(id _Nullable)originalObj;
+-(void)processFailWithTask:(NSURLSessionTask * _Nonnull)task error:(NSError *_Nullable)error;
+    
+    @end
+
 @interface AFNetworkTaskPatch()
 
 @property (nonatomic,strong) AFNetworkTaskProgressBlock myprogressBlock;
@@ -58,7 +72,7 @@
         
         return nil;
     }
-    [container taskRequestAdapter:request];
+    [container sessionRequestAdapter:request];
     
     __block NSURLSessionDataTask *dataTask = nil;
     dataTask = [self dataTaskWithRequest:request
@@ -99,7 +113,7 @@
         
         return nil;
     }
-    [container taskRequestAdapter:request];
+    [container sessionRequestAdapter:request];
     
     __block NSURLSessionDataTask *dataTask = nil;
     
@@ -171,7 +185,7 @@
         
     } error:nil];
     
-    [container taskRequestAdapter:request];
+    [container sessionRequestAdapter:request];
      
     if (serializationError) {
         if (failure) {
