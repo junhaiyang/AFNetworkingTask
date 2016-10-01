@@ -57,7 +57,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
-        
+         
         AFNetworkActivityLogger.shared().level = AFHTTPRequestLoggerLevel.AFLoggerLevelDebug;
         AFNetworkActivityLogger.shared().startLogging();
         
@@ -75,7 +75,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let  task1:AFNetworkTask = AFNetworkTask(container:container);
          
-        task1.get("http://xxxxxx") { (msg:AFNetworkMsg, originalObj:Any? , data:AFNetworkResponseData? ) in
+        task1.get("http://app.ohwit.com/i/app/category") { (msg:AFNetworkMsg, originalObj:Any? , data:AFNetworkResponseData? ) in
            
             if let userData:UserData = data as? UserData {
                 print("UserData code .........", userData.code)

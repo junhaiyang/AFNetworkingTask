@@ -108,11 +108,17 @@
 
 
 -(id)processSuccessWithTask:(NSURLSessionTask * _Nonnull)task response:(NSHTTPURLResponse * _Nonnull)response  originalObj:(id _Nullable)originalObj{
-    id resultObj = originalObj;
+    id parentObj = originalObj;
+    id returnObj = nil;
     
     @try {
         for (AFNetworkDataAdapter * _Nonnull adapter in self.dataAdapters) {
-            resultObj =  [adapter processSuccessWithTask:task originalObj:originalObj parentObj:resultObj];
+            id returnValue = nil;
+            AFNetworkDataType  dataType=  [adapter processSuccessWithTask:task originalObj:originalObj parentObj:parentObj returnObj:&returnValue];
+            if(dataType == AFNetworkDataTypeData){
+                returnObj = returnValue;
+                break;
+            }
         }
         self.msg.errorCode = AFNetworkStatusCodeSuccess;
     } @catch (NSException *exception) {
@@ -120,7 +126,7 @@
     } 
     
     
-    return resultObj;
+    return returnObj;
 }
 -(void)processFailWithTask:(NSURLSessionTask * _Nonnull)task error:(NSError * _Nullable)error{
     for (AFNetworkDataAdapter * _Nonnull adapter in self.dataAdapters) {

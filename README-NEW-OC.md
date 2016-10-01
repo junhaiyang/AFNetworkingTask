@@ -63,9 +63,9 @@
 * AFNetworkSerializerAdapter
 	* 只能有一个实现，用于生成，请求和响应序列化处理
 * AFNetworkSessionAdapter
-	* 可以有多个实现，分别会在创建成功 request  和 响应response 后调用，会按照顺序依次执行
+	* 拦截request和response对象处理， 可以有多个实现，会按照顺序依次执行
 * AFNetworkDataAdapter
-	* 可以有多个实现，会在 AFNetworkSessionAdapter 后调用，会按照顺序依次执行，并会将处理结果依次传递给下一个adapter，最终使用最后一个的处理结果
+	* 获取到的数据解析适配器，可以添加多个，会按照顺序依次执行，当出现返回值为 AFNetworkDataTypeData 时停止执行，并直接使用返回结果
 		
 		
 			//自定义数据解析器

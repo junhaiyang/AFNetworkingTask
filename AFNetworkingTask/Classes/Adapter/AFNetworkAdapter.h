@@ -32,9 +32,10 @@
 
 @interface AFNetworkDataAdapter : NSObject
 
+    
 
 //返回处理结果
--(id _Nullable)processSuccessWithTask:(NSURLSessionTask * _Nonnull)task originalObj:(id _Nullable)originalObj parentObj:(id _Nullable)parentObj;
+-(AFNetworkDataType)processSuccessWithTask:(NSURLSessionTask * _Nonnull)task originalObj:(id _Nullable)originalObj parentObj:(id _Nullable)parentObj returnObj:(__nullable id * _Nullable)returnObj;
 
 -(id _Nullable)processFailWithTask:(NSURLSessionTask * _Nonnull)task error:(NSError * _Nullable)error;
 

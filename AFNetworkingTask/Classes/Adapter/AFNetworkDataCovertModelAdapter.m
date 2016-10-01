@@ -17,24 +17,22 @@
 -(void)addStructure:(Class _Nonnull)clazz{
     self.clazzInfo = clazz;
 }
-
--(id)processSuccessWithTask:(NSURLSessionTask * _Nonnull)task originalObj:(id _Nullable)originalObj parentObj:(id _Nullable)parentObj{
     
-    if(self.clazzInfo==nil)
-        return originalObj;
+-(AFNetworkDataType)processSuccessWithTask:(NSURLSessionTask * _Nonnull)task originalObj:(id _Nullable)originalObj parentObj:(id _Nullable)parentObj returnObj:(__nullable id * _Nullable)returnObj{
+     
     
     if([originalObj isKindOfClass:[NSDictionary class]]){
         NSDictionary *dic = originalObj;
         NSObject *object =  [self.clazzInfo mj_objectWithKeyValues:dic];
-        return object;
+        *returnObj = object;
     }else if ([originalObj isKindOfClass:[NSArray class]]){
         NSArray *dic = originalObj;
         NSObject *object =  [self.clazzInfo mj_objectWithKeyValues:dic];
-        return object;
+        *returnObj = object;
         
     }
      
-    return nil;
+    return AFNetworkDataTypeData;
 }
 
 -(id)processFailWithTask:(NSURLSessionTask * _Nonnull)task error:(NSError * _Nullable)error{

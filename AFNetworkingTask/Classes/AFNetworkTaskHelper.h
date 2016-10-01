@@ -31,4 +31,10 @@ typedef NS_ENUM(NSInteger, AFNetworkProtocolType) {
     AFNetworkProtocolTypeJSON,              //JSON格式符串流方式
 };
 
+
+typedef NS_ENUM(NSInteger, AFNetworkDataType) {
+    AFNetworkDataTypeIgron = 0,           //忽略数据
+    AFNetworkDataTypeData,              //使用为回调数据
+};
+
  
