@@ -83,12 +83,12 @@
 
 			class MyAFNetworkSessionAdapter: AFNetworkSessionAdapter {
     
-    			open override func request(_ request: NSMutableURLRequest){
+    			open override func sessionRequest(_ request: NSMutableURLRequest){
            			//TODO add header 
         			request.addValue("", forHTTPHeaderField: ""); 
     			}
     
-   				open override func response(_ response: HTTPURLResponse, msg: AFNetworkMsg?){
+   				open override func sessionResponse(_ response: HTTPURLResponse, msg: AFNetworkMsg?){
     
     			} 
     			

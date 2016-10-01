@@ -89,12 +89,12 @@
 			@end
 			@implementation MyAFNetworkSessionAdapter
  
-			-(void)request:(NSMutableURLRequest * _Nonnull)request{
+			-(void)sessionRequest:(NSMutableURLRequest * _Nonnull)request{
     			//TODO add header 
     			[request addValue:@"" forHTTPHeaderField:@""]; 
     
 			}
-			-(void)response:(NSHTTPURLResponse * _Nonnull)response msg:(AFNetworkMsg * _Nullable)msg{
+			-(void)sessionResponse:(NSHTTPURLResponse * _Nonnull)response msg:(AFNetworkMsg * _Nullable)msg{
     
 			} 
 
