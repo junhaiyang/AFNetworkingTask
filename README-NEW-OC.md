@@ -65,7 +65,7 @@
 * AFNetworkSessionAdapter
 	* 可以有多个实现，分别会在创建成功 request  和 响应response 后调用，会按照顺序依次执行
 * AFNetworkDataAdapter
-	* 可以有多个实现，会在 AFNetworkTaskAdapter 后调用，会按照顺序依次执行，并会将处理结果依次传递给下一个adapter，最终使用最后一个的处理结果
+	* 可以有多个实现，会在 AFNetworkSessionAdapter 后调用，会按照顺序依次执行，并会将处理结果依次传递给下一个adapter，最终使用最后一个的处理结果
 		
 		
 			//自定义数据解析器
