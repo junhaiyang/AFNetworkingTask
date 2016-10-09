@@ -18,7 +18,7 @@
     self.clazzInfo = clazz;
 }
     
--(AFNetworkDataType)processSuccessWithTask:(NSURLSessionTask * _Nonnull)task originalObj:(id _Nullable)originalObj parentObj:(id _Nullable)parentObj returnObj:(__nullable id * _Nullable)returnObj{
+-(AFNetworkDataType)processSuccessWithTask:(NSURLSessionTask * _Nonnull)task originalObj:(id _Nullable)originalObj parentObj:(id _Nullable)parentObj msg:(AFNetworkMsg * _Nullable)msg returnObj:(__nullable id * _Nullable)returnObj{
      
     
     if([originalObj isKindOfClass:[NSDictionary class]]){

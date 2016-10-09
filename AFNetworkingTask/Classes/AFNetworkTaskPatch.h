@@ -10,7 +10,7 @@
 @class AFNetworkMsg;
 @class AFHTTPSessionManager;
 
-typedef void(^AFNetworkingTaskFinishedBlock)(AFNetworkMsg *  _Nonnull msg,id  _Nullable originalObj,id<AFNetworkResponseData>  _Nullable data)  NS_AVAILABLE_IOS(7_0);  //请求协议类型
+typedef void(^AFNetworkingTaskFinishedBlock)(AFNetworkMsg *  _Nonnull msg,id  _Nullable originalObj,id  _Nullable data)  NS_AVAILABLE_IOS(7_0);  //请求协议类型
 
 typedef void(^AFNetworkTaskProgressBlock)(CGFloat progress);
  

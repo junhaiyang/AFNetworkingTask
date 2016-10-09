@@ -3,6 +3,7 @@
 #import "AFNetworkContainer.h"
 #import "AFNetworkDefaultSerializerAdapter.h"
 #import "AFNetworkDataCovertModelAdapter.h"
+#import "AFNetworkDataBlockAdapter.h"
 #import "AFNetworkAdapter.h"
 
 @implementation AFNetworkMsg
@@ -68,12 +69,20 @@
     [self addDataAdapter:dataAdapter];
 
 }
+-(void)addDataBlock:(AFNetworkingTaskDataBlock _Nullable)dataBlock{
+    AFNetworkDataBlockAdapter * _Nonnull dataAdapter =[AFNetworkDataBlockAdapter new];
+    [dataAdapter dataBlock:dataBlock];
+    [self addDataAdapter:dataAdapter];
+}
     
 -(void)addSessionAdapter:(AFNetworkSessionAdapter * _Nonnull)adapter{
     [sessionAdapters addObject:adapter];
 }
 -(void)addDataAdapter:(AFNetworkDataAdapter * _Nonnull)adapter{
-    [dataAdapters addObject:adapter];
+    if([[dataAdapters lastObject] isKindOfClass:[AFNetworkDataBlockAdapter class]])
+       [dataAdapters insertObject:adapter atIndex:dataAdapters.count-1];
+    else
+        [dataAdapters addObject:adapter];
 }
 
 -(AFNetworkSerializerAdapter * _Nonnull)serializerAdapter{
@@ -114,10 +123,11 @@
     @try {
         for (AFNetworkDataAdapter * _Nonnull adapter in self.dataAdapters) {
             id returnValue = nil;
-            AFNetworkDataType  dataType=  [adapter processSuccessWithTask:task originalObj:originalObj parentObj:parentObj returnObj:&returnValue];
-            if(dataType == AFNetworkDataTypeData){
+            AFNetworkDataType  dataType=  [adapter processSuccessWithTask:task originalObj:originalObj parentObj:parentObj msg:self.msg returnObj:&returnValue];
+            parentObj = returnValue;
+            if(dataType == AFNetworkDataTypeData&&returnValue!=nil){
                 returnObj = returnValue;
-                break;
+//                break;
             }
         }
         self.msg.errorCode = AFNetworkStatusCodeSuccess;

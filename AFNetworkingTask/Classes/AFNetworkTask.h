@@ -8,6 +8,8 @@
 
 - (instancetype _Nonnull)initWithContainer:(AFNetworkContainer * _Nonnull)container;
 
+-(void)addDataBlock:(AFNetworkingTaskDataBlock _Nullable)dataBlock;
+
 #pragma mark - GET
 
 -(void)GET:(NSString * _Nonnull)url  finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finishedBlock;

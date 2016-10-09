@@ -101,6 +101,9 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
     }
     return self;
 }
+-(void)addDataBlock:(AFNetworkingTaskDataBlock _Nullable)dataBlock{
+    [container addDataBlock:dataBlock];
+}
 
 -(AFHTTPResponseSerializer<AFURLResponseSerialization> * _Nonnull)responseSerializer{
     

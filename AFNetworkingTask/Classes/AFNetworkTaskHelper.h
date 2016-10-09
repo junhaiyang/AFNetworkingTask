@@ -4,14 +4,7 @@
 
 @protocol AFNetworkRequestData <NSObject>
  
-@end
-
-
-@protocol AFNetworkResponseData <NSObject>
-
-
-
-@end
+@end 
 
 typedef NS_ENUM(NSInteger, AFNetworkStatusCode) {
     AFNetworkStatusCodeUnknown = 0,      //状态未知

@@ -9,7 +9,7 @@ use_frameworks!
 #    xcodeproj 'AFNetworkingTask.xcodeproj'
 
 target "MyAFNetworkingTaskSwift" do
-    xcodeproj 'MyAFNetworkingTaskSwift/MyAFNetworkingTaskSwift.xcodeproj'
+    project 'MyAFNetworkingTaskSwift/MyAFNetworkingTaskSwift.xcodeproj'
 
 #        pod 'AFNetworkingTask', :path => '/work/github_work/AFNetworkingTask'
         pod 'AFNetworkingTaskSwift', :path => '/work/github_work/AFNetworkingTask'

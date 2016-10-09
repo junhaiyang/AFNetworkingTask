@@ -1,10 +1,10 @@
 
-#import "AFNetworkTaskHelper.h" 
+#import "AFNetworkTaskHelper.h"
 
 @class AFNetworkSerializerAdapter;
 @class AFNetworkSessionAdapter;
 @class AFNetworkDataAdapter;
- 
+@class AFNetworkDataBlockAdapter;
 
 @interface AFNetworkMsg: NSObject
 
@@ -19,6 +19,9 @@
 -(void)recyle;
 
 @end
+
+
+typedef _Nullable id (^AFNetworkingTaskDataBlock)(AFNetworkMsg *  _Nonnull msg,id  _Nullable originalObj,id  _Nullable data)  NS_AVAILABLE_IOS(7_0);  //请求协议类型
 
 @interface AFNetworkContainer : NSObject
  
@@ -38,6 +41,7 @@
 
 
 -(void)addDefaultStructure:(Class _Nonnull)clazz;
+-(void)addDataBlock:(AFNetworkingTaskDataBlock _Nullable)dataBlock;
 
 -(void)recyle; //自定义对象时声明的新参数一定要自己回收下
 

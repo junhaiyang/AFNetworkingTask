@@ -25,9 +25,7 @@
 -(AFHTTPRequestSerializer<AFURLRequestSerialization> * _Nonnull)requestSerializer:(AFNetworkProtocolType)requestType{
     AFHTTPRequestSerializer * _Nonnull requestSerializer;
     if(requestType==AFNetworkProtocolTypeJSON){
-        requestSerializer= [AFJSONRequestSerializer serializer];
-        //去掉所有限制
-        //         requestSerializer.HTTPMethodsEncodingParametersInURI = [NSSet setWithObjects:nil, nil];
+        requestSerializer= [AFJSONRequestSerializer serializer]; 
     } else {
         requestSerializer= [AFHTTPRequestSerializer serializer];
     }
