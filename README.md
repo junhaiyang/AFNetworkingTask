@@ -16,9 +16,9 @@ AFNetworking  OC & Swift  Sample
 		source 'https://github.com/CocoaPods/Specs.git'
 		source 'https://github.com/junhaiyang/Specs.git'
 
-		pod 'AFNetworkingTask', '~> 2.0'      #OC 非动态库 使用
+		pod 'AFNetworkingTask', '~> 3.0'      #OC 非动态库 使用
 		
-		pod 'AFNetworkingTaskSwift', '~> 2.0' #Swift 动态库 使用
+		pod 'AFNetworkingTaskSwift', '~> 3.0' #Swift 动态库 使用
  
 
 	
@@ -42,3 +42,4 @@ AFNetworking  OC & Swift  Sample
 * [协议不用独立文件方式(内置JSON映射解析支持)](./README-SIG.md)
  
  
+

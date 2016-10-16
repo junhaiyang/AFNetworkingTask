@@ -1,22 +1,26 @@
-# AFNetworkingTask(2.0) for SWIFT
+# AFNetworkingTask(3.0) for SWIFT
  
 ####基本请求
  
  
 		import AFNetworkingTaskSwift 
  		//声明构造
+ 		 
  		
     	let  container:AFNetworkContainer = AFNetworkContainer();
     	
-    	//返回数据解析构造器，可自定义实现 
-        container.addDefaultStructure(UserData.classForCoder());
+        let  defaultTaskSession:AFNetworkTaskSession = AFNetworkTaskSession(container:container);
+    	
     	
  		//声明对象
-        let  task1:AFNetworkTask = AFNetworkTask(container:container);
+        let  task1:AFNetworkTask = AFNetworkTask(taskSession:taskSession); 
+        
+    	//返回数据解析构造器，可自定义实现 
+        task1.addDefaultStructure(UserData.classForCoder());
     	
     	// originalObj 为原始数据对象
     	// data 为解析出来的返回对象
-    	task1.get("http://xxxxxxxx") { (msg:AFNetworkMsg, originalObj:Any? , data:AFNetworkResponseData? ) in
+    	task1.get("http://xxxxxxxx") { (msg:AFNetworkMsg, originalObj:Any? , data:Any? ) in
   			 
   			 if let userData:UserData = data as? UserData {
                 print("UserData   .........", userData)
@@ -54,7 +58,7 @@
 	* AFNetworkProtocolType.normal：字符串
 	* AFNetworkProtocolType.JSON：字典 
 
-* data：解析出来的实例化对象，可能为空，前提是得自行去配置 AFNetworkDataAdapter 继承实现
+* data：解析出来的实例化对象，可能为空
 
 
 ###### 适配器(Adapter)说明
@@ -73,7 +77,7 @@
     		//解析返回json中的result数据，构造成 UserData 对象返回
        		dataAdapter.addStructure(UserData.classForCoder());
     
-        	container.addDataAdapter(dataAdapter);
+        	task.addDataAdapter(dataAdapter);
     		 
 
 	 
@@ -102,7 +106,12 @@
 			
 			container.addSessionAdapter(sessionAdapter);
  	
+
+###### 拦截并处理数据结果 
 		
+		task.addDataBlock { (msg:AFNetworkMsg, originalObj:Any?, data:Any?)   in
+            
+        }  
 ###### 直接对象请求模式
 
 		
@@ -115,15 +124,18 @@
 		
 		let myData:MyData =  MyData(); 
  
-    	let  container:AFNetworkContainer = AFNetworkContainer(); 
-        container.addDefaultStructure(UserData.classForCoder());
+    	let  container:AFNetworkContainer = AFNetworkContainer();
+    	
+        let  defaultTaskSession:AFNetworkTaskSession = AFNetworkTaskSession(container:container);
+    	
     	
  		//声明对象
-        let  task1:AFNetworkTask = AFNetworkTask(container:container);
+        let  task1:AFNetworkTask = AFNetworkTask(taskSession:taskSession); 
+        task1.addDefaultStructure(UserData.classForCoder()); 
     	
     	// originalObj 为原始数据对象
     	// data 为解析出来的返回对象
-    	task1.post("http://xxxxxx", data: myData) { (msg:AFNetworkMsg, originalObj:Any? , data:AFNetworkResponseData? ) in
+    	task1.post("http://xxxxxx", data: myData) { (msg:AFNetworkMsg, originalObj:Any? , data:Any? ) in
     	
   			 if let userData:UserData = data as? UserData {
                 print("UserData   .........", userData)
@@ -133,3 +145,4 @@
              
         };   
   
+

@@ -1,21 +1,26 @@
-# AFNetworkingTask(2.0) for OC
+# AFNetworkingTask(3.0) for OC
  
 ####基本请求
  
 		#import "AFNetworkTask.h"
- 		//声明构造
+		
+ 		//声明构造 
+        static AFNetworkTaskSession* defaultTaskSession = nil; 
+        AFNetworkContainer *container =[[AFNetworkContainer alloc] init];
+        container.responseType = AFNetworkProtocolTypeJSON; 
+        [container addSessionAdapter:[MyAFNetworkSessionAdapter new]];
+        
+        defaultTaskSession =  [[AFNetworkTaskSession alloc] initWithContainer:container];
+      
  		
-    	AFNetworkContainer *container =[AFNetworkContainer new];
-    	
+    AFNetworkTask *task1 =[[AFNetworkTask alloc] initWithTaskSession:defaultTaskSession];
     	//返回数据解析构造器，可自定义实现 
-    	[container addDefaultStructure:[UserData class]]; 
-    	
- 		//声明对象
-    	AFNetworkTask *task1 =[[AFNetworkTask alloc] initWithContainer:container];; 
+    [task1 addDefaultStructure:[UserData class]];
+    	 
     	
     	// originalObj 为原始数据对象
     	// data 为解析出来的返回对象
-    	[task GET:@"http://xxxxxxxx" finishedBlock:^(AFNetworkMsg *msg, id originalObj, id<AFNetworkResponseData> data) { 
+    	[task GET:@"http://xxxxxxxx" finishedBlock:^(AFNetworkMsg * _Nonnull msg, id  _Nullable originalObj, id  _Nullable data) { 
   			UserData *userData = data;
   			//对象
   			
@@ -54,7 +59,7 @@
 	* AFNetworkProtocolTypeNormal：字符串
 	* AFNetworkProtocolTypeJSON：字典 
 
-* data：解析出来的实例化对象，可能为空，前提是得自行去配置 AFNetworkDataAdapter 继承实现
+* data：解析出来的实例化对象，可能为空
 
 
 ###### 适配器(Adapter)说明
@@ -73,7 +78,7 @@
     		//解析返回json中的result数据，构造成 UserData 对象返回
     		[dataAdapter addStructure:[UserData class]];
     
-    		[container addDataAdapter:dataAdapter];
+    		[task addDataAdapter:dataAdapter];
 
 	 
 			
@@ -108,8 +113,13 @@
     		
     		
 	
-	 
+
+###### 拦截并处理数据结果 
 		
+		[task addDataBlock:^(AFNetworkMsg * _Nonnull msg, id  _Nullable originalObj, id  _Nullable data) {
+         
+         
+    }];
 		
 ###### 直接对象请求模式
 
@@ -121,15 +131,19 @@
 
 		MyData *myData = [MyData new]; 
 
+        static AFNetworkTaskSession* defaultTaskSession = nil; 
+        AFNetworkContainer *container =[[AFNetworkContainer alloc] init];
+        container.responseType = AFNetworkProtocolTypeJSON; 
+        [container addSessionAdapter:[MyAFNetworkSessionAdapter new]];
+        
+        defaultTaskSession =  [[AFNetworkTaskSession alloc] initWithContainer:container];
+        
  		
-    	AFNetworkContainer *container =[AFNetworkContainer new];
+        AFNetworkTask *task1 =[[AFNetworkTask alloc] initWithTaskSession:defaultTaskSession];
     	 
-    	[container addDefaultStructure:[UserData class]];  
+    	[task1 addDefaultStructure:[UserData class]];  
     	
- 		//声明对象
-    	AFNetworkTask *task1 =[[AFNetworkTask alloc] initWithContainer:container];; 
-    	 
-    	[task1 POST:@"http://xxxxxx" data:myData finishedBlock:^(AFNetworkMsg *msg, id originalObj, id<AFNetworkResponseData> data) { 
+    	[task1 POST:@"http://xxxxxx" data:myData finishedBlock:^(AFNetworkMsg * _Nonnull msg, id  _Nullable originalObj, id  _Nullable data) { 
   			UserData *userData = data;
   			//对象
   			
@@ -139,3 +153,4 @@
             NSLog(@"finish .........%@",jsonBody);
         }];
   
+
