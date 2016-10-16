@@ -69,6 +69,7 @@
                                }
                            }
                        }];
+    [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidRequestNotification object:dataTask];
     
     return dataTask;
 }
@@ -125,6 +126,7 @@
     
     
     [dataTask resume];
+    [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidRequestNotification object:dataTask];
     
     return dataTask;
 }
@@ -195,6 +197,7 @@
     }];
     
     [dataTask resume];
+    [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidRequestNotification object:dataTask];
     
     return dataTask;
 }

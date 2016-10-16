@@ -25,7 +25,7 @@
 
 #import <objc/runtime.h>
 
-//NSString * const AFNetworkingTaskDidRequestNotification = @"com.alamofire.networking.task.request";
+NSString * const AFNetworkingTaskDidRequestNotification = @"com.alamofire.networking.task.request";
 //NSString * const AFNetworkingTaskDidResponseNotification = @"com.alamofire.networking.task.complete";
 
 
@@ -89,7 +89,7 @@ static NSError * AFNetworkErrorFromNotification(NSNotification *notification) {
 - (void)startLogging {
     [self stopLogging];
  
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkRequestDidStart:) name:AFNetworkingTaskDidResumeNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkRequestDidStart:) name:AFNetworkingTaskDidRequestNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkRequestDidFinish:) name:AFNetworkingTaskDidCompleteNotification object:nil];
      
 }
