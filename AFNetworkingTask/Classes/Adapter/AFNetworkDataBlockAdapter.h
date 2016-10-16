@@ -1,6 +1,7 @@
  
 
 #import "AFNetworkAdapter.h"
+#import "AFNetworkTask.h"
 
 
 

@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "AFNetworkTaskSession.h"
 #import "AFNetworkTask.h"
 #import "AFNetworkDataCovertModelAdapter.h"
 #import "AFNetworkDefaultSerializerAdapter.h"
@@ -26,12 +27,12 @@
 
 @end
 @implementation MyAFNetworkSerializerAdapter
-
-
--(AFHTTPRequestSerializer<AFURLRequestSerialization> * _Nonnull)requestSerializer:(AFNetworkRequestProtocolType)requestType{
+    
+-(AFHTTPRequestSerializer<AFURLRequestSerialization> * _Nonnull)requestSerializer:(AFNetworkProtocolType)requestType{
+ 
     AFHTTPRequestSerializer * _Nonnull requestSerializer =[super requestSerializer:requestType];
      
-    [requestSerializer setValue:@"" forHTTPHeaderField:@""];
+//    [requestSerializer setValue:@"" forHTTPHeaderField:@""];
     
     
     return requestSerializer;
@@ -48,27 +49,43 @@
     [AFNetworkActivityLogger sharedLogger].level = AFLoggerLevelDebug;
     [[AFNetworkActivityLogger sharedLogger] startLogging];
     
-    AFNetworkContainer *container =[AFNetworkContainer new];
-    AFNetworkDataCovertModelAdapter *dataAdapter =[AFNetworkDataCovertModelAdapter new];
     
-    [dataAdapter addStructure:[UserData class]];
-    
-    [container addDataAdapter:dataAdapter];
     {
-        AFNetworkTask *task1 =[[AFNetworkTask alloc] initWithContainer:container];
+        AFNetworkContainer *container =[AFNetworkContainer new]; 
+        AFNetworkTaskSession *taskSession =[[AFNetworkTaskSession alloc] initWithContainer:container];
         
-        [task1 GET:@"http://xxxxx" finishedBlock:^(AFNetworkMsg *msg, id originalObj, id<AFNetworkResponseData> data) {
+        AFNetworkTask *task = [[AFNetworkTask alloc] initWithTaskSession:taskSession];
+        
+        [task addDefaultStructure:[UserData class]];
+        
+        [task DOWNLOAD:@"https://www.baidu.com" finishedBlock:^(AFNetworkMsg *msg, id originalObj, id data) {
             
-            {
-                AFNetworkTask *task2 =[[AFNetworkTask alloc] initWithContainer:container];
-                
-                [task2 GET:@"http://xxxxxxx" finishedBlock:^(AFNetworkMsg *msg, id originalObj, id<AFNetworkResponseData> data) {
-                    
-                    //            NSLog(@"finish .........%@",data);
-                }];
-            }
+            //            {
+            //                AFNetworkTask *task2 =[[AFNetworkTask alloc] initWithContainer:container];
+            //
+            //                [task2 GET:@"http://xxxxxxx" finishedBlock:^(AFNetworkMsg *msg, id originalObj, id<AFNetworkResponseData> data) {
+            //
+            //                    //            NSLog(@"finish .........%@",data);
+            //                }];
+            //            }
             
-//            NSLog(@"finish .........%@",data);
+            NSLog(@"finish .........%@",originalObj);
+        }];
+        
+        AFNetworkTask *task2 = [[AFNetworkTask alloc] initWithTaskSession:taskSession];
+        
+        [task2 DOWNLOAD:@"https://www.baidu.com" finishedBlock:^(AFNetworkMsg *msg, id originalObj, id data) {
+            
+            //            {
+            //                AFNetworkTask *task2 =[[AFNetworkTask alloc] initWithContainer:container];
+            //
+            //                [task2 GET:@"http://xxxxxxx" finishedBlock:^(AFNetworkMsg *msg, id originalObj, id<AFNetworkResponseData> data) {
+            //
+            //                    //            NSLog(@"finish .........%@",data);
+            //                }];
+            //            }
+            
+            NSLog(@"finish .........%@",originalObj);
         }];
     }
     

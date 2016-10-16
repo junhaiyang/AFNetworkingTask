@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
  
 
   s.name         = "AFNetworkingTaskSwift"
-  s.version      = "2.0"
+  s.version      = "3.0"
   s.summary      = "AFNetworking Sample Task....."
  
 
@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
 
   s.ios.framework = 'UIKit'
  
-  s.source = { :git => 'https://github.com/junhaiyang/AFNetworkingTask.git' , :tag => '2.0'} 
+  s.source = { :git => 'https://github.com/junhaiyang/AFNetworkingTask.git' , :tag => 3.0'} 
  
   s.requires_arc = true
 

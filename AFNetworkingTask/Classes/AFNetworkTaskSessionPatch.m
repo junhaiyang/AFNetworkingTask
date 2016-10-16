@@ -1,6 +1,6 @@
  
 
-#import "AFNetworkTaskPatch.h" 
+#import "AFNetworkTaskSessionPatch.h" 
 
 #import "AFTextResponseSerializer.h"
 #import "AFNetworkActivityLogger.h"
@@ -9,28 +9,14 @@
 #import <CommonCrypto/CommonDigest.h>
 
 
+ 
 
-@interface AFNetworkContainer(TaskPatch)
-    
-    
-    //执行适配器操作
--(void)sessionRequestAdapter:(NSMutableURLRequest * _Nonnull)request;
--(void)sessionResponseAdapter:(NSHTTPURLResponse * _Nonnull)response;
-    
-    //返回处理结果
--(id _Nullable)processSuccessWithTask:(NSURLSessionTask * _Nonnull)task response:(NSHTTPURLResponse * _Nonnull)response  originalObj:(id _Nullable)originalObj;
--(void)processFailWithTask:(NSURLSessionTask * _Nonnull)task error:(NSError *_Nullable)error;
-    
-    @end
-
-@interface AFNetworkTaskPatch()
-
-@property (nonatomic,strong) AFNetworkTaskProgressBlock myprogressBlock;
+@interface AFNetworkTaskSessionPatch()
 
 
 @end
 
-@implementation AFNetworkTaskPatch
+@implementation AFNetworkTaskSessionPatch
 @synthesize container;
 
 +(dispatch_queue_t)afnet_shared_afnetworkCompletionQueue {
@@ -42,13 +28,7 @@
     
     return afnet_shared_afnetworkCompletionQueue;
 }
--(void)progressBlock:(AFNetworkTaskProgressBlock)progressBlock{
-    self.myprogressBlock = progressBlock;
-}
-
--(void)dealloc{
-    self.myprogressBlock = NULL;
-}
+ 
 
 - (nullable NSURLSessionDataTask *)dataTaskWithHTTPMethod:(NSString *)method
                                        URLString:(NSString *)URLString
@@ -72,7 +52,7 @@
         
         return nil;
     }
-    [container sessionRequestAdapter:request];
+    [self.container sessionRequestAdapter:request];
     
     __block NSURLSessionDataTask *dataTask = nil;
     dataTask = [self dataTaskWithRequest:request
@@ -96,6 +76,7 @@
 - (nullable NSURLSessionUploadTask *)downloadTaskWithHTTPMethod:(NSString *)method
                                              URLString:(NSString *)URLString
                                             parameters:(id)parameters
+                                               progressBlock:(AFNetworkTaskProgressBlock _Nullable)progressBlock
                                                success:(void (^)(NSURLSessionDataTask *_Nonnull task, id  _Nonnull responseObject))success
                                                failure:(void (^)(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error))failure
 {
@@ -113,22 +94,19 @@
         
         return nil;
     }
-    [container sessionRequestAdapter:request];
+    [self.container sessionRequestAdapter:request];
     
     __block NSURLSessionDataTask *dataTask = nil;
-    
-   __block NSProgress *progress;
     
     __block typeof(self) weakSelf = self;
     
     dataTask = [self downloadTaskWithRequest:request progress:^(NSProgress * _Nonnull downloadProgress) {
         
-        progress = downloadProgress;
-        // 给这个progress添加监听任务
-        [progress addObserver:self
-                   forKeyPath:@"fractionCompleted"
-                      options:NSKeyValueObservingOptionNew
-                      context:NULL];
+        
+        if(progressBlock){
+            progressBlock(downloadProgress.fractionCompleted);
+        }
+        
         
      } destination:^NSURL * _Nonnull(NSURL * _Nonnull targetPath, NSURLResponse * _Nonnull response) {
          return [[self class] pathWithURL:URLString];
@@ -142,17 +120,8 @@
                 success(dataTask, filePath);
             }
         }
-        if(weakSelf.myprogressBlock){
-            weakSelf.myprogressBlock(1.0);
-        }
         
-        // 结束后移除掉这个progress
-        [progress removeObserver:self
-                      forKeyPath:@"fractionCompleted"
-                         context:NULL];
     }];
-    
-//    [[NSNotificationCenter defaultCenter] postNotificationName:AFNetworkingTaskDidRequestNotification object:dataTask];
     
     
     [dataTask resume];
@@ -163,7 +132,8 @@
 - (nullable NSURLSessionUploadTask *)uploadTaskWithHTTPMethod:(NSString *)method
                                            URLString:(NSString *)URLString
                                           parameters:(id)parameters
-                                               files:(id)files
+                                                        files:(id)files
+                                                progressBlock:(AFNetworkTaskProgressBlock _Nullable)progressBlock
                                              success:(void (^)(NSURLSessionDataTask *_Nonnull task, id  _Nonnull responseObject))success
                                              failure:(void (^)(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error))failure
 {
@@ -185,7 +155,7 @@
         
     } error:nil];
     
-    [container sessionRequestAdapter:request];
+    [self.container sessionRequestAdapter:request];
      
     if (serializationError) {
         if (failure) {
@@ -202,16 +172,13 @@
     
     __block NSURLSessionDataTask *dataTask = nil; 
     
-   __block NSProgress *progress;
+//   __block NSProgress *progress;
     
     dataTask = [self uploadTaskWithStreamedRequest:request progress:^(NSProgress * _Nonnull downloadProgress) {
         
-        progress = downloadProgress;
-        // 给这个progress添加监听任务
-        [progress addObserver:self
-                   forKeyPath:@"fractionCompleted"
-                      options:NSKeyValueObservingOptionNew
-                      context:NULL];
+        if(progressBlock){
+            progressBlock(downloadProgress.fractionCompleted);
+        }
         
         
     }  completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
@@ -225,28 +192,12 @@
             }
         }
         
-        // 结束后移除掉这个progress
-        [progress removeObserver:self
-                      forKeyPath:@"fractionCompleted"
-                         context:NULL];
     }];
     
     [dataTask resume];
     
     return dataTask;
 }
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
-{
-    if ([keyPath isEqualToString:@"fractionCompleted"] && [object isKindOfClass:[NSProgress class]]) {
-        NSProgress *progress = (NSProgress *)object;
-        
-        if(self.myprogressBlock){
-            self.myprogressBlock(progress.fractionCompleted);
-        }
-         
-    }
-} 
 
 
 + (NSString *)md5StringForString:(NSString *)string {
@@ -274,6 +225,6 @@
     return [documentsDirectoryURL URLByAppendingPathComponent:[[self class] md5StringForString:URLString]];
 
 }
-
+ 
 
 @end

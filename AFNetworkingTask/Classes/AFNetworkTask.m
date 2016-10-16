@@ -1,118 +1,91 @@
  
 
 #import "AFNetworkTask.h"
-#import "AFNetworkActivityLogger.h"
 #import "MJExtension.h"
-#import "AFNetworkAdapter.h"
+#import "AFNetworkDataBlockAdapter.h"
+#import "AFNetworkDataCovertModelAdapter.h"
 
+@implementation AFNetworkMsg
 
-
-typedef void (^AFURLSessionDidBecomeInvalidBlock)(NSURLSession *session, NSError *error);
-typedef NSURLSessionAuthChallengeDisposition (^AFURLSessionDidReceiveAuthenticationChallengeBlock)(NSURLSession *session, NSURLAuthenticationChallenge *challenge, NSURLCredential * __autoreleasing *credential);
-
-typedef NSURLRequest * (^AFURLSessionTaskWillPerformHTTPRedirectionBlock)(NSURLSession *session, NSURLSessionTask *task, NSURLResponse *response, NSURLRequest *request);
-typedef NSURLSessionAuthChallengeDisposition (^AFURLSessionTaskDidReceiveAuthenticationChallengeBlock)(NSURLSession *session, NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge, NSURLCredential * __autoreleasing *credential);
-typedef void (^AFURLSessionDidFinishEventsForBackgroundURLSessionBlock)(NSURLSession *session);
-
-typedef NSInputStream * (^AFURLSessionTaskNeedNewBodyStreamBlock)(NSURLSession *session, NSURLSessionTask *task);
-typedef void (^AFURLSessionTaskDidSendBodyDataBlock)(NSURLSession *session, NSURLSessionTask *task, int64_t bytesSent, int64_t totalBytesSent, int64_t totalBytesExpectedToSend);
-typedef void (^AFURLSessionTaskDidCompleteBlock)(NSURLSession *session, NSURLSessionTask *task, NSError *error);
-
-typedef NSURLSessionResponseDisposition (^AFURLSessionDataTaskDidReceiveResponseBlock)(NSURLSession *session, NSURLSessionDataTask *dataTask, NSURLResponse *response);
-typedef void (^AFURLSessionDataTaskDidBecomeDownloadTaskBlock)(NSURLSession *session, NSURLSessionDataTask *dataTask, NSURLSessionDownloadTask *downloadTask);
-typedef void (^AFURLSessionDataTaskDidReceiveDataBlock)(NSURLSession *session, NSURLSessionDataTask *dataTask, NSData *data);
-typedef NSCachedURLResponse * (^AFURLSessionDataTaskWillCacheResponseBlock)(NSURLSession *session, NSURLSessionDataTask *dataTask, NSCachedURLResponse *proposedResponse);
-
-typedef NSURL * (^AFURLSessionDownloadTaskDidFinishDownloadingBlock)(NSURLSession *session, NSURLSessionDownloadTask *downloadTask, NSURL *location);
-typedef void (^AFURLSessionDownloadTaskDidWriteDataBlock)(NSURLSession *session, NSURLSessionDownloadTask *downloadTask, int64_t bytesWritten, int64_t totalBytesWritten, int64_t totalBytesExpectedToWrite);
-typedef void (^AFURLSessionDownloadTaskDidResumeBlock)(NSURLSession *session, NSURLSessionDownloadTask *downloadTask, int64_t fileOffset, int64_t expectedTotalBytes);
-typedef void (^AFURLSessionTaskProgressBlock)(NSProgress *);
-
-typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id responseObject, NSError *error);
-
-@interface AFURLSessionManager(Ext)
-@property (readwrite, nonatomic, strong) NSOperationQueue *operationQueue;
-@property (readwrite, nonatomic, strong) NSURLSession *session;
-@property (readwrite, nonatomic, strong) NSMutableDictionary *mutableTaskDelegatesKeyedByTaskIdentifier;
-@property (readwrite, nonatomic, strong) NSURLSessionConfiguration *sessionConfiguration;
-@property (readwrite, nonatomic, strong) NSLock *lock;
-
-@property (readonly, nonatomic, copy) NSString *taskDescriptionForSessionTasks;
-@property (readwrite, nonatomic, copy) AFURLSessionDidBecomeInvalidBlock sessionDidBecomeInvalid;
-@property (readwrite, nonatomic, copy) AFURLSessionDidReceiveAuthenticationChallengeBlock sessionDidReceiveAuthenticationChallenge;
-@property (readwrite, nonatomic, copy) AFURLSessionDidFinishEventsForBackgroundURLSessionBlock didFinishEventsForBackgroundURLSession;
-@property (readwrite, nonatomic, copy) AFURLSessionTaskWillPerformHTTPRedirectionBlock taskWillPerformHTTPRedirection;
-@property (readwrite, nonatomic, copy) AFURLSessionTaskDidReceiveAuthenticationChallengeBlock taskDidReceiveAuthenticationChallenge;
-@property (readwrite, nonatomic, copy) AFURLSessionTaskNeedNewBodyStreamBlock taskNeedNewBodyStream;
-@property (readwrite, nonatomic, copy) AFURLSessionTaskDidSendBodyDataBlock taskDidSendBodyData;
-@property (readwrite, nonatomic, copy) AFURLSessionTaskDidCompleteBlock taskDidComplete;
-@property (readwrite, nonatomic, copy) AFURLSessionDataTaskDidReceiveResponseBlock dataTaskDidReceiveResponse;
-@property (readwrite, nonatomic, copy) AFURLSessionDataTaskDidBecomeDownloadTaskBlock dataTaskDidBecomeDownloadTask;
-@property (readwrite, nonatomic, copy) AFURLSessionDataTaskDidReceiveDataBlock dataTaskDidReceiveData;
-@property (readwrite, nonatomic, copy) AFURLSessionDataTaskWillCacheResponseBlock dataTaskWillCacheResponse;
-@property (readwrite, nonatomic, copy) AFURLSessionDownloadTaskDidFinishDownloadingBlock downloadTaskDidFinishDownloading;
-@property (readwrite, nonatomic, copy) AFURLSessionDownloadTaskDidWriteDataBlock downloadTaskDidWriteData;
-@property (readwrite, nonatomic, copy) AFURLSessionDownloadTaskDidResumeBlock downloadTaskDidResume;
-
-@end
-
-
-@interface AFNetworkContainer(Task)
-     
-    
-    //执行适配器操作
--(void)sessionRequestAdapter:(NSMutableURLRequest * _Nonnull)request;
--(void)sessionResponseAdapter:(NSHTTPURLResponse * _Nonnull)response;
-    
-    //返回处理结果
--(id _Nullable)processSuccessWithTask:(NSURLSessionTask * _Nonnull)task response:(NSHTTPURLResponse * _Nonnull)response  originalObj:(id _Nullable)originalObj;
--(void)processFailWithTask:(NSURLSessionTask * _Nonnull)task error:(NSError *_Nullable)error;
-    
-@end
-
-@interface AFNetworkTask(){
-    
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+    }
+    return self;
 }
 
-@property (nonatomic,strong) NSURLSessionTask *sessionTask;
 
-@property (nonatomic) BOOL finishedTag;
+-(void)recyle{
+    self.responseHeaders = nil;
+}
+-(void)dealloc{
+#if DEBUG
+    NSLog(@"------%@ dealloc",self.class);
+#endif
+}
+
+@end
+
+//@interface AFNetworkContainer(AFNetworkTask)
+//
+////执行适配器操作
+//-(void)sessionRequestAdapter:(NSMutableURLRequest * _Nonnull)request;
+//-(void)sessionResponseAdapter:(NSHTTPURLResponse * _Nonnull)response msg:(AFNetworkMsg * _Nullable)msg;
+//
+////返回处理结果
+//-(id _Nullable)processSuccessWithTask:(NSURLSessionTask * _Nonnull)task response:(NSHTTPURLResponse * _Nonnull)response msg:(AFNetworkMsg * _Nullable)msg originalObj:(id _Nullable)originalObj;
+//-(void)processFailWithTask:(NSURLSessionTask * _Nonnull)task msg:(AFNetworkMsg * _Nullable)msg error:(NSError *_Nullable)error;
+//
+//@end
+
+@interface AFNetworkTask()
+
+@property (nonatomic,strong) NSMutableArray<AFNetworkDataAdapter *>  * _Nonnull dataAdapters NS_AVAILABLE_IOS(7_0);  //请求协议类型
+
+@property (nonatomic,strong) NSURLSessionTask *sessionTask;
+@property (nonatomic,strong) AFNetworkMsg *msg;
+@property (nonatomic,strong) AFNetworkTaskSession *networkTaskSession;
+
 
 @end
 
 @implementation AFNetworkTask
-@synthesize container;
-@synthesize sessionTask;
-- (instancetype)initWithContainer:(AFNetworkContainer * _Nonnull)_container
+@synthesize dataAdapters;
+
+- (instancetype _Nonnull)initWithTaskSession:(AFNetworkTaskSession * _Nonnull)session
 {
     self = [super init];
     if (self) {
         
-        container =  _container;
-        __block typeof(self) weakSelf = self;
-        [self setTaskDidComplete:^(NSURLSession *session, NSURLSessionTask *task, NSError *error) {
-            if(weakSelf.finishedTag)
-                [weakSelf recyle];
-            else{
-                weakSelf.finishedTag = YES;
-            }
-        }];
-        
+        dataAdapters= [[NSMutableArray alloc] initWithCapacity:0];
+        self.networkTaskSession = session;
+        self.msg = [AFNetworkMsg new];
+         
     }
     return self;
 }
--(void)addDataBlock:(AFNetworkingTaskDataBlock _Nullable)dataBlock{
-    [container addDataBlock:dataBlock];
+
+
+-(void)addDataAdapter:(AFNetworkDataAdapter * _Nonnull)adapter{
+    if([[dataAdapters lastObject] isKindOfClass:[AFNetworkDataBlockAdapter class]])
+        [dataAdapters insertObject:adapter atIndex:dataAdapters.count-1];
+    else
+        [dataAdapters addObject:adapter];
 }
 
--(AFHTTPResponseSerializer<AFURLResponseSerialization> * _Nonnull)responseSerializer{
+-(void)addDefaultStructure:(Class)clazz{
+    AFNetworkDataCovertModelAdapter * _Nonnull dataAdapter =[AFNetworkDataCovertModelAdapter new];
+    [dataAdapter addStructure:clazz];
+    [self addDataAdapter:dataAdapter];
     
-    
-    return [container.serializerAdapter responseSerializer:container.responseType];
 }
--(AFHTTPRequestSerializer<AFURLRequestSerialization> * _Nonnull)requestSerializer{
-    return [container.serializerAdapter requestSerializer:container.requestType];
+-(void)addDataBlock:(AFNetworkingTaskDataBlock _Nullable)dataBlock{
+    AFNetworkDataBlockAdapter * _Nonnull dataAdapter =[AFNetworkDataBlockAdapter new];
+    [dataAdapter dataBlock:dataBlock];
+    [self addDataAdapter:dataAdapter];
 }
+
 #pragma mark - GET
 
 -(void)GET:(NSString * _Nonnull)url  finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finishedBlock{
@@ -125,23 +98,20 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 }
 
 -(void)GET:(NSString * _Nonnull)URLString
-               form:(NSDictionary * _Nullable)form
-                   finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finish{
+                          form:(NSDictionary * _Nullable)form
+                 finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finishedBlock{
     
     __block AFNetworkTask *weakSelf = self;
     
-    [self serializeFinishedInCustomQueue];
-    
-    sessionTask =   [self GET:URLString parameters:form success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+    self.sessionTask =  [self.networkTaskSession GET:URLString parameters:form success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
         
-        [weakSelf processSuccessResult:responseObject task:task  finish:finish];
+        [weakSelf processSuccessResult:responseObject task:task msg:weakSelf.msg  finish:finishedBlock];
         
     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
         
-        [weakSelf processErrorResult:task error:error finish:finish];
+        [weakSelf processErrorResult:task error:error msg:weakSelf.msg finish:finishedBlock];
         
     }];
-    
     
 }
 #pragma mark - POST
@@ -149,32 +119,31 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 -(void)POST:(NSString * _Nonnull)url data:(id<AFNetworkRequestData> _Nullable)data finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finishedBlock{
     NSDictionary *from  =[(Class)data mj_keyValues];
     
-    return [self POST:url form:from finishedBlock:finishedBlock];
+      [self POST:url form:from finishedBlock:finishedBlock];
 }
 
 - (void)POST:(NSString * _Nonnull)URLString
-            form:(NSDictionary * _Nullable)form
-             finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finish{
+                            form:(NSDictionary * _Nullable)form
+                   finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finishedBlock{
     
     __block typeof(self) weakSelf = self;
     
-    [self serializeFinishedInCustomQueue];
-    
-    sessionTask =   [self POST:URLString parameters:form success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+    self.sessionTask = [self.networkTaskSession POST:URLString parameters:form success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
         
-        [weakSelf processSuccessResult:responseObject task:task  finish:finish];
+        [weakSelf processSuccessResult:responseObject task:task  msg:weakSelf.msg finish:finishedBlock];
     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
         
-        [weakSelf processErrorResult:task error:error finish:finish];
+        [weakSelf processErrorResult:task error:error msg:weakSelf.msg finish:finishedBlock];
     }];
+    
     
 }
 
 
 - (void)POST:(NSString * _Nonnull)URLString
-                      data:(id<AFNetworkRequestData> _Nullable)data
-                      files:(NSDictionary * _Nullable)files
-             finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finishedBlock{
+                            data:(id<AFNetworkRequestData> _Nullable)data
+                           files:(NSDictionary * _Nullable)files
+                   finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finishedBlock{
     
     NSDictionary *from  =[(Class)data mj_keyValues];
     
@@ -182,19 +151,23 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 }
 
 - (void)POST:(NSString * _Nonnull)URLString
-                      form:(NSDictionary * _Nullable)form
-                     files:(NSDictionary * _Nullable)files
-             finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finish{
+                            form:(NSDictionary * _Nullable)from
+                           files:(NSDictionary * _Nullable)files
+                   finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finishedBlock{
+    
+      [self POST:URLString form:from files:files progressBlock:NULL finishedBlock:finishedBlock];
+    
+}
+-(void)POST:(NSString * _Nonnull)URLString form:(NSDictionary * _Nullable)form files:(NSDictionary * _Nullable)files progressBlock:(AFNetworkTaskProgressBlock _Nullable)progressBlock finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finishedBlock{
     
     __block typeof(self) weakSelf = self;
     
-    [self serializeFinishedInCustomQueue];
-    
-    sessionTask =    [self uploadTaskWithHTTPMethod:@"POST" URLString:URLString parameters:form files:files success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
-        [weakSelf processSuccessResult:responseObject task:task  finish:finish];
+    self.sessionTask =   [self.networkTaskSession uploadTaskWithHTTPMethod:@"POST" URLString:URLString parameters:form files:files progressBlock:NULL success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+        [weakSelf processSuccessResult:responseObject task:task msg:weakSelf.msg finish:finishedBlock];
     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
-        [weakSelf processErrorResult:task error:error finish:finish];
+        [weakSelf processErrorResult:task error:error msg:weakSelf.msg finish:finishedBlock];
     }];
+    
     
 }
 #pragma mark - PUT
@@ -206,28 +179,26 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 }
 
 - (void)PUT:(NSString * _Nonnull)URLString
-                form:(NSDictionary * _Nullable)form
-             finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finish{
+                           form:(NSDictionary * _Nullable)form
+                  finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finishedBlock{
     
     __block typeof(self) weakSelf = self;
     
-    [self serializeFinishedInCustomQueue];
-    
-    sessionTask =   [self PUT:URLString parameters:form success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+    self.sessionTask =  [self.networkTaskSession PUT:URLString parameters:form success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
         
-        [weakSelf processSuccessResult:responseObject task:task  finish:finish];
+        [weakSelf processSuccessResult:responseObject task:task msg:weakSelf.msg finish:finishedBlock];
     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
         
-        [weakSelf processErrorResult:task error:error finish:finish];
+        [weakSelf processErrorResult:task error:error msg:weakSelf.msg finish:finishedBlock];
     }];
     
 }
 
 
 - (void)PUT:(NSString * _Nonnull)URLString
-                      data:(id<AFNetworkRequestData> _Nullable)data
-                     files:(NSDictionary * _Nullable)files
-             finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finishedBlock{
+                           data:(id<AFNetworkRequestData> _Nullable)data
+                          files:(NSDictionary * _Nullable)files
+                  finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finishedBlock{
     
     NSDictionary *from  =[(Class)data mj_keyValues];
     
@@ -235,50 +206,53 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 }
 
 - (void)PUT:(NSString * _Nonnull)URLString
-                      form:(NSDictionary * _Nullable)form
-                     files:(NSDictionary * _Nullable)files
-             finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finish{
+                           form:(NSDictionary * _Nullable)form
+                          files:(NSDictionary * _Nullable)files
+                  finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finishedBlock{
+    
+      [self PUT:URLString form:form files:files progressBlock:NULL finishedBlock:finishedBlock];
+    
+}
+-(void)PUT:(NSString * _Nonnull)URLString form:(NSDictionary * _Nullable)form files:(NSDictionary * _Nullable)files progressBlock:(AFNetworkTaskProgressBlock _Nullable)progressBlock finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finishedBlock{
     
     __block typeof(self) weakSelf = self;
     
-    [self serializeFinishedInCustomQueue];
-    
-    sessionTask =    [self uploadTaskWithHTTPMethod:@"PUT" URLString:URLString parameters:form files:files success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
-        [weakSelf processSuccessResult:responseObject task:task  finish:finish];
+    self.sessionTask =    [self.networkTaskSession uploadTaskWithHTTPMethod:@"PUT" URLString:URLString parameters:form files:files progressBlock:NULL success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+        [weakSelf processSuccessResult:responseObject task:task msg:weakSelf.msg finish:finishedBlock];
     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
-        [weakSelf processErrorResult:task error:error finish:finish];
+        [weakSelf processErrorResult:task error:error msg:weakSelf.msg finish:finishedBlock];
     }];
+    
     
 }
 #pragma mark - PATCH
 
 -(void)PATCH:(NSString * _Nonnull)url finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finishedBlock{
     
-      [self PATCH:url form:nil finishedBlock:finishedBlock];
+       [self PATCH:url form:nil finishedBlock:finishedBlock];
 }
 -(void)PATCH:(NSString * _Nonnull)url data:(id<AFNetworkRequestData> _Nullable)data finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finishedBlock{
     NSDictionary *from  =[(Class)data mj_keyValues];
     
-      [self PATCH:url form:from finishedBlock:finishedBlock];
+       [self PATCH:url form:from finishedBlock:finishedBlock];
 }
 
 -(void)PATCH:(NSString * _Nonnull)URLString
-                    form:(NSDictionary * _Nullable)form
-           finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finish{
+                            form:(NSDictionary * _Nullable)form
+                   finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finishedBlock{
     
     __block typeof(self) weakSelf = self;
     
-    [self serializeFinishedInCustomQueue];
-    
-    sessionTask =   [self PATCH:URLString parameters:form success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+    self.sessionTask = [self.networkTaskSession PATCH:URLString parameters:form success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
         
-        [weakSelf processSuccessResult:responseObject task:task  finish:finish];
+        [weakSelf processSuccessResult:responseObject task:task msg:weakSelf.msg finish:finishedBlock];
         
     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
         
-        [weakSelf processErrorResult:task error:error finish:finish];
+        [weakSelf processErrorResult:task error:error msg:weakSelf.msg finish:finishedBlock];
         
     }];
+    
     
     
 }
@@ -286,31 +260,30 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 
 -(void)DELETE:(NSString * _Nonnull)url finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finishedBlock{
     
-    return [self DELETE:url form:nil finishedBlock:finishedBlock];
+      [self DELETE:url form:nil finishedBlock:finishedBlock];
 }
 -(void)DELETE:(NSString * _Nonnull)url data:(id<AFNetworkRequestData> _Nullable)data finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finishedBlock{
     NSDictionary *from  =[(Class)data mj_keyValues];
     
-      [self DELETE:url form:from finishedBlock:finishedBlock];
+        [self DELETE:url form:from finishedBlock:finishedBlock];
 }
 
 -(void)DELETE:(NSString * _Nonnull)URLString
-                      form:(NSDictionary * _Nullable)form
-             finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finish{
+                             form:(NSDictionary * _Nullable)form
+                    finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finishedBlock{
     
     __block typeof(self) weakSelf = self;
     
-    [self serializeFinishedInCustomQueue];
-    
-    sessionTask =   [self DELETE:URLString parameters:form success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+    self.sessionTask = [self.networkTaskSession DELETE:URLString parameters:form success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
         
-        [weakSelf processSuccessResult:responseObject task:task  finish:finish];
+        [weakSelf processSuccessResult:responseObject task:task msg:weakSelf.msg finish:finishedBlock];
         
     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
         
-        [weakSelf processErrorResult:task error:error finish:finish];
+        [weakSelf processErrorResult:task error:error msg:weakSelf.msg finish:finishedBlock];
         
     }];
+    
     
     
 }
@@ -318,123 +291,123 @@ typedef void (^AFURLSessionTaskCompletionHandler)(NSURLResponse *response, id re
 
 -(void)DOWNLOAD:(NSString * _Nonnull)url  finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finishedBlock{
     
-      [self DOWNLOAD:url form:nil finishedBlock:finishedBlock];
+       [self DOWNLOAD:url form:nil finishedBlock:finishedBlock];
 }
 
 
 - (void)DOWNLOAD:(NSString * _Nonnull)URLString
-                      data:(id<AFNetworkRequestData> _Nullable)data
-             finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finishedBlock{
+                                data:(id<AFNetworkRequestData> _Nullable)data
+                       finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finishedBlock{
     
     NSDictionary *from  =[(Class)data mj_keyValues];
     
-      [self DOWNLOAD:URLString form:from  finishedBlock:finishedBlock];
+       [self DOWNLOAD:URLString form:from  finishedBlock:finishedBlock];
 }
 
 - (void)DOWNLOAD:(NSString * _Nonnull)URLString
-                      form:(NSDictionary * _Nullable)form
-             finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finish{
+                                form:(NSDictionary * _Nullable)form
+                       finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finishedBlock{
     
-    __block typeof(self) weakSelf = self;
+       [self DOWNLOAD:URLString form:form progressBlock:NULL finishedBlock:finishedBlock];
     
-    [self serializeFinishedInCustomQueue];
+}
+
+-(void)DOWNLOAD:(NSString * _Nonnull)URLString data:(id<AFNetworkRequestData> _Nullable)data progressBlock:(AFNetworkTaskProgressBlock _Nullable)progressBlock finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finishedBlock{
+    NSDictionary *from  =[(Class)data mj_keyValues];
     
-    self.completionQueue = [[self class] afnet_shared_afnetworkCompletionQueue];
+       [self DOWNLOAD:URLString form:from progressBlock:progressBlock finishedBlock:finishedBlock];
     
-    sessionTask =  [self downloadTaskWithHTTPMethod:@"GET" URLString:URLString parameters:form success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
-        [weakSelf processSuccessResult:responseObject task:task  finish:finish];
+}
+
+-(void)DOWNLOAD:(NSString * _Nonnull)URLString form:(NSDictionary * _Nullable)form progressBlock:(AFNetworkTaskProgressBlock _Nullable)progressBlock finishedBlock:(AFNetworkingTaskFinishedBlock _Nullable)finishedBlock{
+    
+    __block typeof(self) weakSelf = self; 
+    
+    self.sessionTask =  [self.networkTaskSession downloadTaskWithHTTPMethod:@"GET" URLString:URLString parameters:form  progressBlock:progressBlock success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+        [weakSelf processSuccessResult:responseObject task:task msg:weakSelf.msg finish:finishedBlock];
     } failure:^(NSURLSessionDataTask * _Nonnull task, NSError * _Nonnull error) {
-        [weakSelf processErrorResult:task error:error finish:finish];
+        [weakSelf processErrorResult:task error:error msg:weakSelf.msg finish:finishedBlock];
     }];
     
+    
 }
-//切换到主线程
--(void)serializeFinishedInCustomQueue{
-    if(container.completionCustomQueue){
-        self.completionQueue = [[self class] afnet_shared_afnetworkCompletionQueue];
-    }else{
-        self.completionQueue = NULL;
-    }
-}
-
-
 
 
 #pragma mark - process  Result
--(void)processSuccessResult:(id _Nullable)responseObject task:(NSURLSessionDataTask * _Nonnull)task   finish:(AFNetworkingTaskFinishedBlock _Nullable)finish{
+-(void)processSuccessResult:(id _Nullable)responseObject task:(NSURLSessionDataTask * _Nonnull)task  msg:(AFNetworkMsg * _Nullable)msg finish:(AFNetworkingTaskFinishedBlock _Nullable)finish{
     NSHTTPURLResponse  *response = (NSHTTPURLResponse  *)task.response;
     
-    [container sessionResponseAdapter:response];
+    [self.networkTaskSession.container sessionResponseAdapter:response msg:msg];
     
-    id body = [container processSuccessWithTask:task response:response originalObj:responseObject];
+    id body = [self processSuccessWithTask:task response:response msg:msg originalObj:responseObject];
     if(finish){
-        finish(container.msg,responseObject,body);
+        finish(msg,responseObject,body);
     }
-    if(self.finishedTag)
-        [self recyle];
-    else{
-        self.finishedTag = YES;
-    }
+    
+    [self recyle];
     
 }
--(void)processErrorResult:(NSURLSessionDataTask * _Nonnull)task error:(NSError * _Nullable)error finish:(AFNetworkingTaskFinishedBlock _Nullable)finish{
-    [container processFailWithTask:task error:error];
+-(void)processErrorResult:(NSURLSessionDataTask * _Nonnull)task error:(NSError * _Nullable)error msg:(AFNetworkMsg * _Nullable)msg finish:(AFNetworkingTaskFinishedBlock _Nullable)finish{
+    [self processFailWithTask:task msg:msg error:error];
     if(finish){
-        finish(container.msg,nil,nil);
+        finish(msg,nil,nil);
     }
-    if(self.finishedTag)
-        [self recyle];
-    else{
-        self.finishedTag = YES;
-    }
+    
+    [self recyle];
+    
 }
 
-#pragma mark - process  Recyle
--(void)cancel{
-    [sessionTask cancel];
+
+-(id)processSuccessWithTask:(NSURLSessionTask * _Nonnull)task response:(NSHTTPURLResponse * _Nonnull)response  msg:(AFNetworkMsg * _Nullable)msg  originalObj:(id _Nullable)originalObj{
+    id parentObj = originalObj;
+    id returnObj = nil;
+    
+    @try {
+        for (AFNetworkDataAdapter * _Nonnull adapter in self.dataAdapters) {
+            id returnValue = nil;
+            AFNetworkDataType  dataType=  [adapter processSuccessWithTask:task originalObj:originalObj parentObj:parentObj msg:msg returnObj:&returnValue];
+            parentObj = returnValue;
+            if(dataType == AFNetworkDataTypeData&&returnValue!=nil){
+                returnObj = returnValue;
+                //                break;
+            }
+        }
+        msg.errorCode = AFNetworkStatusCodeSuccess;
+    } @catch (NSException *exception) {
+        msg.errorCode = AFNetworkStatusCodeDataError;
+    }
+    
+    
+    return returnObj;
+}
+-(void)processFailWithTask:(NSURLSessionTask * _Nonnull)task  msg:(AFNetworkMsg * _Nullable)msg error:(NSError * _Nullable)error{
+    for (AFNetworkDataAdapter * _Nonnull adapter in self.dataAdapters) {
+        [adapter processFailWithTask:task msg:msg error:error];
+    }
+    msg.errorCode = AFNetworkStatusCodeHttpError;
+    msg.httpStatusCode = error.code;
 }
 
 -(void)recyle{
     
-    sessionTask = nil;
+    self.networkTaskSession= nil;
+    [self.msg recyle];
+    self.msg= nil;
+    self.sessionTask= nil;
     
-    [container recyle];
-    container = nil;
+    for (AFNetworkDataAdapter * _Nonnull adapter in self.dataAdapters) {
+        [adapter recyle];
+    }
+    [dataAdapters removeAllObjects];
+    dataAdapters = nil;
     
-    self.securityPolicy = nil;
-    self.reachabilityManager = nil;
-    
-    self.completionQueue = nil;
-    self.completionGroup = nil;
-    [self.operationQueue cancelAllOperations];
-    self.operationQueue = nil;
-    self.lock = nil;
-    [self.session finishTasksAndInvalidate];
-    self.session = nil;
-    self.mutableTaskDelegatesKeyedByTaskIdentifier = nil;
-    self.sessionConfiguration = nil;
-    
-    self.sessionDidBecomeInvalid = nil;
-    self.sessionDidReceiveAuthenticationChallenge = nil;
-    self.didFinishEventsForBackgroundURLSession = nil;
-    self.taskWillPerformHTTPRedirection = nil;
-    self.taskDidReceiveAuthenticationChallenge = nil;
-    self.taskNeedNewBodyStream = nil;
-    self.taskDidSendBodyData = nil;
-    
-    self.taskDidComplete = nil;
-    self.dataTaskDidReceiveResponse = nil;
-    self.dataTaskDidBecomeDownloadTask = nil;
-    self.dataTaskDidReceiveData = nil;
-    self.dataTaskWillCacheResponse = nil;
-    self.downloadTaskDidFinishDownloading = nil;
-    self.downloadTaskDidWriteData = nil;
-    self.downloadTaskDidResume = nil;
-     
 }
-
+-(void)cancel{
+    [self.sessionTask cancel];
+}
 -(void)dealloc{
-//    NSLog(@"------%@ dealloc",self.class);
+#if DEBUG
+        NSLog(@"------%@ dealloc",self.class);
+#endif
 }
-
 @end

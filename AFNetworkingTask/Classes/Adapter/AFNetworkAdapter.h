@@ -35,9 +35,9 @@
     
 
 //返回处理结果
--(AFNetworkDataType)processSuccessWithTask:(NSURLSessionTask * _Nonnull)task originalObj:(id _Nullable)originalObj parentObj:(id _Nullable)parentObj msg:(AFNetworkMsg * _Nullable)msg returnObj:(__nullable id * _Nullable)returnObj;
+-(AFNetworkDataType)processSuccessWithTask:(NSURLSessionTask * _Nonnull)task  originalObj:(id _Nullable)originalObj parentObj:(id _Nullable)parentObj msg:(AFNetworkMsg * _Nullable)msg returnObj:(__nullable id * _Nullable)returnObj;
 
--(id _Nullable)processFailWithTask:(NSURLSessionTask * _Nonnull)task error:(NSError * _Nullable)error;
+-(id _Nullable)processFailWithTask:(NSURLSessionTask * _Nonnull)task  msg:(AFNetworkMsg * _Nullable)msg error:(NSError * _Nullable)error;
 
 
 -(void)recyle; //自定义对象时声明的新参数一定要自己回收下

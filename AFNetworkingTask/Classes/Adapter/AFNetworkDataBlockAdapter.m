@@ -16,7 +16,7 @@
     
     if(self.afnetworkingTaskDataBlock){
         @try {
-            *returnObj =  self.afnetworkingTaskDataBlock(msg,originalObj,parentObj);
+             self.afnetworkingTaskDataBlock(msg,originalObj,parentObj);
             return AFNetworkDataTypeData;
         } @catch (NSException *exception) {
             return AFNetworkDataTypeData;

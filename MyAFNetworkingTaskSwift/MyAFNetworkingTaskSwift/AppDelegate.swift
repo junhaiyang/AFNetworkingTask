@@ -63,9 +63,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         AFNetworkActivityLogger.shared().startLogging();
         
         let  container:AFNetworkContainer = AFNetworkContainer();
-        
-        container.addDefaultStructure(UserData.classForCoder());
-        
         container.completionCustomQueue = true;
         
         
@@ -74,13 +71,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         container.serializerAdapter = serializerAdapter;
         
         
-        let  task1:AFNetworkTask = AFNetworkTask(container:container);
+        let  taskSession:AFNetworkTaskSession = AFNetworkTaskSession(container:container);
+        let  task1:AFNetworkTask = AFNetworkTask(taskSession:taskSession);
+        task1.addDefaultStructure(UserData.classForCoder());
         
-        task1.addDataBlock { (msg:AFNetworkMsg, originalObj:Any?, data:Any?) -> Any? in
-             
-            return data;
+        task1.addDataBlock { (msg:AFNetworkMsg, originalObj:Any?, data:Any?)   in
+            
         }
-        task1.get("http://app.ohwit.com/i/app/category") { (msg:AFNetworkMsg, originalObj:Any? , data:Any? ) in
+        task1.get("http://xxx") { (msg:AFNetworkMsg, originalObj:Any? , data:Any? ) in
            
             if let userData:UserData = data as? UserData {
                 print("UserData code .........", userData.code)
