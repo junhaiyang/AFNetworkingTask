@@ -35,8 +35,8 @@
     return AFNetworkDataTypeData;
 }
 
--(id)processFailWithTask:(NSURLSessionTask * _Nonnull)task error:(NSError * _Nullable)error{
-     
+-(id)processFailWithTask:(NSURLSessionTask * _Nonnull)task msg:(AFNetworkMsg * _Nullable)msg error:(NSError * _Nullable)error{
+    return nil;
 }
 
 -(void)recyle{

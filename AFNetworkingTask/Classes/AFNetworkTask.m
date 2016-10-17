@@ -25,19 +25,7 @@
 #endif
 }
 
-@end
-
-//@interface AFNetworkContainer(AFNetworkTask)
-//
-////执行适配器操作
-//-(void)sessionRequestAdapter:(NSMutableURLRequest * _Nonnull)request;
-//-(void)sessionResponseAdapter:(NSHTTPURLResponse * _Nonnull)response msg:(AFNetworkMsg * _Nullable)msg;
-//
-////返回处理结果
-//-(id _Nullable)processSuccessWithTask:(NSURLSessionTask * _Nonnull)task response:(NSHTTPURLResponse * _Nonnull)response msg:(AFNetworkMsg * _Nullable)msg originalObj:(id _Nullable)originalObj;
-//-(void)processFailWithTask:(NSURLSessionTask * _Nonnull)task msg:(AFNetworkMsg * _Nullable)msg error:(NSError *_Nullable)error;
-//
-//@end
+@end 
 
 @interface AFNetworkTask()
 
