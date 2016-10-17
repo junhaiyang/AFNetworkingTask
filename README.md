@@ -16,9 +16,9 @@ AFNetworking  OC & Swift  Sample
 		source 'https://github.com/CocoaPods/Specs.git'
 		source 'https://github.com/junhaiyang/Specs.git'
 
-		pod 'AFNetworkingTask', '~> 3.0'      #OC 非动态库 使用
+		pod 'AFNetworkingTask', '~> 3.0.1'      #OC 非动态库 使用
 		
-		pod 'AFNetworkingTaskSwift', '~> 3.0' #Swift 动态库 使用
+		pod 'AFNetworkingTaskSwift', '~> 3.0.1' #Swift 动态库 使用
  
 
 	
@@ -33,7 +33,7 @@ AFNetworking  OC & Swift  Sample
 * json 映射 使用的 MJExtension 框架，具体规则 参考 [MJExtension](https://github.com/CoderMJLee/MJExtension)
 		
 ###### 基本代码编写
-######2.0之后版本
+######最新版本
 * [处理方式(内置JSON映射解析支持) OC](./README-NEW-OC.md) 
 * [处理方式(内置JSON映射解析支持) Swift](./README-NEW-SWIFT.md) 
 
